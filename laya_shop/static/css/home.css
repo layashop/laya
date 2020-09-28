@@ -1,0 +1,267 @@
+*{
+    font-family: 'Montserrat', sans-serif;
+}
+
+
+.logo{
+    width: 80px;
+    height: 80px;
+}
+
+
+
+
+
+
+/* Header */
+
+header{
+    margin: 20px 0 ;
+    display: flex;
+    justify-content: center;
+}
+.header-container{
+    padding: 0 10px;
+    width: 100%;
+    max-width: 1200px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.search-bar{
+    display: flex;
+    align-items: center;
+    height: 50px;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 50px;
+    border:solid 0.5px #BBBBBB;
+    padding:0 10px;
+    margin: 0 20px
+}
+.search-bar input{
+    width: 100%;
+    height: auto;
+    
+}
+.search-bar svg{
+    width: 30px;
+    color: #BBBBBB;
+    fill: #BBBBBB;
+}
+
+.header-text{
+
+    white-space: nowrap;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.portada{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.portada-texto{
+    width: 60%;
+    margin-left: 60px;
+}
+
+.portada-texto span{
+    color: #494949;
+    font-size: 38px;
+    background-color: white;
+    padding: 5px 10px
+}
+
+
+.portada img, .portada picture{
+    width: 100%;
+    object-fit: cover;
+    height: 500px;
+}
+
+
+
+/* CATEGORIAS */
+.categories-container{
+    padding-top: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.title{
+    font-size: 35px;
+    text-align: center;
+}
+
+.categories, .featured{
+    padding: 40px 20px;
+    width: 100%;
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 20px;
+    row-gap: 20px;
+}
+
+.categories .box{
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    transition: 1s;
+    cursor: pointer;
+}
+.categories .box img:hover{
+    transition: 2s;
+    transform: scale(1.1) !important;
+}
+
+.categories .box img{
+    transition: 0.5s;
+}
+
+.categories img, .featured img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.categories .inside-text{
+    display: grid;
+    font-size: 20px;
+    font-weight: 500;
+    place-items: center;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    bottom: 10%;
+    height: 50px;
+}
+
+.featured-container{
+    padding-top: 30px;
+    /* justify-content: start; */
+}
+.featured{
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr);
+}
+
+
+.featured .box{
+    width: 100%;
+    height: 300px;
+}
+
+.featured .logo{
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+
+footer{
+    color: white;
+    padding: 40px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+    background-color: #1E3038;
+    width: 100%;
+}
+
+
+.footer-container{
+    width: 100%;
+    max-width: 1200px;
+}
+
+footer .title{
+    font-size: 20px;
+    color: white;
+}
+
+footer h5{
+    color: #848d93;
+    cursor: pointer;
+}
+
+
+footer h5:hover{
+    color: #cedee9;
+}
+.social-media svg{
+    margin: 0 10px;
+    width: 35px;
+    height: 35px;
+    fill: rgb(255, 255, 255);
+}
+
+@media (max-width: 700px){
+    .search-bar{
+        margin: 20px 0;
+        max-width: 400px;
+    }
+    .header-container{
+        
+        flex-direction: column;
+    }
+    .footer-container > div{
+        width: 250px;
+    }
+    .logo{
+        width: 50px;
+        height: 50px;
+    }    
+    .header-text{
+        font-size: 16px;
+    }
+    .portada-texto{
+        width: 60%;
+        margin-right: 30px;
+    }
+    
+    .portada-texto span{
+        color: #494949;
+        font-size: 25px;
+        
+    }
+    .categories{
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .categories .box{
+        height: 350px;
+    }
+    
+
+    .featured{
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .featured .box{
+        width: 100%;
+        height: 150px;
+    }
+    
+}
+
+
+@media (max-width: 450px){
+    .categories{
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .categories .box{
+        height: 200px;
+    }
+    .featured{
+        grid-template-columns: minmax(0, 1fr);
+    }
+    /* No se por que da un error todo raro en esta parte asi que para fixearlo le voy a poner un margin bottom alto */
+    .featured .box{
+        width: 100%;
+        height: 200px;
+        margin-bottom: 60px;
+    }
+
+}

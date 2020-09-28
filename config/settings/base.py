@@ -75,6 +75,9 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "laya_shop.users.apps.UsersConfig",
+    "laya_shop.internal.apps.InternalConfig",
+    "laya_shop.posts.apps.PostsConfig"
+    
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
