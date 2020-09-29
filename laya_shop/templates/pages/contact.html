@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="mt-10 flex flex-col">
+    <div class="mx-auto">
+        <h1 class="text-3xl font-semibold  p-4 px-8">Contactanos y dimos como podemos ayudarte</h1>
+        <p class="text-base px-6 py-2">Estamos aqui para ayudar y responder cualquier pregunta que tengas</p>
+    </div>
+    <div class="w-10/12 mx-auto mt-6 md:w-5/10 flex flex-col md:flex-row md:w-6/12 sm:justify-between">
+        <div class="flex flex-col ">
+            <h1 class="text-xl font-semibold text-center">E-mail</h1>
+            <a class="text-center hover:text-blue-400"
+                href="mailto:support@notlayashop.com">support@notlayashop.com</a>
+        </div>
+        <div class="flex flex-col mt-4 md:mt-0">
+            <h1 class="text-xl font-semibold text-center">Phone</h1>
+            <a class="text-center hover:text-blue-400" href="tel:+50586761405">+505 XXXX-XXXX</a>
+            <!-- Link para Mensaje de Whatsapp -->
+            <!-- <a class="text-center hover:text-blue-400" href="https://wa.me/50586761405">+505 XXXX-XXXX</a> -->
+        </div>
+    </div>
+    <div class="divider mx-auto my-4 w-10/12 ">o</div>
+    <form class="border border-gray-200 w-11/12 mx-auto lg:w-8/12">
+        <div class="flex flex-col px-5 ">
+            <div class="flex flex-col md:flex-row md:justify-between lg:w-10/12 lg:mx-auto">
+                <div class="mt-5 flex flex-col md:w-5/12 ">
+                    <label for="email-id" class="font-medium">
+                        E-mail
+                    </label>
+                    <input type="email" name="email" id="email-id" placeholder="jhon.doe@email.com"
+                        class="border-2 rounded-md px-2 py-1 ">
+                </div>
+                <div class="flex flex-col mt-2 md:mt-5 md:w-5/12 ">
+                    <label for="name-id" class="font-medium">
+                        Nombre
+                    </label>
+                    <input type="text" name="name" id="name-id" class="border-2 px-2 py-1 rounded-md"
+                        placeholder="Jhon Doe">
+                </div>
+            </div>
+            <div class="flex flex-col mt-2 lg:w-10/12 lg:mx-auto">
+                <label for="name-id" class="font-medium">
+                    Mensaje
+                </label>
+                <textarea name="name" id="name-id" class="border-2 h-32 rounded-md px-2 py-1 "
+                    placeholder="Hola..."></textarea>
+            </div>
+
+            <button type="submit"
+                class="font-medium bg-blue-500 my-5 w-48 h-12 rounded-md mx-auto text-white">Enviar</button>
+        </div>
+    </form>
+</section>
+{% endblock %}
