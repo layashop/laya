@@ -74,9 +74,10 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    "laya_shop.users.apps.UsersConfig",
-    "laya_shop.internal.apps.InternalConfig",
-    "laya_shop.posts.apps.PostsConfig"
+    "users.apps.UsersConfig",
+    "internal.apps.InternalConfig",
+    "posts.apps.PostsConfig",
+    "business.apps.BusinessConfig"
     
     # Your stuff: custom apps go here
 ]

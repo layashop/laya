@@ -10,8 +10,6 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
         context['categories'] = Category.objects.all()[:6]
-        # import pdb; pdb.set_trace()
-        # print(context['categories'], 'holasss')
         return context
 
 class ContactView(TemplateView):
