@@ -5,13 +5,14 @@ from django.utils import timezone
 
 
 class Business(models.Model):
-    address = models.CharField(max_length=250, null=True, blank=True)
     name = models.CharField(max_length=100, null=False, blank=False)
+    address = models.CharField(max_length=250, null=True, blank=True)
     description = models.CharField(max_length=200, null=True, blank=True)
     cover_image = models.ImageField(null=True, blank=True)
     profile_image = models.ImageField(null=True, blank=True)
-    members = models.ManyToManyField(User, through='UserBusiness')
+    user = models.ManyToManyField(User, through='UserBusiness', related_name='business')
     created_at = models.DateTimeField(null=True, blank=True)
+    slug = models.SlugField(null=False, blank=False, unique=True)
     def save(self, *args, **kwargs):
         if not self.id:
             self.created_at = timezone.now()

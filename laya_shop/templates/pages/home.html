@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static thumbnail %}
 
 
 
@@ -7,7 +7,6 @@
 
 <div class="portada relative">
     <picture>
-        
         <img src="{% static 'images/portada.jpg' %}" alt="">
     </picture>
     
@@ -20,11 +19,13 @@
     <h3 class="title font-medium">Categorías principales</h3>
     <div class="categories">
         {% for category in categories %}
-            <div class="box relative">
-                <img src="{{ category.banner.url }}" alt="">
-                <div class="inside-text absolute">
-                    <h4>{{ category.name }}</h4>
-                </div>
+        <div class="box relative">
+                    {% thumbnail category.banner "400x400" crop="center" as im %}
+                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                    {% endthumbnail %}
+                    <div class="inside-text absolute">
+                        <h4>{{ category.name }}</h4>
+                    </div>
             </div>
         {% endfor %}
 

@@ -1,0 +1,82 @@
+{% extends 'dashboard/layouts/base.html' %}
+{% block title %} Dashboard {% endblock title %}
+{% block content %}
+
+
+<div class="container-fluid mb-5 pt-20">
+    <div class="row">
+        <div class="col">
+            <div class="card shadow">
+                <div class="card-header border-0">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h3 class="mb-0 font-semibold">Publicaciones</h3>
+                        </div>
+                        <form action="{{request.path}}" method="GET">
+                            <div class="relative text-gray-700 flex items-center search-nav shadow-md rounded-md">
+                                <input type="search" name="search" placeholder="Search" value="{{search}}"
+                                    class="bg-white h-10 px-3 pr-10 rounded-full text-sm focus:outline-none">
+                                <div type="submit" class="absolute right-0 mr-4">
+                                    <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
+                                        xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px"
+                                        y="0px" viewBox="0 0 56.966 56.966"
+                                        style="enable-background:new 0 0 56.966 56.966;" xml:space="preserve"
+                                        width="512px" height="512px">
+                                        <path
+                                            d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <!-- Projects table -->
+                    <table class="table align-items-center table-flush">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Titulo </th>
+                                <th scope="col">Precio</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Categoria</th>
+                                <th>Editar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for post in object_list %}
+                            <tr>
+                                <td>{{post.title}}</td>
+                                <td>{{post.price}}</td>
+                                <td>{{post.get_status_display}}</td>
+                                <td>{{post.category}}</td>
+                                <td><a href="{% url 'dashboard:post_detail' business.slug post.pk %}">Editar</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="flex">
+                        {% for post in object_list %}
+                            <div class="max-w-sm rounded overflow-hidden shadow-lg">
+                                <img class="w-full" src="{{post.images.all.0.image.url}}" alt="Sunset in the mountains">
+                                <div class="px-2 py-4">
+                                    <div class="font-bold text-xl mb-2">{{post.title}}</div>
+                                    <p class="text-gray-700 text-base">Categoria: {{post.category}}</p>
+                                </div>
+                                <div class="px-6 pt-4 pb-2">
+                                    <span
+                                        class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#photography</span>
+                                    <span
+                                        class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#travel</span>
+                                    <span
+                                        class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#winter</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

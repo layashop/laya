@@ -2,6 +2,7 @@ from django.db import models
 from business.models import Business
 from users.models import User
 from django.utils import timezone
+from django.core.validators import MaxValueValidator, MinValueValidator
 # Create your models here.
 
 class Category(models.Model):
@@ -10,10 +11,21 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
 
 
-
-
+class SubCategory(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="subcategories")
+    name = models.CharField(max_length=50)
+    banner = models.ImageField(verbose_name="Banner", upload_to="subcategories", null=True, blank=True)
+    def __str__(self):
+        return self.name
+    class Meta:
+        verbose_name = "Subcategory"
+        verbose_name_plural = "Subcategories"
 
 
 class Post(models.Model):
@@ -26,7 +38,7 @@ class Post(models.Model):
     description = models.CharField(max_length=200, null=True)
 
     price = models.FloatField()
-    discount = models.PositiveIntegerField(null=True, blank=True)
+    discount = models.PositiveIntegerField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(99)])
     # <<<<<<<<<<<<<<<<
 
     # KARMA
@@ -51,12 +63,14 @@ class Post(models.Model):
         (ARTICLE, 'Article'),
         (SERVICE, 'Service')
     ]
+
+
     classification = models.CharField(
         max_length=2, choices=CLASSIFICATION_CHOICES, default=ARTICLE)
-
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
+    subcategories = models.ManyToManyField(SubCategory, related_name="posts")
     # tags = models.ManyToManyField(Tag, blank=True)
     # <<<<<<<<<<<<<<<<
+    promo = models.CharField(max_length=150, null=True, blank=True)
 
     # ETC
     upvotes = models.IntegerField(default=0)
@@ -75,9 +89,3 @@ class Post(models.Model):
             self.modified_at = timezone.now()
 
         super(Post, self).save(*args, **kwargs)
-
-
-class PostImage(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='posts', null=True, blank=True)
-    alternative_text = models.CharField(max_length=100)

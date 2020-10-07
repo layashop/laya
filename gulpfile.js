@@ -9,7 +9,7 @@ const pjson = require('./package.json')
 // Plugins
 const autoprefixer = require('autoprefixer')
 const browserSync = require('browser-sync').create()
-
+const babel = require("gulp-babel")
 const cssnano = require ('cssnano')
 const imagemin = require('gulp-imagemin')
 const pixrem = require('pixrem')
@@ -27,14 +27,16 @@ function pathsConfig(appName) {
   const vendorsRoot = 'node_modules'
 
   return {
-    
     app: this.app,
     templates: `${this.app}/templates`,
     css: `${this.app}/static/css`,
     sass: `${this.app}/static/sass`,
     fonts: `${this.app}/static/fonts`,
     images: `${this.app}/static/images`,
+    static: `${this.app}/static`,
+    dist: `${this.app}/static`,
     js: `${this.app}/static/js`,
+    jsx: `${this.app}/static/jsx`
   }
 }
 
@@ -97,6 +99,18 @@ function runServer(cb) {
     cb(code)
   })
 }
+
+
+
+gulp.task('jsx', function () {
+	gulp.src(`${paths.jsx}/*.jsx`)
+		.pipe(babel())
+		.pipe(gulp.dest(`${dist}/js/`)) // for script tag src
+
+
+	gulp.src('views/pages/*')
+		.pipe(gulp.dest('build/views/'))
+});
 
 // Browser sync server for live reload
 function initBrowserSync() {

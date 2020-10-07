@@ -8,7 +8,6 @@ from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
     # path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
-    path('', include('laya_shop.internal.urls')),
     # path(
     #     "about/", TemplateView.as_view(template_name="pages/about.html"), name="about"
     # ),
@@ -17,13 +16,17 @@ urlpatterns = [
     # User management
     path("users/", include("laya_shop.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
+    path('<str:business_slug>/dashboard/', include('laya_shop.dashboard.urls', namespace='dashboard')),
+    path('', include('laya_shop.internal.urls')),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS
 urlpatterns += [
     # API base url
+    path("api/files/", include('laya_shop.filez.urls', namespace="filez")),
     path("api/", include("config.api_router")),
+    path("api/posts", include("laya_shop.posts.api.urls", namespace="api_posts")),
     # DRF auth token
     path("auth-token/", obtain_auth_token),
 
