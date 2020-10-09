@@ -20,13 +20,13 @@
     <div class="categories">
         {% for category in categories %}
         <div class="box relative">
-                    {% thumbnail category.banner "400x400" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
-                    {% endthumbnail %}
-                    <div class="inside-text absolute">
-                        <h4>{{ category.name }}</h4>
-                    </div>
+            {% thumbnail category.banner "400x400" crop="center" as im %}
+                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+            {% endthumbnail %}
+            <div class="inside-text absolute">
+                <h4>{{ category.name }}</h4>
             </div>
+        </div>
         {% endfor %}
 
     </div>

@@ -50,6 +50,7 @@ Django = "==3.0.10"
 Werkzeug = "==1.0.1"
 Sphinx = "==3.2.1"
 django-widget-tweaks = "*"
+django-filter = "*"
 
 [requires]
 python_version = "3.8"

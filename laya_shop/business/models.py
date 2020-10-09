@@ -51,3 +51,6 @@ class UserBusiness(models.Model):
 #     ]
 #     link_type = models.CharField(max_length=2,choices=LINKS_CHOICES)
 #     link = models.CharField(max_length=100)
+
+
+

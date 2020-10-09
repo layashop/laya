@@ -72,16 +72,16 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "sorl.thumbnail",
-    "widget_tweaks"
+    "widget_tweaks",
+    "django_filters",
 ]
 
 LOCAL_APPS = [
-    "users.apps.UsersConfig",
-    "internal.apps.InternalConfig",
-    "posts.apps.PostsConfig",
-    "business.apps.BusinessConfig",
-    "dashboard.apps.DashboardConfig",
-    "laya_shop.filez",
+    "users",
+    "internal",
+    "posts",
+    "business",
+    "dashboard",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

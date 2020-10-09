@@ -15,6 +15,7 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
     path("users/", include("laya_shop.users.urls", namespace="users")),
+    path("posts/", include("laya_shop.posts.urls", namespace="posts")),
     path("accounts/", include("allauth.urls")),
     path('<str:business_slug>/dashboard/', include('laya_shop.dashboard.urls', namespace='dashboard')),
     path('', include('laya_shop.internal.urls')),
@@ -24,9 +25,8 @@ urlpatterns = [
 # API URLS
 urlpatterns += [
     # API base url
-    path("api/files/", include('laya_shop.filez.urls', namespace="filez")),
     path("api/", include("config.api_router")),
-    path("api/posts", include("laya_shop.posts.api.urls", namespace="api_posts")),
+    path("api/posts/", include("laya_shop.posts.api.urls", namespace="api_posts")),
     # DRF auth token
     path("auth-token/", obtain_auth_token),
 

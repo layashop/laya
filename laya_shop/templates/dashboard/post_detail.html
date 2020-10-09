@@ -113,7 +113,7 @@
     let csrftoken = Cookies.get('csrftoken');
     
     var myDropzone = new Dropzone("#dropzone-widget", { 
-        url: "{% url 'filez:post_temp_image' %}?business={{business.slug}}",
+        url: "{% url 'api_posts:temp_image' %}?business={{business.slug}}",
         withCredentials: true,
         acceptedFiles: "image/jpeg,image/png,image/gif",
         maxFiles: 3,
@@ -143,7 +143,7 @@
             
         },
         removedfile: function(file){
-            // let url = "{% url 'filez:post_temp_image' %}"
+            // let url = "{% url 'api_posts:temp_image' %}"
             let removeElementId = file.id
             // console.log(file)
             // fetch(url + removeElementId, {
