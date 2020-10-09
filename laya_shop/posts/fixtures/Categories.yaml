@@ -1,0 +1,5 @@
+- model: posts.category
+    pk: 1
+    fields:
+        name: Electrodomesticos
+        banner: 

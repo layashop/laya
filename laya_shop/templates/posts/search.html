@@ -3,12 +3,12 @@
 
 
 {% block content %}
-    <form method="get">
+    <!-- <form method="get">
         {{ filter.form|crispy }}
         <input type="submit" />
-    </form>
+    </form> -->
+    <div id="search-component"></div>
     <div class="flex flex-wrap">
-        
         {% for post in filter.qs %}
             <div class="flex flex-col my-5 mx-2">
                 <h1>{{post.title}}</h1>
@@ -31,3 +31,10 @@
         {% endfor %} -->
     </div>
 {% endblock %}
+
+
+{% block javascript %}
+    <script src="{% static 'dist/js/SearchPageWidget.js' %}"></script>
+{% endblock %}
+
+

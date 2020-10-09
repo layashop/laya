@@ -1,0 +1,10 @@
+- model: users.User
+  pk: 1
+  fields:
+    first_name: Laya
+    last_name: Laya
+    username: laya
+    password: argon2$argon2i$v=19$m=512,t=2,p=2$Nk9idzRXcmZZOFdE$D3JsnBsSinZHPlXhKaN5wA
+    is_superuser: True
+    is_staff: True
+    is_active: True
