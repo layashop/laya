@@ -27,3 +27,6 @@ sorl-thumbnail>=12.6.3
 
 #CUSTOM FORMS
 django-widget-tweaks
+
+#YAML
+pyyaml >= 5.3.1
