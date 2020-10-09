@@ -7,33 +7,40 @@
         {{ filter.form|crispy }}
         <input type="submit" />
     </form> -->
-    <div id="search-component"></div>
+
+      <div id="search-component">
+      </div>
+
     <div class="flex flex-wrap">
-        {% for post in filter.qs %}
-            <div class="flex flex-col my-5 mx-2">
-                <h1>{{post.title}}</h1>
-                {% with media=post.images.first %}
-                    {% thumbnail media.image "250x250" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
-                    {% endthumbnail %}
-                {% endwith %}
-            </div>
-        {% endfor %}
-        <!-- {% for post in object_list %}
-            <div class="flex flex-col my-5 mx-2">
-                <h1>{{post.title}}</h1>
-                {% with media=post.images.first %}
-                    {% thumbnail media.image "250x250" crop="center" as im %}
-                        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
-                    {% endthumbnail %}
-                {% endwith %}
-            </div>
-        {% endfor %} -->
-    </div>
+      {% for post in filter.qs %}
+          <div class="flex flex-col my-5 mx-2">
+              <h1>{{post.title}}</h1>
+              {% with media=post.images.first %}
+                  {% thumbnail media.image "250x250" crop="center" as im %}
+                      <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                  {% endthumbnail %}
+              {% endwith %}
+          </div>
+      {% endfor %}
+      <!-- {% for post in object_list %}
+          <div class="flex flex-col my-5 mx-2">
+              <h1>{{post.title}}</h1>
+              {% with media=post.images.first %}
+                  {% thumbnail media.image "250x250" crop="center" as im %}
+                      <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                  {% endthumbnail %}
+              {% endwith %}
+          </div>
+      {% endfor %} -->
+  </div>
 {% endblock %}
 
 
 {% block javascript %}
+    <script>
+        const CATEGORIES = {{json_categories|safe}};
+        const PRODUCTS = {{json_products|safe}};
+    </script>
     <script src="{% static 'dist/js/SearchPageWidget.js' %}"></script>
 {% endblock %}
 

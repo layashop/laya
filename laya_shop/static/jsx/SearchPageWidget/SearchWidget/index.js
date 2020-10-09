@@ -17,10 +17,14 @@ const SearchWidget = ({ ...props }) => {
   const params = new URLSearchParams(window.location.search)
 
   // AQUI WEON BUSCA
+  function CategoryConvert(catArray){
+    return catArray.map(element => ({ label: element.name, value: element.id, subcat: element.subcategories }))
+  }
 
-  const catOptions = undefined ? true : baseData.categories.map((element) => {
+  const catOptions = CATEGORIES ? CategoryConvert(CATEGORIES) : baseData.categories.map((element) => {
     return { label: element.name, value: element.id, subcat: element.subcategories }
   })
+  console.log(catOptions)
   const sortOptions = undefined ? true : baseData.sort
   const deliveryOptions = undefined ? true : baseData.delivery
   const stateOptions = undefined ? true : baseData.state
@@ -34,7 +38,7 @@ const SearchWidget = ({ ...props }) => {
 
   subcat.unshift(baseSubCat)
 
-  const defaultSubCat = subcat.filter(val => val.value == params.get('subcategory'))[0]
+  const defaultSubCat = subcat.filter(val => val.value == params.get('subcategories'))[0]
   const [selectedSubCat, setSelectedSubCat] = useState(defaultSubCat || baseSubCat)
   const [isDisabledSubCat, setIsDisabledSubCat] = useState(defaultSubCat ? false : true)
   const [subCatOptions, setSubCatOptions] = useState(defaultSubCat ? subcat : [baseSubCat])

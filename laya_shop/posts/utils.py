@@ -5,5 +5,3 @@ def business_directory_files(instance, filename):
     return '{}/business/{}/{}'.format(settings.MEDIA_ROOT, instance.business.slug , filename)
 
 
-
-# def BusinessTemporalImage
