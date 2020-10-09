@@ -3,7 +3,7 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
 from django.views.generic.edit import UpdateView
 from business.models import Business
 from posts.models import Post, Category, SubCategory
-from ..filez.models import BusinessImage
+from posts.models import BusinessImage
 from .mixins import DashboardPermissionsMixin
 from django.http import HttpResponseBadRequest, Http404, HttpResponseRedirect
 from django.core.serializers import serialize

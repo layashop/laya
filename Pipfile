@@ -53,6 +53,7 @@ django-widget-tweaks = "*"
 sorl-thumbnail = ">=12.6.3"
 psycopg2-binary = "*"
 PyYAML = ">=5.3.1"
+django-filter = "*"
 
 [requires]
 python_version = "3.8"
