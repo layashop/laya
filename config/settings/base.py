@@ -64,6 +64,7 @@ DJANGO_APPS = [
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
+    "channels",
     "crispy_forms",
     "allauth",
     "allauth.account",
@@ -82,6 +83,7 @@ LOCAL_APPS = [
     "posts",
     "business",
     "dashboard",
+    "chat_app",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -291,8 +293,8 @@ REST_FRAMEWORK = {
 }
 
 
-
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
 CORS_URLS_REGEX = r"^/api/.*$"
 # Your stuff...
 # ------------------------------------------------------------------------------
+ASGI_APPLICATION = "chat_app.routing.websocket_application"

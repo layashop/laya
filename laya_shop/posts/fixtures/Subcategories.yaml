@@ -1,0 +1,38 @@
+- model : posts.SubCategory
+  pk: 1
+  fields: 
+    name: Calzado
+    category: 1
+- model : posts.SubCategory
+  pk: 2
+  fields: 
+    name: Deportiva
+    category: 1
+- model : posts.SubCategory
+  pk: 3
+  fields: 
+    name: Casual
+    category: 1
+- model : posts.SubCategory
+  pk: 4
+  fields: 
+    name: Elegante
+    category: 1
+- model : posts.SubCategory
+  pk: 5
+  fields: 
+    name: Pulseras
+    category: 5
+- model : posts.SubCategory
+  pk: 6
+  fields: 
+    name: Cadenas
+    category: 5
+- model : posts.SubCategory
+  pk: 7
+  fields: 
+    name: Chapas
+    category: 5
+
+
+    

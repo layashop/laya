@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { ThemeProvider, Box } from "theme-ui"
 import SearchWidget from './SearchPageWidget/SearchWidget/index'
 import ResultsWidget from './SearchPageWidget/ResultsWidget/index'
-import theme from './SearchPageWidget/theme'
+import theme from './utils/theme'
 
 const Root = () => {
   return (

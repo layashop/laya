@@ -32,3 +32,5 @@ django-widget-tweaks
 pyyaml >= 5.3.1
 #Filters
 django-filter>=2.4.0
+# Web Sockets
+channels >= 2.4.0

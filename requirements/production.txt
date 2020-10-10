@@ -10,3 +10,6 @@ psycopg2-binary
 # ------------------------------------------------------------------------------
 django-storages[boto3]==1.10.1  # https://github.com/jschneier/django-storages
 django-anymail[mailgun]==8.0  # https://github.com/anymail/django-anymail
+
+# Web Socket / Redis 
+channels-redis >= 3.1.0
