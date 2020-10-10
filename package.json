@@ -37,6 +37,7 @@
     "dev": "gulp",
     "build": "gulp generate-assets",
     "jsx-watch": "parcel watch ./laya_shop/static/jsx/*.jsx --out-dir ./laya_shop/static/dist/js/",
-    "generate-tailwind": "tailwindcss build > ./laya_shop/static/dist/css/tailwind.css"
+    "generate-tailwind": "tailwindcss build > ./laya_shop/static/dist/css/tailwind.css",
+    "base-dev": "yarn run generate-tailwind && yarn run jsx-watch"
   }
 }
