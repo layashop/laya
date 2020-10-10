@@ -63,7 +63,7 @@
 {% endblock %}
 {% block javascript %}
 <script>
-    const USER = {{ user.pk }}
+    const USER = {% firstof user.pk 'null'%}
     console.log('User', USER)
 </script>
 <script src="{% static 'dist/js/ChatWidget.js' %}"></script>
