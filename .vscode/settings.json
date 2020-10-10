@@ -1,6 +1,0 @@
-{
-    "python.pythonPath": "/home/rsanchez/.local/share/virtualenvs/laya_backend-gCz_h0aY/bin/python",
-    "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true,
-    "python.formatting.provider": "black"
-}
