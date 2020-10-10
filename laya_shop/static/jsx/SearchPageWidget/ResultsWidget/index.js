@@ -14,7 +14,7 @@ const PER_PAGE = 24
 
 const ResultsWidget = ({ ...props }) => {
 
-  const products = null ? true : mock.products
+  const products = PRODUCTS ? PRODUCTS : mock.products
   const total = null ? true : mock.total
   const page = Number.parseInt(window.location.href.match(/&page=\d+$/) ? window.location.href.match(/&page=\d+$/)[0].split('=')[1] : '1')
   const lastPage = Math.ceil(total / 24)

@@ -9,7 +9,7 @@ from django.http import HttpResponseBadRequest, Http404, HttpResponseRedirect
 from django.core.serializers import serialize
 from json import dumps
 from sorl.thumbnail import get_thumbnail
-
+from posts.mixins import PostClassificationMixin
 
 #FORMS
 from .forms import PostForm
@@ -31,27 +31,7 @@ class Index(DashboardPermissionsMixin, TemplateView):
 
 index_view = Index.as_view()
 
-class PostClassificationMixin:
-    def get_context_data(self, **kwargs):
-        context = super(PostClassificationMixin, self).get_context_data(**kwargs)
-        categories = []
-        for category in Category.objects.all().prefetch_related('subcategories'):
-            categories.append(
-                dict(
-                    id=category.pk,
-                    name=category.name,
-                    subcategories=[
-                        dict(
-                            id=i.pk,
-                            name=i.name
-                        ) for i in category.subcategories.all()
-                    ]
-                )
-            )
-        context['json_categories'] = dumps(categories)
-        context['categories'] =  dumps([i for i in Category.objects.values('id', 'name')])
-        context['subcategories'] = dumps([i for i in SubCategory.objects.values('id', 'name', 'category')])
-        return context
+
 
 #El listing de los posts ademas de la busqueda
 class PostList(DashboardPermissionsMixin, ListView):
@@ -62,8 +42,8 @@ class PostList(DashboardPermissionsMixin, ListView):
     def get_template_names(self):
         return {
             'gallery': 'dashboard/post_list_gallery.html'
-        }.get(self.request.GET.get('view'), 'dashboard/post_list.html')            
-            
+        }.get(self.request.GET.get('view'), 'dashboard/post_list.html')
+
 
     # get_queryset se ejecuta antes de get_context_data
     def get_queryset(self):
@@ -73,7 +53,7 @@ class PostList(DashboardPermissionsMixin, ListView):
         }
         if self.request.GET.get('search'):
             q['title__icontains'] = self.request.GET.get('search')
-        
+
 
         return self.model.objects.filter(**q).prefetch_related('images', 'subcategories', 'subcategories__category')
 
@@ -99,7 +79,7 @@ class PostCreate(PostClassificationMixin, DashboardPermissionsMixin, CreateView)
         context = super(PostCreate, self).get_context_data(**kwargs)
         context['business'] = get_object_or_404(Business, slug=self.kwargs['business_slug'])
         return context
-    
+
     def get_success_url(self):
         #una vez termina de editar, redirigimos a index del dashboard
         return reverse('dashboard:post_list', args=(self.kwargs['business_slug'],))
@@ -141,10 +121,11 @@ class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView)
             thumbnail = get_thumbnail(image.image, "250x250", crop="center", quality=50).url
             # thumbnail = image.image.url
             post_images.append({'url': thumbnail, 'name': image.filename(), 'id': image.pk})
-        
+
         context['selected_subcategories'] = dumps([dict(id=i.pk, category=i.category.pk) for i in self.get_object().subcategories.all().prefetch_related('category')])
 
         context['post_images'] = dumps(post_images)
+        # import pdb; pdb.set_trace()
         # context['form'] = PostForm(instance=self.get_object())
         return context
 
