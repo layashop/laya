@@ -100,9 +100,16 @@ class Post(models.Model):
             return round(self.price - ( self.price * (self.discount / 100)), 2)
         return self.price
 
-    # <<<<<<<<<<<<<<<<
+    @property
+    def currency_symbol(self):
+        return {
+            self.CURRENCY_USD: '$',
+            self.CURRENCY_NIO: 'C$'
+        }[self.currency]
+
     def __str__(self):
         return self.title
+
     def save(self, *args, **kwargs):
         if not self.id:
             self.created_at = timezone.now()
@@ -158,13 +165,15 @@ class BusinessImage(models.Model, ThumbModel):
     post = models.ForeignKey(Post, null=True, blank=True, on_delete=models.SET_NULL, related_name="images")
     is_valid = models.BooleanField(default=False)
     alternative = models.CharField(max_length=200, null=True, blank=True)
+
     def filename(self):
         return os.path.basename(self.image.name)
+
     def __str__(self):
         if self.post:
             return "%s %s" % (self.post, self.pk)
         else:
-            return "%s" % (self.pk)
+            return "%s" % self.pk
 
 
 class BusinessImageThumbnails(models.Model):
@@ -182,5 +191,4 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
         if os.path.isfile(instance.image.path):
             print('removing image from filesystem')
             os.remove(instance.image.path)
-
 
