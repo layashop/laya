@@ -47,10 +47,10 @@ class BusinessTemporalImageView(BusinessGetObject, views.APIView):
 #Aqui es para que se borren las imagenes que no se quieren usar :v
 class BusinessTemporalDetailView(views.APIView):
     permission_classes = (IsAuthenticated, IsBusinessMember)
-    def delete(self, request, pk=None, format=None): 
+    def delete(self, request, pk=None, format=None):
         delete_when_request = True
-        #Creo que la mejor manera seria borrar el registro y LUEGO 
-        #buscar las imagenes huerfanas, pero por el momento lo dejo asi jeje
+        # Creo que la mejor manera seria borrar el registro y LUEGO
+        # buscar las imagenes huerfanas, pero por el momento lo dejo asi jeje
         temporal_image = get_object_or_404(BusinessImage, pk=pk)
         temporal_image.delete()
         print('Image deleted')

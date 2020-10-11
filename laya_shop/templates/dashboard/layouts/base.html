@@ -32,7 +32,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.2/dropzone.css" integrity="sha512-CmjeEOiBCtxpzzfuT2remy8NP++fmHRxR3LnsdQhVXzA3QqRMaJ3heF9zOB+c1lCWSwZkzSOWfTn1CdqgkW3EQ==" crossorigin="anonymous" />
   <!-- <link rel="stylesheet" href="{% static 'dashboard/dropzone.min.css' %}"> -->
   <link rel="stylesheet" href="{% static 'dashboard/styles.css' %}">
-  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'dist/css/tailwind.css' %}">
 
   <!-- Specific CSS goes HERE -->
   {% block stylesheets %}{% endblock stylesheets %}
@@ -60,7 +60,7 @@
   <script src="{% static 'assets/js/argon-dashboard.min.js' %}"></script>
   <!-- <script src="{% static 'dashboard/dropzone.min.js' %}"></script> -->
   {% block javascripts %}{% endblock javascripts %}
-  
+
 </body>
 
 </html>

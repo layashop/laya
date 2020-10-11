@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from json import dumps
 from sorl.thumbnail import get_thumbnail
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from posts.models import Post
 from posts.filters import PostFilter
 from posts.mixins import PostClassificationMixin
@@ -65,3 +65,12 @@ class PostList(PostClassificationMixin, ListView):
         return context
 
 post_list_view = PostList.as_view()
+
+
+
+class PostDetail(DetailView):
+    model = Post
+    template_name = 'posts/detail.html'
+
+
+post_detail_view = PostDetail.as_view()
