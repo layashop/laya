@@ -72,6 +72,80 @@ const baseData = {
       value: 3,
       label: 'Punto de encuentro',
     }
+  ],
+  location: [
+    {
+      value: -1,
+      label: 'Todos'
+    },
+    {
+      value: 1,
+      label: 'Boaco',
+    },
+    {
+      value: 2,
+      label: 'Carazo',
+    },
+    {
+      value: 3,
+      label: 'Chinandega',
+    },
+    {
+      value: 4,
+      label: 'Chontales',
+    },
+      {
+      value: 5,
+      label: 'Costa Caribe Norte',
+    },
+      {
+      value: 6,
+      label: 'Costa Caribe Sur',
+    },
+      {
+      value: 7,
+      label: 'Estelí',
+    },
+      {
+      value: 8,
+      label: 'Granada',
+    },
+      {
+      value: 9,
+      label: 'Jinotega',
+    },
+      {
+      value: 10,
+      label: 'León',
+    },
+      {
+      value: 11,
+      label: 'Madriz',
+    },
+      {
+      value: 12,
+      label: 'Managua',
+    },
+      {
+      value: 13,
+      label: 'Masaya',
+    },
+      {
+      value: 14,
+      label: 'Matagalpa',
+    },
+      {
+      value: 15,
+      label: 'Nueva Segovia',
+    },
+      {
+      value: 16,
+      label: 'Río San Juan',
+    },
+      {
+      value: 17,
+      label: 'Rivas',
+    }
   ]
 }
 
