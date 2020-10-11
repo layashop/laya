@@ -35,7 +35,7 @@ const BaseString = ({property, value, set, onClick}) => {
                       onClick={onClick}
                 >Borrar</span>
             </div>
-          <input value={value[property]}
+          <input value={value[property] || ''}
                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                  onChange={(e)=> set({...value, [property]: e.target.value})} />
         </label>
@@ -152,9 +152,9 @@ const OptionalParameters = ({...props }) => {
   return (
       <>
           <ReactSelector options={additionalOptions} noOptionsMessage={()=>"No se encontró"} className="mb-4" onChange={(value)=> addParameter(value, additionalOptions, setAdditionalOptions, selectedParameters, setSelectedParameters)} placeholder="Agregue parámetros" value='' />
-          <input type="text" name="additionalParameters" value={JSON.stringify(selectedParameters)} />
+          <input type="text" name="additionalParameters" value={JSON.stringify(selectedParameters)} readOnly/>
           {Object.keys(selectedParameters).map(property=>{
-              switch (structure[property].type) {
+              switch (structure[property] && structure[property].type) {
                   case 'string': return (
                       <BaseString key={property} property={property} value={selectedParameters} set={setSelectedParameters} onClick={()=>removeParameter(property,additionalOptions, setAdditionalOptions, selectedParameters, setSelectedParameters)}/>
                   )

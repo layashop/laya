@@ -83,12 +83,18 @@ const DashboardPostSelectCategory = () => {
     }
   }
 
+  const formattedSubcat = {}
+
+  selectedSubcatList.forEach(element=> {
+      formattedSubcat[element.category] ? formattedSubcat[element.category].push(element.id) : formattedSubcat[element.category] = [element.id]
+  })
+
 
   return (
       <Box __css={{ '& label': { my: 'xsmall', display: 'block' } }}>
          <h3 className="mb-4 block uppercase tracking-wide text-gray-700 text-md font-bold">Categorizacion</h3>
           <label>
-          <span className="mb-2 block uppercase tracking-wide text-gray-700 text-xs font-bold">Departamento</span>
+          <span className="mb-asd2 block uppercase tracking-wide text-gray-700 text-xs font-bold">Departamento</span>
           <ReactSelector
                   name="category"
                   options={catOptions}
@@ -111,19 +117,22 @@ const DashboardPostSelectCategory = () => {
           </label>
           <span className="mb-2 mt-2 block uppercase tracking-wide text-gray-700 text-xs font-bold">Selecciones</span>
           <Box __css={{height: '200px', overflowY: 'scroll'}}>
-          {
-              selectedSubcatList.map((element)=> {
-                      return (
+              {
+                  Object.keys(formattedSubcat).map(category => {
+                      return (<>
+                          <span key={category} className="mb-2 mt-2 block uppercase tracking-wide text-gray-700 text-xs">{categoryDict[category]}</span>
+                      {formattedSubcat[category].map(subcategory=> (
                           <div
                               className="text-md my-2 mx-2 flex bg-blue-200 text-blue-700 rounded cursor-pointer py-1 px-2 align-middle hover:bg-red-400"
-                          onClick={() => {removeSubCat(element.id)}}>
+                          onClick={() => {removeSubCat(subcategory)}} key={subcategory}>
                               <span
-                                  className="text-sm font-medium">{categoryDict[element.category]}: {subcategoryDict[element.id]}</span>
+                                  className="text-sm font-medium">{subcategoryDict[subcategory]}</span>
                           </div>
+                      ))}
+                      </>
                       )
-                  }
-              )
-          }
+                  })
+              }
           </Box>
           <label>
               <span className="mb-2 mt-2 block uppercase tracking-wide text-gray-700 text-xs font-bold">Etiquetas</span>
@@ -137,7 +146,7 @@ const DashboardPostSelectCategory = () => {
             />
 
           </label>
-          <Box __css={{maxHeight: '800px', overflowY: 'auto'}}>
+          <Box __css={{height: '800px', overflowY: 'auto'}}>
             <h3 className="mb-4 pt-4 block uppercase tracking-wide text-gray-700 text-md font-bold">Parametros Adicionales</h3>
             <OptionalParameters/>
           </Box>
