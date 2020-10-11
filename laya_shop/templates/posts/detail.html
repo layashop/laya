@@ -145,8 +145,22 @@
                             <svg class="h-5 w-5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                         </button>
                     </div>
+                    <div class="my-4">
+                      <table class="w-2/3">
+                        <tbody>
+                          <tr class="h-10">
+                            <td class="font-medium w-2/3 ">Tipo de envio</td>
+                            <td class=" w-1/3 ">{{ object.get_delivery_display }}</td>
+                          </tr>
+                          <tr class="h-10">
+                            <td class="font-medium w-2/3">Estado</td>
+                            <td class=" w-1/3 ">{{ object.get_state_display }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                     <div class="my-3">
-                      <h4 class="mt-6 mb-2 text-xl">Categorias</h4>
+                      <h5 class="mt-6 mb-2 text-xl">Categorias</h5>
                       <div class="flex flex-wrap">
                         {% for subcategory in object.subcategories.all %}
                           <a href="{% url 'posts:search' %}?subcategory={{ subcategory.pk }}" class="py-1 px-3 mr-2 mb-2 rounded border focus:outline-none
