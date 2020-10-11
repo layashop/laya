@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import JSONField, ArrayField
 from business.models import Business
 from users.models import User
 from django.utils import timezone
@@ -112,6 +113,42 @@ class Post(models.Model):
         super(Post, self).save(*args, **kwargs)
 
 
+class Unit(models.Model):
+    values = ArrayField(
+        models.CharField(max_length=10)
+    )
+
+
+class AdditionalAttribute(models.Model):
+
+    STRING = 'STRING'
+    MEASURE = 'MEASURE'
+    DIMENSION = 'DIMENSION'
+    LIST = 'LIST'
+    COLOR = 'COLOR'
+
+    TYPE_CHOICES = [
+        (STRING, 'String'),
+        (MEASURE, 'Measure'),
+        (DIMENSION, 'Dimension'),
+        (LIST, 'List'),
+        (COLOR, 'Color')
+    ]
+
+    label = models.CharField(max_length=40)
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    units = models.ForeignKey(Unit, null=True, on_delete=models.SET_NULL)
+
+
+class AdditionalAttributeCategory(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    additional_attribute = models.ForeignKey(AdditionalAttribute, on_delete=models.CASCADE)
+
+
+class AdditionalAttributesValue(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    value = JSONField()
+
 
 class BusinessImage(models.Model, ThumbModel):
     THUMBS_SIZES = ["300", "350x350"]
@@ -128,6 +165,7 @@ class BusinessImage(models.Model, ThumbModel):
             return "%s %s" % (self.post, self.pk)
         else:
             return "%s" % (self.pk)
+
 
 class BusinessImageThumbnails(models.Model):
     business_image = models.OneToOneField(BusinessImage, related_name="thumbs", on_delete=models.CASCADE)
