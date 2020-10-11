@@ -152,6 +152,7 @@ const OptionalParameters = ({...props }) => {
   return (
       <>
           <ReactSelector options={additionalOptions} noOptionsMessage={()=>"No se encontró"} className="mb-4" onChange={(value)=> addParameter(value, additionalOptions, setAdditionalOptions, selectedParameters, setSelectedParameters)} placeholder="Agregue parámetros" value='' />
+          <input type="text" name="additionalParameters" value={JSON.stringify(selectedParameters)} />
           {Object.keys(selectedParameters).map(property=>{
               switch (structure[property].type) {
                   case 'string': return (

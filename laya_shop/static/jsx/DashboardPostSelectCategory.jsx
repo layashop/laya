@@ -137,8 +137,11 @@ const DashboardPostSelectCategory = () => {
             />
 
           </label>
-          <h3 className="mb-4 pt-4 block uppercase tracking-wide text-gray-700 text-md font-bold">Parametros Adicionales</h3>
-          <OptionalParameters/>
+          <Box __css={{maxHeight: '800px', overflowY: 'auto'}}>
+            <h3 className="mb-4 pt-4 block uppercase tracking-wide text-gray-700 text-md font-bold">Parametros Adicionales</h3>
+            <OptionalParameters/>
+          </Box>
+
     </Box>
   )
 }
