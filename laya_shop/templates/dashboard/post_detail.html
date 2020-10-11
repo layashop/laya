@@ -6,7 +6,9 @@
 {% block content %}
 
 <div class="mx-10 py-20">
-
+    {% for image in object.images.all %}
+      {{image.thumbnail_250x250.url}}
+    {% endfor %}
     <form class="flex flex-col" action="{{request.path}}" method="POST" enctype="multipart/form-data" id="post-detail">
         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3 ml-auto block my-3">Guardar</button>
         {% for field in form.visible_fields %}
@@ -83,6 +85,7 @@
         <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-auto mt-3 block">Eliminar</button>
     </form>
 </div>
+
 <style>
     .dz-size{
         display: none
@@ -98,7 +101,7 @@
 
 {% block javascripts %}
 <script>
-    var postImages = {{post_images|safe}};
+    let postImages = {{post_images|safe}};
     const CATEGORIES = {{json_categories|safe}};
     const SUBCATEGORIES = {{subcategories|safe}};
     const SELECTED_SUBCATEGORIES = {{selected_subcategories|safe}};
