@@ -71,6 +71,13 @@ class Post(models.Model):
         (SERVICE, 'Service')
     ]
 
+    CURRENCY_USD = 'USD'
+    CURRENCY_NIO = 'NIO'
+    CURRENCY_CHOICES = [
+        (CURRENCY_NIO, 'Córdobas'),
+        (CURRENCY_USD, 'Dólares')
+    ]
+    currency = models.CharField(max_length=3, default=CURRENCY_USD, choices=CURRENCY_CHOICES)
 
     classification = models.CharField(
         max_length=2, choices=CLASSIFICATION_CHOICES, default=ARTICLE)
