@@ -18,7 +18,15 @@ body {
     grid-template-columns: minmax(0px, 3fr) minmax(300px, 1fr);
     column-gap: 40px;
 }
+@media (max-width: 900px){
+  .create-form{
+    grid-template-columns: 1fr;
+  }
+  .create-form div:nth-child(2){
+    margin-top: 40px;
+  }
 
+}
 .post-images{
     /* height: 300px; */
 }

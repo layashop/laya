@@ -5,6 +5,7 @@ from posts.models import Post
 
 class PostForm(ModelForm):
     description = CharField(widget=Textarea)
+
     class Meta:
         model = Post
-        fields = ['title', 'description', 'status', 'description', 'price', 'promo', 'discount']
+        fields = ['title', 'description', 'status', 'description', 'price', 'promo', 'discount', 'currency', 'state', 'delivery']

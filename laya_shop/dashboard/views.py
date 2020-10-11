@@ -137,7 +137,7 @@ class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView)
         try:
             image_ids = [int(i) for i in self.request.POST.getlist('images')]
             BusinessImage.objects.filter(business__slug=business_slug, pk__in=image_ids).update(post=self.object, is_valid=True)
-            BusinessImage.objects.filter(business__slug=business_slug).exclude(pk__in=image_ids).update(is_valid=False)
+            BusinessImage.objects.filter(business__slug=business_slug).exclude(pk__in=image_ids).delete()
         except ValueError as e:
             #Si hay un error no hacemos nada, se ignoran las imagenes xd
             print(e)

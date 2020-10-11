@@ -12,5 +12,3 @@ class ThumbModel(object):
         for size in self.THUMBS_SIZES:
             setattr(self, 'thumbnail_{}'.format(size) , get_thumbnail(image, size, crop=self.THUMBS_CROP))
         return super(ThumbModel, self).__init__(*args, **kwargs)
-    def _THUMB(self, size):
-        return get_thumbnail(image, size, crop=self.THUMBS_CROP)

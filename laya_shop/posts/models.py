@@ -72,6 +72,27 @@ class Post(models.Model):
         (SERVICE, 'Service')
     ]
 
+    CURRENCY_USD = 'USD'
+    CURRENCY_NIO = 'NIO'
+    CURRENCY_CHOICES = [
+        (CURRENCY_NIO, 'Córdobas'),
+        (CURRENCY_USD, 'Dólares')
+    ]
+    currency = models.CharField(max_length=3, default=CURRENCY_USD, choices=CURRENCY_CHOICES)
+
+    class State(models.IntegerChoices):
+        NEW = 1, 'Nuevo'
+        USED = 2, 'Usado'
+        BY_REQUEST = 3, 'Por pedido'
+
+    state = models.IntegerField(choices=State.choices, default=State.NEW)
+
+    class Delivery(models.IntegerChoices):
+        Delivery = 1, 'Entrega a domicilio'
+        PICK_UP = 2, 'Pick-up'
+        MEETING = 3, 'Punto de encuentro'
+
+    delivery = models.IntegerField(choices=Delivery.choices, default=Delivery.Delivery)
 
     classification = models.CharField(
         max_length=2, choices=CLASSIFICATION_CHOICES, default=ARTICLE)
@@ -93,9 +114,16 @@ class Post(models.Model):
             return round(self.price - ( self.price * (self.discount / 100)), 2)
         return self.price
 
-    # <<<<<<<<<<<<<<<<
+    @property
+    def currency_symbol(self):
+        return {
+            self.CURRENCY_USD: '$',
+            self.CURRENCY_NIO: 'C$'
+        }[self.currency]
+
     def __str__(self):
         return self.title
+
     def save(self, *args, **kwargs):
         if not self.id:
             self.created_at = timezone.now()
@@ -151,13 +179,15 @@ class BusinessImage(models.Model, ThumbModel):
     post = models.ForeignKey(Post, null=True, blank=True, on_delete=models.SET_NULL, related_name="images")
     is_valid = models.BooleanField(default=False)
     alternative = models.CharField(max_length=200, null=True, blank=True)
+
     def filename(self):
         return os.path.basename(self.image.name)
+
     def __str__(self):
         if self.post:
             return "%s %s" % (self.post, self.pk)
         else:
-            return "%s" % (self.pk)
+            return "%s" % self.pk
 
 
 class BusinessImageThumbnails(models.Model):
@@ -175,5 +205,4 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
         if os.path.isfile(instance.image.path):
             print('removing image from filesystem')
             os.remove(instance.image.path)
-
 
