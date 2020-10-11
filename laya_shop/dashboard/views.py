@@ -115,22 +115,15 @@ class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView)
         context = super(PostDetail, self).get_context_data(**kwargs)
         context['business'] = get_object_or_404(Business, slug=self.kwargs['business_slug'])
         context['post'] = self.get_object()
-        # import pdb; pdb.set_trace()
         post_images = []
         for image in self.get_object().images.filter(is_valid=True): #is_valid=True
-            thumbnail = get_thumbnail(image.image, "250x250", crop="center", quality=50).url
-            # thumbnail = image.image.url
-            post_images.append({'url': thumbnail, 'name': image.filename(), 'id': image.pk})
+            post_images.append({'url': image.thumbnail_350x350.url, 'name': image.filename(), 'id': image.pk})
 
         context['selected_subcategories'] = dumps([dict(id=i.pk, category=i.category.pk) for i in self.get_object().subcategories.all().prefetch_related('category')])
-
         context['post_images'] = dumps(post_images)
-        # import pdb; pdb.set_trace()
-        # context['form'] = PostForm(instance=self.get_object())
         return context
 
     def form_valid(self, form):
-        # import pdb; pdb.set_trace()
         business_slug = self.kwargs['business_slug']
         form.instance.business = get_object_or_404(Business, slug=business_slug)
         self.object = form.save()

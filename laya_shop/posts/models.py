@@ -9,7 +9,7 @@ import os
 
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
-
+from laya_shop.utils.thumbnails import ThumbModel
 
 
 class Category(models.Model):
@@ -18,7 +18,7 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     class Meta:
         verbose_name = "Category"
         verbose_name_plural = "Categories"
@@ -85,6 +85,13 @@ class Post(models.Model):
     #     User, through='Report', related_name='reports')  # Esta raro esto
     # departaments = models.ManyToManyField(Department, through='PostDepartment')
     last_confirmation = models.DateTimeField(null=True, blank=True)  # Boton de actualizado
+
+    @property
+    def final_price(self):
+        if self.discount:
+            return round(self.price - ( self.price * (self.discount / 100)), 2)
+        return self.price
+
     # <<<<<<<<<<<<<<<<
     def __str__(self):
         return self.title
@@ -99,7 +106,9 @@ class Post(models.Model):
 
 
 
-class BusinessImage(models.Model):
+class BusinessImage(models.Model, ThumbModel):
+    THUMBS_SIZES = ["300", "350x350"]
+    THUMBS_FIELD = 'image'
     business = models.ForeignKey("business.Business", on_delete=models.CASCADE)
     image = models.ImageField(upload_to=business_directory_files)
     post = models.ForeignKey(Post, null=True, blank=True, on_delete=models.SET_NULL, related_name="images")
