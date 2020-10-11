@@ -20,8 +20,7 @@
                 <!-- <span class="help-block">{{ error }}</span> -->
             {% endfor %}
         {% endfor %}
-        <div class="w-full create-form">
-
+        <div class="w-full create-form flex-col">
             <div class="bg-white px-4 py-4 info-form rounded-md shadow">
                 {% csrf_token %}
                 <div class="flex flex-wrap -mx-3 mb-3">
@@ -67,8 +66,6 @@
                         {% render_field form.status class+="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" %}
                     </div>
                 </div>
-
-
             </div>
             <div class="bg-white w-auto images-form rounded-md shadow px-3 py-4">
                 <div id="category-select"></div>
