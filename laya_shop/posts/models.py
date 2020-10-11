@@ -1,4 +1,5 @@
 from django.db import models
+from random import randint
 from django.contrib.postgres.fields import JSONField, ArrayField
 from business.models import Business
 from users.models import User
@@ -39,8 +40,22 @@ class SubCategory(models.Model):
 class Currency(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
     symbol = models.CharField(max_length=10, blank=False, null=False)
-    rate = models.FloatField(blank=False, blank=False, null=False)
+    rate = models.FloatField(blank=False, null=False)
     iso_code = models.CharField(max_length=5, blank=False, null=False)
+
+    def __str__(self):
+        return self.name
+
+
+class Locations(models.Model):
+    name = models.CharField(max_length=50, blank=False, null=False)
+
+    def __str__(self):
+        return self.name
+
+
+def random_score():
+    return randint(1, 5)
 
 
 class Post(models.Model):
@@ -51,7 +66,7 @@ class Post(models.Model):
     modified_at = models.DateTimeField(null=True)
     title = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=200, null=True)
-
+    attributes = JSONField(null=True, blank=True)
     price = models.FloatField()
     discount = models.PositiveIntegerField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(99)])
     # <<<<<<<<<<<<<<<<
@@ -78,7 +93,9 @@ class Post(models.Model):
         (ARTICLE, 'Article'),
         (SERVICE, 'Service')
     ]
-    currency = models.ForeignKey(Currency, on_delete=models.SET_NULL)
+    currency = models.ForeignKey(Currency, on_delete=models.SET_NULL, null=True, blank=False)
+
+    score = models.IntegerField(default=random_score)
 
     class State(models.IntegerChoices):
         NEW = 1, 'Nuevo'
@@ -93,9 +110,10 @@ class Post(models.Model):
         MEETING = 3, 'Punto de encuentro'
 
     delivery = models.IntegerField(choices=Delivery.choices, default=Delivery.Delivery)
-
+    locations = models.ManyToManyField(Locations, related_name="posts")
     classification = models.CharField(
         max_length=2, choices=CLASSIFICATION_CHOICES, default=ARTICLE)
+
     subcategories = models.ManyToManyField(SubCategory, related_name="posts")
     # tags = models.ManyToManyField(Tag, blank=True)
     # <<<<<<<<<<<<<<<<
@@ -108,18 +126,13 @@ class Post(models.Model):
     # departaments = models.ManyToManyField(Department, through='PostDepartment')
     last_confirmation = models.DateTimeField(null=True, blank=True)  # Boton de actualizado
 
+
+
     @property
     def final_price(self):
         if self.discount:
             return round(self.price - ( self.price * (self.discount / 100)), 2)
         return self.price
-
-    @property
-    def currency_symbol(self):
-        return {
-            self.CURRENCY_USD: '$',
-            self.CURRENCY_NIO: 'C$'
-        }[self.currency]
 
     def __str__(self):
         return self.title
@@ -167,7 +180,7 @@ class AdditionalAttributeCategory(models.Model):
 
 
 class AdditionalAttributesValue(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.OneToOneField(Post, on_delete=models.CASCADE, related_name="additional_attributes")
     value = JSONField()
 
 
@@ -179,7 +192,6 @@ class BusinessImage(models.Model, ThumbModel):
     post = models.ForeignKey(Post, null=True, blank=True, on_delete=models.SET_NULL, related_name="images")
     is_valid = models.BooleanField(default=False)
     alternative = models.CharField(max_length=200, null=True, blank=True)
-
     def filename(self):
         return os.path.basename(self.image.name)
 

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Post, SubCategory
+from .models import Category, Post, SubCategory, Currency, Locations
 # Register your models here.
 
 
@@ -13,3 +13,5 @@ class CategoryAdmin(admin.ModelAdmin):
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(SubCategory)
 admin.site.register(Post)
+admin.site.register(Currency)
+admin.site.register(Locations)

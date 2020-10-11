@@ -83,12 +83,14 @@ class PostCreate(PostClassificationMixin, DashboardPermissionsMixin, CreateView)
     def get_success_url(self):
         #una vez termina de editar, redirigimos a index del dashboard
         return reverse('dashboard:post_list', args=(self.kwargs['business_slug'],))
+
     def form_valid(self, form):
         # import pdb; pdb.set_trace()
         business_slug = self.kwargs['business_slug']
         form.instance.business = get_object_or_404(Business, slug=business_slug)
-        self.object = form.save()
+        self.object = form.save(commit=False)
         subcategories = self.request.POST.getlist('subcategories')
+
         if subcategories:
             try:#SUPER TODO HACER QUE ESTO SEA DE UN SOLO
                 self.object.subcategories.set(SubCategory.objects.filter(pk__in=[int(i) for i in subcategories]))
