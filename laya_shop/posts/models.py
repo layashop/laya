@@ -36,6 +36,13 @@ class SubCategory(models.Model):
         verbose_name_plural = "Subcategories"
 
 
+class Currency(models.Model):
+    name = models.CharField(max_length=50, blank=False, null=False)
+    symbol = models.CharField(max_length=10, blank=False, null=False)
+    rate = models.FloatField(blank=False, blank=False, null=False)
+    iso_code = models.CharField(max_length=5, blank=False, null=False)
+
+
 class Post(models.Model):
     # BASICS
     business = models.ForeignKey(Business, on_delete=models.CASCADE)
@@ -71,14 +78,7 @@ class Post(models.Model):
         (ARTICLE, 'Article'),
         (SERVICE, 'Service')
     ]
-
-    CURRENCY_USD = 'USD'
-    CURRENCY_NIO = 'NIO'
-    CURRENCY_CHOICES = [
-        (CURRENCY_NIO, 'Córdobas'),
-        (CURRENCY_USD, 'Dólares')
-    ]
-    currency = models.CharField(max_length=3, default=CURRENCY_USD, choices=CURRENCY_CHOICES)
+    currency = models.ForeignKey(Currency, on_delete=models.SET_NULL)
 
     class State(models.IntegerChoices):
         NEW = 1, 'Nuevo'
