@@ -21,14 +21,18 @@ const SearchWidget = ({ ...props }) => {
     return catArray.map(element => ({ label: element.name, value: element.id, subcat: element.subcategories }))
   }
 
+  function CurrencyConvert(currencyObj) {
+    return Object.keys(currencyObj).map(el=>({value:el, label: `${el} (${currencyObj[el].symbol})`}))
+  }
+
   const catOptions = CATEGORIES ? CategoryConvert(CATEGORIES) : baseData.categories.map((element) => {
     return { label: element.name, value: element.id, subcat: element.subcategories }
   })
-  console.log(catOptions)
   const sortOptions = undefined ? true : baseData.sort
   const deliveryOptions = undefined ? true : baseData.delivery
   const stateOptions = undefined ? true : baseData.state
   const locationOptions = undefined ? true : baseData.location
+  const currencyOptions = CurrencyConvert(  undefined ? true : baseData.currency )
 
   const defaultCategory = catOptions.filter(val => val.value == params.get('category'))[0] || baseCat
   const [selectedCat, setSelectedCat] = useState(defaultCategory)
@@ -44,11 +48,11 @@ const SearchWidget = ({ ...props }) => {
   const [isDisabledSubCat, setIsDisabledSubCat] = useState(defaultSubCat ? false : true)
   const [subCatOptions, setSubCatOptions] = useState(defaultSubCat ? subcat : [baseSubCat])
 
-
   const defaultSort = sortOptions.filter(val => val.value == params.get('sort'))[0] || sortOptions[0]
   const defaultState = stateOptions.filter(val => val.value == params.get('state'))[0] || stateOptions[0]
   const defaultDelivery = deliveryOptions.filter(val => val.value == params.get('delivery'))[0] || deliveryOptions[0]
   const defaultLocation = locationOptions.filter(val => val.value == params.get('location'))[0] || locationOptions[0]
+  const defaultCurrency = currencyOptions.filter(val => val.value == params.get('currency'))[0] || currencyOptions[0]
   const [lowPrice, setLowPrice] = useState(params.get('lowPrice') || '')
   const [highPrice, setHighPrice] = useState(params.get('highPrice') || '')
   const defaultTags = params.getAll('tags').map(val => {
@@ -95,6 +99,7 @@ const SearchWidget = ({ ...props }) => {
     const form = new FormData(event.target)
 
     let query = '?'
+    let currency = false
 
     if (form.get('search') !== '') {
       query += `search=${form.get('search')}`
@@ -132,10 +137,16 @@ const SearchWidget = ({ ...props }) => {
 
     if (form.get('lowPrice') !== '') {
       query += `lowPrice=${form.get('lowPrice')}&`
+      currency = true
     }
 
     if (form.get('highPrice') !== '') {
       query += `highPrice=${form.get('highPrice')}&`
+      currency = true
+    }
+
+    if (currency) {
+      query += `currency=${form.get('currency')}&`
     }
 
     if (query.slice(-1) === "&") {
@@ -234,6 +245,13 @@ const SearchWidget = ({ ...props }) => {
               isClearable={false}
             />
           </label>
+          Precio:
+          <ReactSelector
+              name='currency'
+              options={currencyOptions}
+              defaultValue={defaultCurrency}
+              isClearable={false}
+            />
           <Box __css={{
             '> div': {
               display: 'flex',
@@ -263,7 +281,6 @@ const SearchWidget = ({ ...props }) => {
               }
             }
           }}>
-            Precio en C$:
           <Box>
               <Box>Mayor que: </Box>
               <input type="text"

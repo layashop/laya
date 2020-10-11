@@ -73,6 +73,16 @@ const baseData = {
       label: 'Punto de encuentro',
     }
   ],
+  currency: {
+    NIO: {
+      symbol: 'C$',
+      rate: '34.65'
+    },
+    USD: {
+      symbol: '$',
+      rate: '1'
+    }
+  },
   location: [
     {
       value: -1,

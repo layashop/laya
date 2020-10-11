@@ -1,11 +1,163 @@
 import React, {Fragment, useState, useEffect} from 'react'
-import ReactDOM, { render } from 'react-dom'
-import Select from 'react-select'
+import ReactDOM from 'react-dom'
+import baseData from "./SearchPageWidget/SearchWidget/baseData"
+import {Box} from "theme-ui"
+import ReactSelector from "react-select"
+import CreatableSelect from "react-select/creatable"
+import OptionalParameters from "./DashboardPostSelectCategory/OptionalParameters";
+
+const categoryDict = {}
+const subcategoryDict = {}
+
+const baseSubCat = { label: "Seleccione un departamento", value: -1 }
+const baseCat = { label: "Seleccione una categoría", value: -1, subcat: [] }
+
+const CategoryConvert = (catArray) => {
+    return catArray.map(element => {
+        categoryDict[element.id] = element.name
+        element.subcategories.forEach(el=>subcategoryDict[el.id]=el.name)
+        return { label: element.name, value: element.id, subcat: element.subcategories }
+    })
+  }
+
+const catOptions = CATEGORIES ? CategoryConvert(CATEGORIES) : baseData.categories.map((element) => {
+    return { label: element.name, value: element.id, subcat: element.subcategories }
+})
+
+catOptions.unshift(baseCat)
+
+const defaultTags = undefined ? console.log('xd') : []
 
 
-const categoryOptions = CATEGORIES.map(element =>  ({
-    value: element.id, 
-    label: element.name, 
+const DashboardPostSelectCategory = () => {
+
+  // AQUI WEON BUSCA
+
+  const defaultCategory =  baseCat
+  const [selectedCat, setSelectedCat] = useState(defaultCategory)
+
+  const subcat = defaultCategory.subcat.map(el => {
+    return { value: el.id, label: el.name }
+  })
+
+  subcat.unshift(baseSubCat)
+
+  const defaultSubCat = baseSubCat
+  const [selectedSubCat, setSelectedSubCat] = useState(defaultSubCat || baseSubCat)
+  const [isDisabledSubCat, setIsDisabledSubCat] = useState(true)
+  const [subCatOptions, setSubCatOptions] = useState(defaultSubCat ? subcat : [baseSubCat])
+  const [selectedSubcatList, setSelectedSubcatList] = useState(SELECTED_SUBCATEGORIES || [])
+
+  const removeSubCat = (id) => {
+      setSelectedSubcatList(selectedSubcatList.filter(element => element.id != id))
+  }
+
+  const handleCatChange = (element) => {
+    if (element.value !== selectedCat.value) {
+      // change selected category and sub category
+      setSelectedCat(element)
+      setSelectedSubCat(baseSubCat)
+
+      // disable subcategory if needed
+      if (element.value === -1) {
+        setIsDisabledSubCat(true)
+      }
+
+      //update subcategory options based on category
+      else {
+        setSubCatOptions([baseSubCat].concat(
+          element.subcat.map(el => {
+            return { label: el.name, value: el.id }
+          })
+        ))
+        setIsDisabledSubCat(false)
+      }
+    }
+  }
+
+  const handleSubCatChange = (element) => {
+    if (element.value !== -1) {
+        if(!selectedSubcatList.some(el=>el.id === element.value)) {
+            setSelectedSubcatList([...selectedSubcatList, {id: element.value, category: selectedCat.value }])
+        }
+    }
+  }
+
+  const formattedSubcat = {}
+
+  selectedSubcatList.forEach(element=> {
+      formattedSubcat[element.category] ? formattedSubcat[element.category].push(element.id) : formattedSubcat[element.category] = [element.id]
+  })
+
+
+  return (
+      <Box __css={{ '& label': { my: 'xsmall', display: 'block' } }}>
+         <h3 className="mb-4 block uppercase tracking-wide text-gray-700 text-md font-bold">Categorizacion</h3>
+          <label>
+          <span className="mb-asd2 block uppercase tracking-wide text-gray-700 text-xs font-bold">Departamento</span>
+          <ReactSelector
+                  name="category"
+                  options={catOptions}
+                  defaultValue={defaultCategory}
+                  onChange={handleCatChange}
+                  isClearable={false}
+                />
+          </label>
+          <label>
+              <span className="mb-2 mt-2 block uppercase tracking-wide text-gray-700 text-xs font-bold">Categoría</span>
+          <ReactSelector
+                  name="subcategory"
+                  options={subCatOptions}
+                  value={selectedSubCat}
+                  isDisabled={isDisabledSubCat}
+                  defaultValue={baseSubCat}
+                  onChange={handleSubCatChange}
+                  isClearable={false}
+                />
+          </label>
+          <span className="mb-2 mt-2 block uppercase tracking-wide text-gray-700 text-xs font-bold">Selecciones</span>
+          <Box __css={{height: '200px', overflowY: 'scroll'}}>
+              {
+                  Object.keys(formattedSubcat).map(category => {
+                      return (<>
+                          <span key={category} className="mb-2 mt-2 block uppercase tracking-wide text-gray-700 text-xs">{categoryDict[category]}</span>
+                      {formattedSubcat[category].map(subcategory=> (
+                          <div
+                              className="text-md my-2 mx-2 flex bg-blue-200 text-blue-700 rounded cursor-pointer py-1 px-2 align-middle hover:bg-red-400"
+                          onClick={() => {removeSubCat(subcategory)}} key={subcategory}>
+                              <span
+                                  className="text-sm font-medium">{subcategoryDict[subcategory]}</span>
+                          </div>
+                      ))}
+                      </>
+                      )
+                  })
+              }
+          </Box>
+          <label>
+              <span className="mb-2 mt-2 block uppercase tracking-wide text-gray-700 text-xs font-bold">Etiquetas</span>
+              <CreatableSelect
+              name="tags"
+              isMulti
+              defaultValue={defaultTags}
+              noOptionsMessage={() => 'Agregar etiquetas'}
+              formatCreateLabel={(value) => `Agregar "${value}"`}
+              placeholder="Agregue etiquetas"
+            />
+
+          </label>
+          <Box __css={{height: '800px', overflowY: 'auto'}}>
+            <h3 className="mb-4 pt-4 block uppercase tracking-wide text-gray-700 text-md font-bold">Parametros Adicionales</h3>
+            <OptionalParameters/>
+          </Box>
+
+    </Box>
+  )
+}
+
+/*const categoryOptions = CATEGORIES.map(element =>  ({
+    value: element.id,
+    label: element.name,
     subcategories: element.subcategories
 }))
 
@@ -18,7 +170,7 @@ function Hola(){
     const [subCatOptions, setSubCatOptions ] = useState([])
     const [subCatSelectText, setSubCatSelectText] = useState(null)
 
-    
+
 
     //Convierte un objeto {id, name, ...} a {label, value, ....}
     function subCatToSelect(subCat){
@@ -71,9 +223,9 @@ function Hola(){
 
     return(
         <div className="">
-            {/* <span>{category}</span> */}
+
             <h3 className="mb-4 block uppercase tracking-wide text-gray-700 text-md font-bold">Categorizacion</h3>
-            {/*  Inputs hidden  */}
+
             {selectedSubcategories.map(element => <input name="subcategories" value={element.value} hidden={true} readOnly/>)}
             <h3 className="mb-2 block uppercase tracking-wide text-gray-700 text-xs font-bold">Departamento</h3>
             <Select options={categoryOptions} onChange={handleCategory} name="category" placeholder="Buscar departamento" className="mb-3"/>
@@ -81,10 +233,10 @@ function Hola(){
             {showSubCatSelect ?
                 <Fragment>
                     <h3 className="mb-2 block uppercase tracking-wide text-gray-700 text-xs font-bold">Categoria</h3>
-                    <Select 
-                        options={subCatOptions} 
-                        onChange={addSubcategory} 
-                        name="subcategory" 
+                    <Select
+                        options={subCatOptions}
+                        onChange={addSubcategory}
+                        name="subcategory"
                         placeholder="Selecciona una subcategoria" />
                 </Fragment>
             : null}
@@ -100,8 +252,8 @@ function Hola(){
             </div>
         </div>
     )
-}
+}*/
 
 let widget = document.getElementById('category-select')
 
-ReactDOM.render( <Hola /> , widget)
+ReactDOM.render( <DashboardPostSelectCategory /> , widget)
