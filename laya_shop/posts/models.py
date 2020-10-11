@@ -80,6 +80,20 @@ class Post(models.Model):
     ]
     currency = models.CharField(max_length=3, default=CURRENCY_USD, choices=CURRENCY_CHOICES)
 
+    class State(models.IntegerChoices):
+        NEW = 1, 'Nuevo'
+        USED = 2, 'Usado'
+        BY_REQUEST = 3, 'Por pedido'
+
+    state = models.IntegerField(choices=State.choices, default=State.NEW)
+
+    class Delivery(models.IntegerChoices):
+        Delivery = 1, 'Entrega a domicilio'
+        PICK_UP = 2, 'Pick-up'
+        MEETING = 3, 'Punto de encuentro'
+
+    delivery = models.IntegerField(choices=Delivery.choices, default=Delivery.Delivery)
+
     classification = models.CharField(
         max_length=2, choices=CLASSIFICATION_CHOICES, default=ARTICLE)
     subcategories = models.ManyToManyField(SubCategory, related_name="posts")
