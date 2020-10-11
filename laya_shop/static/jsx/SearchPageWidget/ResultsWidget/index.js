@@ -19,11 +19,13 @@ const ResultsWidget = ({ ...props }) => {
   const page = Number.parseInt(window.location.href.match(/&page=\d+$/) ? window.location.href.match(/&page=\d+$/)[0].split('=')[1] : '1')
   const lastPage = Math.ceil(total / 24)
   const baseURL = window.location.href.replace(/&page=\d+$/, '')
+  const formatPrice = (num) => (Math.round(num * 100) / 100).toFixed(2)
+  const calculateDiscount = (num, discount) => num * ( 1 - discount / 100)
 
   return (
     <Box {...props}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mx: 'small', mt: 'medium', color: 'buttonText' }}><span>{`Resultados ${PER_PAGE * (page - 1) + 1} - ${PER_PAGE * page > total ? total : PER_PAGE * page}`}</span><span>Total de resultados: {total}</span></Box>
-      <Box sx={{ display: 'grid', gridTemplateColumns: ['repeat(1, 1fr)', 'repeat(2, 1fr)', null, 'repeat(3, 1fr)', 'repeat(4, 1fr)'] }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: ['repeat(1, 1fr)', 'repeat(2, 1fr)', null, 'repeat(3, 1fr)', 'repeat(4, 1fr)'], width: "100%" }}>
         {products.map((product) => {
           return (
             <Box as='a' key={product.id} href={product.link ? product.link : `/${product.id}`} sx={{
@@ -53,9 +55,14 @@ const ResultsWidget = ({ ...props }) => {
               <Box as="p" sx={{
                 color: '#555'
               }}>
+                <span className="label">Calificación: </span> {product.score || 0.0} estrellas
+              </Box>
+              <Box as="p" sx={{
+                color: '#555'
+              }}>
                 <span className="label">Precio: </span>
-                <Box as="span" __css={{ textDecoration: product.discount > 0 ? 'line-through' : 'none' }}>C${product.price}</Box>
-                {product.discount > 0 && <Box as="span" __css={{ color: '#d1271b' }}> C${product.discountedPrice}</Box>}
+                <Box as="span" __css={{ textDecoration: product.discount > 0 ? 'line-through' : 'none' }}>C${formatPrice(product.price)}</Box>
+                {product.discount > 0 && <Box as="span" __css={{ color: '#d1271b' }}> C${formatPrice(calculateDiscount(product.price, product.discount))}</Box>}
               </Box>
               <Box as="p" sx={{
                 color: '#555'
@@ -69,9 +76,9 @@ const ResultsWidget = ({ ...props }) => {
             </Box>
           )
         })}
-        <Pagination currentPage={page} linkQuantity={3} lastPage={lastPage} link={baseURL} />
-      </Box>
 
+      </Box>
+    <Pagination currentPage={page} linkQuantity={3} lastPage={lastPage} link={baseURL} />
     </Box >
   )
 }

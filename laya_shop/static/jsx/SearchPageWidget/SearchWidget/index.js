@@ -28,6 +28,7 @@ const SearchWidget = ({ ...props }) => {
   const sortOptions = undefined ? true : baseData.sort
   const deliveryOptions = undefined ? true : baseData.delivery
   const stateOptions = undefined ? true : baseData.state
+  const locationOptions = undefined ? true : baseData.location
 
   const defaultCategory = catOptions.filter(val => val.value == params.get('category'))[0] || baseCat
   const [selectedCat, setSelectedCat] = useState(defaultCategory)
@@ -47,6 +48,7 @@ const SearchWidget = ({ ...props }) => {
   const defaultSort = sortOptions.filter(val => val.value == params.get('sort'))[0] || sortOptions[0]
   const defaultState = stateOptions.filter(val => val.value == params.get('state'))[0] || stateOptions[0]
   const defaultDelivery = deliveryOptions.filter(val => val.value == params.get('delivery'))[0] || deliveryOptions[0]
+  const defaultLocation = locationOptions.filter(val => val.value == params.get('location'))[0] || locationOptions[0]
   const [lowPrice, setLowPrice] = useState(params.get('lowPrice') || '')
   const [highPrice, setHighPrice] = useState(params.get('highPrice') || '')
   const defaultTags = params.getAll('tags').map(val => {
@@ -122,6 +124,10 @@ const SearchWidget = ({ ...props }) => {
 
     if (form.get('delivery') !== '-1') {
       query += `delivery=${form.get('delivery')}&`
+    }
+
+    if (form.get('location') !== '-1') {
+      query += `location=${form.get('location')}&`
     }
 
     if (form.get('lowPrice') !== '') {
@@ -219,6 +225,15 @@ const SearchWidget = ({ ...props }) => {
               isClearable={false}
             />
           </label>
+          <label>
+            Ubicación
+      <ReactSelector
+              name='location'
+              options={locationOptions}
+              defaultValue={defaultLocation}
+              isClearable={false}
+            />
+          </label>
           <Box __css={{
             '> div': {
               display: 'flex',
@@ -235,13 +250,14 @@ const SearchWidget = ({ ...props }) => {
             '> div div': {
               bg: '#eef',
               borderTopLeftRadius: '10px',
-              borderBottomLeftRadius: '10px'
+              borderBottomLeftRadius: '10px',
+              flex: 1
             },
             '> div input': {
               borderLeft: '0px',
               borderTopRightRadius: '10px',
               borderBottomRightRadius: '10px',
-              flex: 1,
+              flex: 1.1,
               ':focus': {
                 outline: 'none'
               }
