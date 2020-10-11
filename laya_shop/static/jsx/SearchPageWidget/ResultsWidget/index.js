@@ -50,7 +50,7 @@ const ResultsWidget = ({ ...props }) => {
   return (
     <Box {...props}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mx: 'small', mt: 'medium', color: 'buttonText' }}><span>{`Resultados ${PER_PAGE * (page - 1) + 1} - ${PER_PAGE * page > total ? total : PER_PAGE * page}`}</span><span>Total de resultados: {total}</span></Box>
-      <Box sx={{mx: 'small', display: 'flex', alignItems:'center', '> div:last-of-type': {width: '10%'}}}><Box sx={{color: '#557', mr: 'xsmall'}}>Moneda:</Box><ReactSelector options={currencyOptions} value={selectedCurrency} onChange={(value)=>setSelectedCurrency(value)}/></Box>
+      <Box sx={{mx: 'small', display: 'flex', alignItems:'center', '> div:last-of-type': {width: '150px'}}}><Box sx={{color: '#557', mr: 'xsmall'}}>Moneda:</Box><ReactSelector options={currencyOptions} value={selectedCurrency} onChange={(value)=>setSelectedCurrency(value)}/></Box>
       <Box sx={{ display: 'grid', gridTemplateColumns: ['repeat(1, 1fr)', 'repeat(2, 1fr)', null, 'repeat(3, 1fr)', 'repeat(4, 1fr)'], width: "100%" }}>
         {products.map((product) => {
           const productCurrency = product.currency || 'NIO'
