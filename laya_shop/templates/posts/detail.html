@@ -132,9 +132,13 @@
                     </button>
                 </div>
             </div> -->
+          <div class="w-100 text-sm text-gray-500">
+                Publicado el {{ object.created_at|date:"d/m/Y" }}
+              </div>
               <div class="w-100 text-gray-700">
                 Por {{ object.business.name }}
               </div>
+
             <div class="flex items-center mt-6">
               <button class="px-8 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-500
                         focus:outline-none focus:bg-indigo-500">Contactar al emprendedor
@@ -189,6 +193,10 @@
                     {% if key|parameters:'type' == "string" %}
                       <span class="my-3">{{ value }}</span>
                     {% endif %}
+                {% if key|parameters:'type' == "warning" %}
+                      <span class="my-3">{{ value }} ⚠️</span>
+                    {% endif %}
+                ️
                     {% if key|parameters:'type' == "listmulti" or key|parameters:'type' == "setlistmulti" %}
 
                       <ul class="my-3">
@@ -214,8 +222,9 @@
 
           </div>
         {% endif %}
+        {{ object.tags.all }}
         <div class="mt-16">
-          <h3 class="text-gray-600 text-2xl font-medium">More Products</h3>
+          <h3 class="text-gray-600 text-2xl font-medium">Más Productos</h3>
           <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-6">
             <div class="w-full max-w-sm mx-auto rounded-md shadow-md overflow-hidden">
               <div class="flex items-end justify-end h-56 w-full bg-cover"

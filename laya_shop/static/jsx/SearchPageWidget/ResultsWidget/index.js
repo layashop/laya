@@ -49,6 +49,10 @@ const ResultsWidget = ({ ...props }) => {
 
   console.log(products)
 
+  let today = new Date()
+
+  today.setDate(today.getDate() - 7)
+
 
   return (
     <Box {...props}>
@@ -79,10 +83,10 @@ const ResultsWidget = ({ ...props }) => {
               }
             }}>
               <Box __css={{ height: '30px' }}>
-                {product.new && <Box as='span' __css={{ bg: '#0e77c2', color: 'white', borderRadius: '4px', py: '2px', px: '6px', mr: 'xsmall' }}>Novedad</Box>}
+                {Date.parse(product.date) >= today && <Box as='span' __css={{ bg: '#0e77c2', color: 'white', borderRadius: '4px', py: '2px', px: '6px', mr: 'xsmall' }}>Novedad</Box>}
                 {product.promotion && <Box as='span' __css={{ bg: '#7a0ec2', color: 'white', borderRadius: '4px', py: '2px', px: '6px' }}>Promoción</Box>}
               </Box>
-              <Box as="img" alt={product.title} src={product.thumbnail} sx={{ width: '100%', height: 'auto', objectFit: 'cover' }} />
+              <Box as="img" alt={product.title} src={product.thumbnail} sx={{ width: '100%', height: '250px', objectFit: 'cover' }} />
               <Box as="h2" sx={{ fontSize: 20, height: '2.4em', overflow: 'hidden', my: 'xsmall' }}>{product.title}</Box>
               <Box as="p" sx={{
                 color: '#555'

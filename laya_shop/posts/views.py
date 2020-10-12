@@ -53,6 +53,7 @@ class PostList(PostClassificationMixin, ListView):
                     thumbnail=post.images.first().image.url,
                     title=post.title,
                     price=post.price,
+                    date=post.created_at.__str__(),
                     discount=post.discount,
                     discountedPrice=post.final_price,
                     promotion=post.promo,

@@ -89,7 +89,6 @@ const DashboardPostSelectCategory = () => {
       formattedSubcat[element.category] ? formattedSubcat[element.category].push(element.id) : formattedSubcat[element.category] = [element.id]
   })
 
-
   return (
       <Box __css={{ '& label': { my: 'xsmall', display: 'block' } }}>
          <h3 className="mb-4 block uppercase tracking-wide text-gray-700 text-md font-bold">Categorizacion</h3>
@@ -116,6 +115,7 @@ const DashboardPostSelectCategory = () => {
                 />
           </label>
           <span className="mb-2 mt-2 block uppercase tracking-wide text-gray-700 text-xs font-bold">Selecciones</span>
+          {selectedSubcatList.map(el=>(<input name="subcategory[]" key={el.id} value={el.id} readOnly className="hidden"/>))}
           <Box __css={{height: '200px', overflowY: 'scroll'}}>
               {
                   Object.keys(formattedSubcat).map(category => {
