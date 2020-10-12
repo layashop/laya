@@ -116,7 +116,7 @@
               <span class="text-red-500 mt-3 line-through mr-2">{{ object.currency.symbol }} {{ object.price }}</span>
               <span class="text-green-500 mt-3 text-xl">{{ object.currency.symbol }} {{ object.final_price }}</span>
             {% else %}
-              <span class="text-gray-500 mt-3">{{ object.currency_symbol }} {{ object.price }}</span>
+              <span class="text-gray-500 mt-3">{{ object.currency.symbol }} {{ object.price }}</span>
             {% endif %}
 
             <hr class="my-3">
@@ -149,7 +149,7 @@
               <table>
                 <tbody>
                 <tr class="h-10">
-                  <td class="font-medium w-2/3 ">Tipo de envio</td>
+                  <td class="font-medium w-2/3 ">Tipo de envío</td>
                   <td class=" w-1/3 ">{{ object.get_delivery_display }}</td>
                 </tr>
                 <tr class="h-10">
@@ -166,7 +166,7 @@
               </table>
             </div>
             <div class="my-3">
-              <h5 class="mt-6 mb-2 text-xl">Categorias</h5>
+              <h5 class="mt-6 mb-2 text-xl">Categorías</h5>
               <div class="flex flex-wrap">
                 {% for subcategory in object.subcategories.all %}
                   <a href="{% url 'posts:search' %}?subcategory={{ subcategory.pk }}" class="py-1 px-3 mr-2 mb-2 rounded border focus:outline-none
