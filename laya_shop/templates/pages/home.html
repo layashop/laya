@@ -23,9 +23,11 @@
             {% thumbnail category.banner "400x400" crop="center" as im %}
             <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
             {% endthumbnail %}
-            <div class="inside-text absolute">
-                <h4>{{ category.name }}</h4>
-            </div>
+            <a href="{% url 'posts:search' %}?category={{ category.pk }}">
+              <div class="inside-text absolute">
+                  <h4>{{ category.name }}</h4>
+              </div>
+            </a>
         </div>
         {% endfor %}
 

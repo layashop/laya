@@ -59,7 +59,7 @@ class PostList(PostClassificationMixin, ListView):
                     promotion=post.promo,
                     description=post.description,
                     user=post.business.name,
-                    state=1
+                    state=post.state
                 )
             )
         context['json_products'] = dumps(temp)

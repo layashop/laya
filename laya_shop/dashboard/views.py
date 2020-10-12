@@ -99,7 +99,7 @@ class PostCreate(PostClassificationMixin, DashboardPermissionsMixin, CreateView)
         return reverse('dashboard:post_list', args=(self.kwargs['business_slug'],))
 
     def form_valid(self, form):
-        # import pdb; pdb.set_trace()
+
         business_slug = self.kwargs["business_slug"]
         form.instance.business = get_object_or_404(Business, slug=business_slug)
         post = form.save(commit=False)
@@ -164,10 +164,11 @@ class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView)
 
     def form_valid(self, form):
         business_slug = self.kwargs["business_slug"]
-        form.instance.business = get_object_or_404(Business, slug=business_slug)
         post = form.save(commit=False)
+        post.business = get_object_or_404(Business, slug=business_slug)
         # import pdb; pdb.set_trace()
         subcategories = self.request.POST.getlist("subcategories")
+
         post.attributes = loads(self.request.POST.get('additionalParameters', 'null'))
         if subcategories:
             try:
