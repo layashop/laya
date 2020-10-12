@@ -5,8 +5,8 @@ import structure from './structure'
 import {Box} from "theme-ui";
 
 const additionalOpt = []
-
-const initialSelectedParameters = undefined ? null : {brand: 'Samsung'}
+const SELECTED_ATTRIBUTES = JSON.parse(document.getElementById('selected-attributes').textContent)
+const initialSelectedParameters = typeof SELECTED_ATTRIBUTES === 'object' && SELECTED_ATTRIBUTES !== null ? SELECTED_ATTRIBUTES : {brand: 'Samsung'}
 
 for( const type in structure ) {
     if (initialSelectedParameters[type] === undefined) {
@@ -152,7 +152,7 @@ const OptionalParameters = ({...props }) => {
   return (
       <>
           <ReactSelector options={additionalOptions} noOptionsMessage={()=>"No se encontró"} className="mb-4" onChange={(value)=> addParameter(value, additionalOptions, setAdditionalOptions, selectedParameters, setSelectedParameters)} placeholder="Agregue parámetros" value='' />
-          <input type="text" name="additionalParameters" value={JSON.stringify(selectedParameters)} readOnly/>
+          <input type="text" name="additionalParameters" value={JSON.stringify(selectedParameters)} readOnly hidden={true}/>
           {Object.keys(selectedParameters).map(property=>{
               switch (structure[property] && structure[property].type) {
                   case 'string': return (

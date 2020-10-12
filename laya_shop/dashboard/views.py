@@ -13,7 +13,7 @@ from posts.models import BusinessImage
 from .mixins import DashboardPermissionsMixin
 from django.http import HttpResponseBadRequest, Http404, HttpResponseRedirect
 from django.core.serializers import serialize
-from json import dumps
+from json import dumps, loads
 from sorl.thumbnail import get_thumbnail
 from posts.mixins import PostClassificationMixin
 from dashboard.mixins import DashboardContextMixin
@@ -102,9 +102,9 @@ class PostCreate(PostClassificationMixin, DashboardPermissionsMixin, CreateView)
         # import pdb; pdb.set_trace()
         business_slug = self.kwargs["business_slug"]
         form.instance.business = get_object_or_404(Business, slug=business_slug)
-        self.object = form.save(commit=False)
+        post = form.save(commit=False)
         subcategories = self.request.POST.getlist('subcategories')
-
+        post.attributes = loads(self.request.POST.get('additionalParameters', 'null'))
         if subcategories:
             try:  # SUPER TODO HACER QUE ESTO SEA DE UN SOLO
                 self.object.subcategories.set(
@@ -116,7 +116,7 @@ class PostCreate(PostClassificationMixin, DashboardPermissionsMixin, CreateView)
             image_ids = [int(i) for i in self.request.POST.getlist("images")]
             images_qs = BusinessImage.objects.filter(
                 business__slug=business_slug, pk__in=image_ids
-            ).update(post=self.object, is_valid=True)
+            ).update(post=post, is_valid=True)
         except ValueError as e:
             # Si hay un error no hacemos nada, se ignoran las imagenes xd
             print(e)
@@ -162,14 +162,16 @@ class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView)
     def form_valid(self, form):
         business_slug = self.kwargs["business_slug"]
         form.instance.business = get_object_or_404(Business, slug=business_slug)
-        self.object = form.save()
+        post = form.save(commit=False)
+        # import pdb; pdb.set_trace()
         subcategories = self.request.POST.getlist("subcategories")
+        post.attributes = loads(self.request.POST.get('additionalParameters', 'null'))
         if subcategories:
             try:
-                self.object.subcategories.set(
+                post.subcategories.set(
                     SubCategory.objects.filter(pk__in=[int(i) for i in subcategories])
                 )
-                self.object.subcategories.remove(
+                post.subcategories.remove(
                     *self.object.subcategories.exclude(
                         pk__in=[int(i) for i in subcategories]
                     )
@@ -180,7 +182,7 @@ class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView)
             image_ids = [int(i) for i in self.request.POST.getlist("images")]
             BusinessImage.objects.filter(
                 business__slug=business_slug, pk__in=image_ids
-            ).update(post=self.object, is_valid=True)
+            ).update(post=post, is_valid=True)
             BusinessImage.objects.filter(business__slug=business_slug).exclude(
                 pk__in=image_ids
             ).delete()
