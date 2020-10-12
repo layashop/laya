@@ -105,9 +105,11 @@ class PostCreate(PostClassificationMixin, DashboardPermissionsMixin, CreateView)
         post = form.save(commit=False)
         subcategories = self.request.POST.getlist('subcategories')
         post.attributes = loads(self.request.POST.get('additionalParameters', 'null'))
+        post.save()
+        #Ahora vamos con las queries que no actualizan a la instancia como tal
         if subcategories:
-            try:  # SUPER TODO HACER QUE ESTO SEA DE UN SOLO
-                self.object.subcategories.set(
+            try:
+                post.subcategories.set(
                     SubCategory.objects.filter(pk__in=[int(i) for i in subcategories])
                 )
             except ValueError as e:
@@ -120,6 +122,7 @@ class PostCreate(PostClassificationMixin, DashboardPermissionsMixin, CreateView)
         except ValueError as e:
             # Si hay un error no hacemos nada, se ignoran las imagenes xd
             print(e)
+        post.save()
         return super(PostCreate, self).form_valid(form)
 
 
@@ -172,7 +175,7 @@ class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView)
                     SubCategory.objects.filter(pk__in=[int(i) for i in subcategories])
                 )
                 post.subcategories.remove(
-                    *self.object.subcategories.exclude(
+                    *post.subcategories.exclude(
                         pk__in=[int(i) for i in subcategories]
                     )
                 )
@@ -183,7 +186,7 @@ class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView)
             BusinessImage.objects.filter(
                 business__slug=business_slug, pk__in=image_ids
             ).update(post=post, is_valid=True)
-            BusinessImage.objects.filter(business__slug=business_slug).exclude(
+            BusinessImage.objects.filter(business__slug=business_slug, post=post).exclude(
                 pk__in=image_ids
             ).delete()
         except ValueError as e:

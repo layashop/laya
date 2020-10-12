@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from json import dumps
-from sorl.thumbnail import get_thumbnail
+from django.shortcuts import reverse
 from django.views.generic import ListView, DetailView
 from posts.models import Post
 from posts.filters import PostFilter
@@ -49,12 +49,12 @@ class PostList(PostClassificationMixin, ListView):
             temp.append(
                 dict(
                     id=post.pk,
-                    link="google.com",
-                    thumbnail=get_thumbnail(post.images.first().image, "250x250", crop="center", quality=50).url,
+                    link=reverse('posts:detail', args=(post.pk,)),
+                    thumbnail=post.images.first().image.url,
                     title=post.title,
                     price=post.price,
                     discount=post.discount,
-                    discountedPrice=post.price * ((post.discount / 100) + 1) if post.discount else None,
+                    discountedPrice=post.final_price,
                     promotion=post.promo,
                     description=post.description,
                     user=post.business.name,
