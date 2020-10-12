@@ -2,7 +2,6 @@ import React, {useState} from "react"
 import ReactSelector from "react-select"
 import CreatableSelect from "react-select/creatable"
 import structure from './structure'
-import {Box} from "theme-ui";
 
 const additionalOpt = []
 const SELECTED_ATTRIBUTES = JSON.parse(document.getElementById('selected-attributes').textContent)

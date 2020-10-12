@@ -1,0 +1,68 @@
+- model : posts.Locations
+  pk: 1
+  fields:
+    name: Boaco
+- model : posts.Locations
+  pk: 2
+  fields:
+    name: Carazo
+- model : posts.Locations
+  pk: 3
+  fields:
+    name: Chinandega
+- model : posts.Locations
+  pk: 4
+  fields:
+    name: Contales
+- model : posts.Locations
+  pk: 5
+  fields:
+    name: Costa Caribe Norte
+- model : posts.Locations
+  pk: 6
+  fields:
+    name: Costa Caribe Sur
+- model : posts.Locations
+  pk: 7
+  fields:
+    name: Estelí
+- model : posts.Locations
+  pk: 8
+  fields:
+    name: Granada
+- model : posts.Locations
+  pk: 9
+  fields:
+    name: Jinotega
+- model : posts.Locations
+  pk: 10
+  fields:
+    name: León
+- model : posts.Locations
+  pk: 11
+  fields:
+    name: Madriz
+- model : posts.Locations
+  pk: 12
+  fields:
+    name: Managua
+- model : posts.Locations
+  pk: 13
+  fields:
+    name: Masaya
+- model : posts.Locations
+  pk: 14
+  fields:
+    name: Matagalpa
+- model : posts.Locations
+  pk: 15
+  fields:
+    name: Nueva Segovia
+- model : posts.Locations
+  pk: 16
+  fields:
+    name: Río San Juan
+- model : posts.Locations
+  pk: 17
+  fields:
+    name: Rivas

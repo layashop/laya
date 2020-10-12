@@ -1,49 +1,48 @@
 - model : posts.Category
   pk: 1
-  fields: 
+  fields:
     name: Vestimenta y Calzado
 - model : posts.Category
   pk: 2
-  fields: 
-    name: Producto Tecnlogicos
+  fields:
+    name: Producto Tecnlógicos
 - model : posts.Category
   pk: 3
-  fields: 
+  fields:
     name: Cuidado Personal
 - model : posts.Category
   pk: 4
-  fields: 
+  fields:
     name: Accesorios de Belleza
 - model : posts.Category
   pk: 5
-  fields: 
+  fields:
     name: Cosmeticos
 - model : posts.Category
   pk: 6
-  fields: 
+  fields:
     name: Alimentos
 - model : posts.Category
   pk: 7
-  fields: 
+  fields:
     name: Muebles
 - model : posts.Category
   pk: 8
-  fields: 
+  fields:
     name: Artesanias y Arte
 - model : posts.Category
   pk: 9
-  fields: 
+  fields:
     name: Hogar y Cocina
 - model : posts.Category
   pk: 10
-  fields: 
+  fields:
     name: Mascotas
 - model : posts.Category
   pk: 11
-  fields: 
+  fields:
     name: Musica
 - model : posts.Category
   pk: 12
-  fields: 
+  fields:
     name: Deportes
-    

@@ -1,38 +1,160 @@
 - model : posts.SubCategory
   pk: 1
-  fields: 
-    name: Calzado
+  fields:
+    name: Zapatillas
     category: 1
 - model : posts.SubCategory
   pk: 2
-  fields: 
-    name: Deportiva
+  fields:
+    name: Sandalias
     category: 1
 - model : posts.SubCategory
   pk: 3
-  fields: 
-    name: Casual
+  fields:
+    name: Blusas
     category: 1
 - model : posts.SubCategory
   pk: 4
-  fields: 
-    name: Elegante
+  fields:
+    name: Camisas
     category: 1
 - model : posts.SubCategory
   pk: 5
-  fields: 
+  fields:
     name: Pulseras
-    category: 5
+    category: 4
 - model : posts.SubCategory
   pk: 6
-  fields: 
+  fields:
     name: Cadenas
-    category: 5
+    category: 4
 - model : posts.SubCategory
   pk: 7
-  fields: 
+  fields:
     name: Chapas
     category: 5
-
-
-    
+- model : posts.SubCategory
+  pk: 8
+  fields:
+    name: Celulares
+    category: 2
+- model : posts.SubCategory
+  pk: 9
+  fields:
+    name: Videojuegos
+    category: 2
+- model : posts.SubCategory
+  pk: 10
+  fields:
+    name: Jabones
+    category: 3
+- model : posts.SubCategory
+  pk: 11
+  fields:
+    name: Cremas corporales
+    category: 3
+- model : posts.SubCategory
+  pk: 12
+  fields:
+    name: Labiales
+    category: 5
+- model : posts.SubCategory
+  pk: 13
+  fields:
+    name: Delineadores
+    category: 5
+- model : posts.SubCategory
+  pk: 14
+  fields:
+    name: Tortas y pasteles
+    category: 6
+- model : posts.SubCategory
+  pk: 15
+  fields:
+    name: Helados
+    category: 6
+- model : posts.SubCategory
+  pk: 14
+  fields:
+    name: Tortas
+    category: 6
+- model : posts.SubCategory
+  pk: 15
+  fields:
+    name: Helados
+    category: 6
+- model : posts.SubCategory
+  pk: 14
+  fields:
+    name: Muffins
+    category: 6
+- model : posts.SubCategory
+  pk: 15
+  fields:
+    name: Mieles
+    category: 6
+- model : posts.SubCategory
+  pk: 14
+  fields:
+    name: Tortas
+    category: 6
+- model : posts.SubCategory
+  pk: 15
+  fields:
+    name: Sillas
+    category: 7
+- model : posts.SubCategory
+  pk: 16
+  fields:
+    name: Mesas
+    category: 7
+- model : posts.SubCategory
+  pk: 17
+  fields:
+    name: Cuadros en óleo
+    category: 8
+- model : posts.SubCategory
+  pk: 18
+  fields:
+    name: Jarrones
+    category: 8
+- model : posts.SubCategory
+  pk: 19
+  fields:
+    name: Almohadas
+    category: 9
+- model : posts.SubCategory
+  pk: 20
+  fields:
+    name: Sartenes
+    category: 9
+- model : posts.SubCategory
+  pk: 21
+  fields:
+    name: Champús para mascotas
+    category: 10
+- model : posts.SubCategory
+  pk: 22
+  fields:
+    name: Felinos
+    category: 10
+- model : posts.SubCategory
+  pk: 23
+  fields:
+    name: Instrumentos de viento
+    category: 11
+- model : posts.SubCategory
+  pk: 24
+  fields:
+    name: Instrumentos de cuerda
+    category: 11
+- model : posts.SubCategory
+  pk: 25
+  fields:
+    name: Football
+    category: 12
+- model : posts.SubCategory
+  pk: 26
+  fields:
+    name: Baseball
+    category: 12

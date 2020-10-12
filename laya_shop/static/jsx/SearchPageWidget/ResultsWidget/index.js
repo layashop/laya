@@ -47,6 +47,9 @@ const ResultsWidget = ({ ...props }) => {
 
   currencyOptions.unshift(baseCurrency)
 
+  console.log(products)
+
+
   return (
     <Box {...props}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mx: 'small', mt: 'medium', color: 'buttonText' }}><span>{`Resultados ${PER_PAGE * (page - 1) + 1} - ${PER_PAGE * page > total ? total : PER_PAGE * page}`}</span><span>Total de resultados: {total}</span></Box>

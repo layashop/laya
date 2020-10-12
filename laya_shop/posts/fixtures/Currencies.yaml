@@ -1,0 +1,14 @@
+- model : posts.Currency
+  pk: 1
+  fields:
+    name: Córdoba
+    rate: 34.65
+    symbol: C$
+    iso_code: NIO
+- model : posts.Currency
+  pk: 2
+  fields:
+    name: Dólar estadounidense
+    rate: 1
+    symbol: $
+    iso_code: USD
