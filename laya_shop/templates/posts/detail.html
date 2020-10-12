@@ -146,7 +146,7 @@
 
             <div class="my-4">
 
-              <table class="w-2/3">
+              <table>
                 <tbody>
                 <tr class="h-10">
                   <td class="font-medium w-2/3 ">Tipo de envio</td>
@@ -158,9 +158,9 @@
                 </tr>
                 <tr class="h-10">
                   <td class="font-medium w-2/3 " style="vertical-align: top">Localidades</td>
-                  <td class=" w-1/3 ">{% for location in object.locations.all %}
-                    {{ location.name }}
-                  {% endfor %}</td>
+                  <td class=" w-1/3 "><ul>{% for location in object.locations.all %}
+                    <li>{{ location.name }}<li/>
+                  {% endfor %}</ul></td>
                 </tr>
                 </tbody>
               </table>
