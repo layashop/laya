@@ -1,24 +1,17 @@
 {% extends 'base.html' %}
-{% load static crispy_forms_tags %}
+{% load static crispy_forms_tags cache %}
 
 
 {% block content %}
-  <!-- <form method="get">
-        {{ filter.form|crispy }}
-        <input type="submit" />
-    </form> -->
-
   <div class="flex flex-col md:flex-row">
-    <div id="search-component">
+    <div id="search-component" style="min-width: 300px">
     </div>
     <div class="pt-8 grid grid-cols-2 gap-2 px-2 sm:grid-cols-3 md:grid-cols-4 sm:gap-4 sm:px-4">
-      {% for post in filter.qs %}
+      {% for post in object_list  %}
         <div class="flex flex-col ">
         {% if post.images %}
-          {% with media=post.images.first %}
-
+          {% with media=post.images.all.0 %}
               <img src="{{ media.thumbnail_200x200.url }}"  class="w-full h-auto rounded">
-
           {% endwith %}
         {% endif %}
         {% if post.discount %}
