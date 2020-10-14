@@ -23,7 +23,7 @@ django-cors-headers==3.5.0 # https://github.com/adamchainz/django-cors-headers
 
 #THUMBNAILS
 sorl-thumbnail>=12.6.3
-
+django-imagekit>=4.0.2
 
 #CUSTOM FORMS
 django-widget-tweaks

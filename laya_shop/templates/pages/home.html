@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static thumbnail %}
+{% load static %}
 
 
 
@@ -20,9 +20,7 @@
     <div class="categories">
         {% for category in categories %}
         <div class="box relative">
-            {% thumbnail category.banner "400x400" crop="center" as im %}
-            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
-            {% endthumbnail %}
+{#            <img src="{{ category.banner.url }}" width="{{ category.banner.width }}" height="{{ category.banner.height }}">#}
             <a href="{% url 'posts:search' %}?category={{ category.pk }}">
               <div class="inside-text absolute">
                   <h4>{{ category.name }}</h4>
@@ -30,7 +28,6 @@
             </a>
         </div>
         {% endfor %}
-
     </div>
 </div>
 <div class="featured-container flex flex-col items-center">

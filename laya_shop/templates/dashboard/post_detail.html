@@ -143,7 +143,7 @@
 {#      const SELECTED_ATTRIBUTES = null;#}
 {#    {% endif %}#}
   </script>
-  {{ post.attributes|safe }}
+  {{ post.tags|json_script:"selected-tags" }}
   {{ post.attributes|json_script:"selected-attributes" }}
 
   <script src="{% static 'dist/js/DashboardPostSelectCategory.js' %}"></script>

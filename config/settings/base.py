@@ -72,9 +72,10 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
-    "sorl.thumbnail",
+    # "sorl.thumbnail",
     "widget_tweaks",
     "django_filters",
+    "imagekit"
 ]
 
 LOCAL_APPS = [

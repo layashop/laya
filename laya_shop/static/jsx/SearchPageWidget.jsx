@@ -9,8 +9,8 @@ const Root = () => {
   return (
     <ThemeProvider theme={theme}>
       <Box __css={{ display: 'flex', flexDirection: ['column', null, 'row'] }}>
-        <SearchWidget sx={{ maxWidth: [null, null, null, '300px'], width: ['100%', null, '35%'], p: ['small', null, null, 'medium'] }} />
-        <ResultsWidget sx={{ flex: 1, bg: '#EDF2F7' }} />
+        <SearchWidget sx={{ maxWidth: [null, null, null, '300px'], width: ['100%', null, '100%'], p: ['small', null, null, 'medium'] }} />
+        {/*<ResultsWidget sx={{ flex: 1, bg: '#EDF2F7' }} />*/}
       </Box>
     </ThemeProvider>
   )

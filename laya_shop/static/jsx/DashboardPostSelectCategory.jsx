@@ -25,8 +25,9 @@ const catOptions = CATEGORIES ? CategoryConvert(CATEGORIES) : baseData.categorie
 })
 
 catOptions.unshift(baseCat)
+const SELECTED_TAGS = JSON.parse(document.getElementById('selected-tags').textContent)
+const defaultTags = typeof SELECTED_TAGS === 'object' && SELECTED_TAGS !== null ? SELECTED_TAGS.map(element => ({value: element, label: element})) : []
 
-const defaultTags = undefined ? console.log('xd') : []
 
 
 const DashboardPostSelectCategory = () => {

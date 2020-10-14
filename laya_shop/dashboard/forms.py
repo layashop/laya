@@ -9,7 +9,7 @@ class PostForm(ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'description', 'status', 'description', 'price', 'promo', 'discount', 'currency', 'state',
-                  'delivery', 'locations', 'attributes']
+                  'delivery', 'locations', 'attributes', 'tags']
         widgets = {
             'locations': CheckboxSelectMultiple()
         }

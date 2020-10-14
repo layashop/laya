@@ -1,12 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from json import dumps
 from django.shortcuts import reverse
 from django.views.generic import ListView, DetailView
 from posts.models import Post
+from django.db.models import Prefetch
 from posts.filters import PostFilter
 from posts.mixins import PostClassificationMixin
 # Create your views here.
-
+from posts.models import Locations
 
 
 class PostList(PostClassificationMixin, ListView):
@@ -25,44 +26,13 @@ class PostList(PostClassificationMixin, ListView):
     #     qs = self.model.objects.filter().prefetch_related('images')
     #     return PostFilter(self.request.GET, queryset=qs).qs
 
+    # def get_queryset(self):
+    #     return
 
     def get_context_data(self, **kwargs):
         context = super(PostList, self).get_context_data(**kwargs)
-        posts = PostFilter(self.request.GET, queryset=self.get_queryset().prefetch_related('images', 'business'))
+        posts = PostFilter(self.request.GET, queryset=self.get_queryset().select_related('currency').prefetch_related('images', 'business'))
         context['filter'] = posts
-        temp = []
-    #     {
-    #   id: 1,
-    #   link: 'https://react-select.com/home',
-    #   thumbnail: 'https://img.apmcdn.org/5fa5db97b1120778b49f1b4488f613caf31e4ec4/uncropped/5355be-splendid-table-honey-filipfoto-istock-gettyimagesplus-505523726-lede-0.jpg',
-    #   title: 'Miel',
-    #   price: 120.45,
-    #   discount: 20,
-    #   discountedPrice: 96.36,
-    #   promotion: false,
-    #   new: true,
-    #   description: 'Lorem impsum lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit',
-    #   user: 'Jose Pereira S.A.',
-    #   state: 1,
-    # }
-        for post in posts.qs:
-            temp.append(
-                dict(
-                    id=post.pk,
-                    link=reverse('posts:detail', args=(post.pk,)),
-                    thumbnail=post.images.first().image.url,
-                    title=post.title,
-                    price=post.price,
-                    date=post.created_at.__str__(),
-                    discount=post.discount,
-                    discountedPrice=post.final_price,
-                    promotion=post.promo,
-                    description=post.description,
-                    user=post.business.name,
-                    state=post.state
-                )
-            )
-        context['json_products'] = dumps(temp)
         return context
 
 post_list_view = PostList.as_view()
@@ -72,6 +42,11 @@ post_list_view = PostList.as_view()
 class PostDetail(DetailView):
     model = Post
     template_name = 'posts/detail.html'
+
+    def get_object(self):
+        queryset = Post.objects.select_related('business', 'currency').prefetch_related('locations', 'subcategories__category')
+        return get_object_or_404(queryset, pk=self.kwargs['pk'])
+
 
 
 post_detail_view = PostDetail.as_view()

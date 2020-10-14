@@ -117,6 +117,8 @@
     const SELECTED_SUBCATEGORIES = [];
     const CATEGORIES = {{json_categories|safe}}
   </script>
+
+  {{ post.tags|json_script:"selected-tags" }}
   {{ post.attributes|json_script:"selected-attributes" }}
   <script src="{% static 'dist/js/DashboardPostSelectCategory.js' %}"></script>
 

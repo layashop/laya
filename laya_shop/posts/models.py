@@ -2,6 +2,8 @@ from django.db import models
 from random import randint
 from django.contrib.postgres.fields import JSONField, ArrayField
 from business.models import Business
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill
 from users.models import User
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -30,8 +32,10 @@ class SubCategory(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="subcategories")
     name = models.CharField(max_length=50)
     banner = models.ImageField(verbose_name="Banner", upload_to="subcategories", null=True, blank=True)
+
     def __str__(self):
         return self.name
+
     class Meta:
         verbose_name = "Subcategory"
         verbose_name_plural = "Subcategories"
@@ -68,7 +72,8 @@ class Post(models.Model):
     description = models.CharField(max_length=200, null=True)
     attributes = JSONField(null=True, blank=True)
     price = models.FloatField()
-    discount = models.PositiveIntegerField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(99)])
+    discount = models.PositiveIntegerField(null=True, blank=True,
+                                           validators=[MinValueValidator(0), MaxValueValidator(99)])
     # <<<<<<<<<<<<<<<<
 
     # KARMA
@@ -115,7 +120,8 @@ class Post(models.Model):
         max_length=2, choices=CLASSIFICATION_CHOICES, default=ARTICLE)
 
     subcategories = models.ManyToManyField(SubCategory, related_name="posts")
-    # tags = models.ManyToManyField(Tag, blank=True)
+    tags = ArrayField(
+        models.CharField(max_length=50), blank=True, null=True)
     # <<<<<<<<<<<<<<<<
     promo = models.CharField(max_length=150, null=True, blank=True)
 
@@ -126,12 +132,10 @@ class Post(models.Model):
     # departaments = models.ManyToManyField(Department, through='PostDepartment')
     last_confirmation = models.DateTimeField(null=True, blank=True)  # Boton de actualizado
 
-
-
     @property
     def final_price(self):
         if self.discount:
-            return round(self.price - ( self.price * (self.discount / 100)), 2)
+            return round(self.price - (self.price * (self.discount / 100)), 2)
         return self.price
 
     def __str__(self):
@@ -147,6 +151,7 @@ class Post(models.Model):
         super(Post, self).save(*args, **kwargs)
 
 
+
 class Unit(models.Model):
     values = ArrayField(
         models.CharField(max_length=10)
@@ -154,7 +159,6 @@ class Unit(models.Model):
 
 
 class AdditionalAttribute(models.Model):
-
     STRING = 'STRING'
     MEASURE = 'MEASURE'
     DIMENSION = 'DIMENSION'
@@ -184,14 +188,21 @@ class AdditionalAttributesValue(models.Model):
     value = JSONField()
 
 
-class BusinessImage(models.Model, ThumbModel):
-    THUMBS_SIZES = ["300", "350x350"]
-    THUMBS_FIELD = 'image'
+class BusinessImage(models.Model):
+
+    thumbnail_200x200 = ImageSpecField(
+        source='image', processors=[ResizeToFill(250, 250)], format='JPEG', options={'quality': 80})
+    thumbnail_512x512 = ImageSpecField(
+        source='image', processors=[ResizeToFill(512, 512)], format='JPEG', options={'quality': 80})
+    # thumbnail_1000 = ImageSpecField(
+    #     source='image', processors=[ResizeToFill(width=1000, upscale=False)], format='JPEG', options={'quality': 80})
+
     business = models.ForeignKey("business.Business", on_delete=models.CASCADE)
     image = models.ImageField(upload_to=business_directory_files)
     post = models.ForeignKey(Post, null=True, blank=True, on_delete=models.SET_NULL, related_name="images")
     is_valid = models.BooleanField(default=False)
     alternative = models.CharField(max_length=200, null=True, blank=True)
+
     def filename(self):
         return os.path.basename(self.image.name)
 
@@ -217,4 +228,3 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
         if os.path.isfile(instance.image.path):
             print('removing image from filesystem')
             os.remove(instance.image.path)
-
