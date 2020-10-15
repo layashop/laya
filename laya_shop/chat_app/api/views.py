@@ -6,8 +6,7 @@ from chat_app.api.filters import ChatRoomFilters
 
 
 class ChatRoomViewSet(ModelViewSet):
-    model = ChatRoom
-    serializar_class = ChatRoomSerializer
+    serializer_class = ChatRoomSerializer
     queryset = ChatRoom.objects.all()
-    filter_backends = filters.DjangoFilterBackend
+    filter_backends = [filters.DjangoFilterBackend]
     filter_class = ChatRoomFilters

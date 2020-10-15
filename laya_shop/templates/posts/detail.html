@@ -312,9 +312,13 @@
 </div>
 {% endblock %}
 {% block javascript %}
+<script src="https://unpkg.com/regenerator-runtime@0.13.1/runtime.js"></script>
+
 <script>
   const USER = {% firstof user.pk 'null' %}
+  const BUSINESS = '{{ object.business.slug }}'
   console.log('User', USER)
+  console.log('Business', BUSINESS)
 </script>
 <script src="{% static 'dist/js/ChatWidget.js' %}"></script>
 {% endblock %}

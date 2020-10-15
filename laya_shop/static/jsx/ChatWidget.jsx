@@ -8,7 +8,7 @@ import ChatRoom from './ChatWidget/ChatRooms'
 
 const ChatWidget = () => {
     // Temporal Slug Data
-    const [slug , setSlug] = useState('layashop')
+    const [slug , setSlug] = useState(BUSINESS)
     const [userPK] = useState(USER)
     console.log('Slug', slug)
     console.log('user',USER)
@@ -17,11 +17,6 @@ const ChatWidget = () => {
             <ChatUserContextProvider value={
                 {userPk: userPK}
             }>
-                <Box as='div'>
-                <form onSubmit={e => e.preventDefault()}>
-                    <input placeholder="slug" value={slug} type="text" name='slug' onChange={e => setSlug(e.target.value)}/>
-                </form>
-                </Box>
                 <ChatRoom businessSlug={slug}></ChatRoom>
             </ChatUserContextProvider>
         </ThemeProvider>
