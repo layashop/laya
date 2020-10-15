@@ -40,11 +40,11 @@ const ChatRoom= ({businessSlug}) => {
         }
     }
     useEffect(()=>{
-       createWSConnection()
+       if(userPk) createWSConnection()
        return () => {
            chatSocket?.close()
        }
-    },[])
+    },[userPk])
     console.log(chatLog)
     return <Box as='div'>
         <Box as='div'>

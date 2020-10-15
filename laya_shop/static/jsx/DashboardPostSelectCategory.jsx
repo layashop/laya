@@ -25,9 +25,8 @@ const catOptions = CATEGORIES ? CategoryConvert(CATEGORIES) : baseData.categorie
 })
 
 catOptions.unshift(baseCat)
-const SELECTED_TAGS = JSON.parse(document.getElementById('selected-tags').textContent)
-const defaultTags = typeof SELECTED_TAGS === 'object' && SELECTED_TAGS !== null ? SELECTED_TAGS.map(element => ({value: element, label: element})) : []
 
+const defaultTags = undefined ? console.log('xd') : []
 
 
 const DashboardPostSelectCategory = () => {
@@ -90,6 +89,7 @@ const DashboardPostSelectCategory = () => {
       formattedSubcat[element.category] ? formattedSubcat[element.category].push(element.id) : formattedSubcat[element.category] = [element.id]
   })
 
+
   return (
       <Box __css={{ '& label': { my: 'xsmall', display: 'block' } }}>
          <h3 className="mb-4 block uppercase tracking-wide text-gray-700 text-md font-bold">Categorizacion</h3>
@@ -116,7 +116,6 @@ const DashboardPostSelectCategory = () => {
                 />
           </label>
           <span className="mb-2 mt-2 block uppercase tracking-wide text-gray-700 text-xs font-bold">Selecciones</span>
-          {selectedSubcatList.map(el=>(<input name="subcategories" key={el.id} value={el.id} readOnly className="hidden"/>))}
           <Box __css={{height: '200px', overflowY: 'scroll'}}>
               {
                   Object.keys(formattedSubcat).map(category => {

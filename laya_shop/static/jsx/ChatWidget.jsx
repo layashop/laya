@@ -1,5 +1,5 @@
 import React, { createContext, useState } from "react"
-import ReactDOM from 'react-dom'
+import {render} from 'react-dom'
 import { ThemeProvider, Box } from "theme-ui"
 import  {ChatUserContextProvider} from './ChatWidget/UserContext'
 import theme from './utils/theme'
@@ -30,5 +30,10 @@ const ChatWidget = () => {
 
 console.log('CHAT WIDGET')
 
-const widgetContainer = document.getElementById('chat-widget')
-ReactDOM.render(<ChatWidget/>,widgetContainer)
+function renderWidget() {
+    const widgetContainer = document.getElementById('chat-widget')
+    render(<ChatWidget/>,widgetContainer)
+}
+
+const triggerButton = document.getElementById('trigger-chat')
+triggerButton.addEventListener('click', renderWidget)
