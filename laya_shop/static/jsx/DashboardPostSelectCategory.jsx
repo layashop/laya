@@ -20,9 +20,14 @@ const CategoryConvert = (catArray) => {
     })
   }
 
+
+const CATEGORIES = JSON.parse(document.getElementById('categories').textContent)
 const catOptions = CATEGORIES ? CategoryConvert(CATEGORIES) : baseData.categories.map((element) => {
     return { label: element.name, value: element.id, subcat: element.subcategories }
 })
+
+let SELECTED_SUBCATEGORIES = document.getElementById('selected-subcategories')?.textContent
+SELECTED_SUBCATEGORIES = SELECTED_SUBCATEGORIES ? JSON.parse(SELECTED_SUBCATEGORIES) : null
 
 catOptions.unshift(baseCat)
 const SELECTED_TAGS = JSON.parse(document.getElementById('selected-tags').textContent)

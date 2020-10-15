@@ -3,9 +3,11 @@ from posts.models import Post
 
 
 class PostFilter(filters.FilterSet):
-    title = filters.CharFilter(lookup_expr="icontains")
+    search = filters.CharFilter(field_name='title', lookup_expr="icontains")
     category = filters.NumberFilter(method="filter_category")
     location = filters.NumberFilter(field_name='locations')
+    state = filters.NumberFilter()
+    subcategory = filters.NumberFilter(field_name='subcategories')
     # sort = filters.NumberFilter(method='filter_sort_by')
     sort = filters.OrderingFilter(
         fields=(
@@ -15,7 +17,6 @@ class PostFilter(filters.FilterSet):
     )
 
     def filter_category(self, queryset, name, value):
-        print('HIIIIIIIIIIIIIIIIIII')
         return queryset.filter(subcategories__category_id=value).distinct()
 
 
@@ -35,4 +36,5 @@ class PostFilter(filters.FilterSet):
             "subcategories",
             "id",
             'state',
+            'delivery'
         ]

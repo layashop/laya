@@ -63,6 +63,13 @@ def random_score():
 
 
 class Post(models.Model):
+
+    def __init__(self, *args, **kwargs):
+        super(Post, self).__init__(*args, **kwargs)
+
+        #Para verificar si cambió el precio, si es asi, se realiza la actualizacion del campo base_price
+        self.__original_price = self.price
+
     # BASICS
     business = models.ForeignKey(Business, on_delete=models.CASCADE)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -71,7 +78,8 @@ class Post(models.Model):
     title = models.CharField(max_length=50, null=False)
     description = models.CharField(max_length=200, null=True)
     attributes = JSONField(null=True, blank=True)
-    price = models.FloatField()
+    price = models.FloatField(null=False, blank=False)
+    base_price = models.FloatField(null=False, blank=True)
     discount = models.PositiveIntegerField(null=True, blank=True,
                                            validators=[MinValueValidator(0), MaxValueValidator(99)])
     # <<<<<<<<<<<<<<<<
@@ -142,10 +150,15 @@ class Post(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
+
         if not self.id:
             self.created_at = timezone.now()
             self.modified_at = timezone.now()
+            self.base_price = round((self.price / self.currency.rate), 3)
         else:
+            if self.__original_price != self.price:
+                print("CAMBIANDOOOOOOOOOOOOOOOO")
+                self.base_price = round((self.price / self.currency.rate), 3)
             self.modified_at = timezone.now()
 
         super(Post, self).save(*args, **kwargs)
@@ -191,6 +204,8 @@ class AdditionalAttributesValue(models.Model):
 class BusinessImage(models.Model):
 
     thumbnail_200x200 = ImageSpecField(
+        source='image', processors=[ResizeToFill(200, 200)], format='JPEG', options={'quality': 80})
+    thumbnail_250x250 = ImageSpecField(
         source='image', processors=[ResizeToFill(250, 250)], format='JPEG', options={'quality': 80})
     thumbnail_512x512 = ImageSpecField(
         source='image', processors=[ResizeToFill(512, 512)], format='JPEG', options={'quality': 80})

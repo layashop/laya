@@ -1,24 +1,13 @@
 from posts.models import Category, SubCategory
+from django.db.models import Prefetch
 from json import dumps
-
-
+from django.core.serializers.json import DjangoJSONEncoder
+from .serializers import CategorySerializer, SubcategorySerializer
 class PostClassificationMixin:
     def get_context_data(self, **kwargs):
         context = super(PostClassificationMixin, self).get_context_data(**kwargs)
-        categories = []
-        for category in Category.objects.all().prefetch_related("subcategories"):
-            categories.append(
-                dict(
-                    id=category.pk,
-                    name=category.name,
-                    subcategories=[
-                        dict(id=i.pk, name=i.name) for i in category.subcategories.all()
-                    ],
-                )
-            )
-        context["json_categories"] = dumps(categories)
-        # context['categories'] =  dumps([i for i in Category.objects.values('id', 'name')])
-        context["subcategories"] = dumps(
-            [i for i in SubCategory.objects.values("id", "name", "category")]
-        )
+        context["subcategories"] = SubcategorySerializer(SubCategory.objects.all(), many=True).data
+        context['categories'] = CategorySerializer(
+            Category.objects.all().prefetch_related("subcategories"), many=True).data
+
         return context

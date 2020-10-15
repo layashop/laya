@@ -4,7 +4,7 @@
 {% block title %} Dashboard {% endblock title %}
 
 {% block content %}
-
+  {{ object.base_price }}
   <div class="mx-10 py-20">
     {% for image in object.images.all %}
       {{ image.thumbnail_250x250.url }}
@@ -109,12 +109,14 @@
         </div>
       </div>
     </form>
+  {% if is_updating %}
     <form action="{{ request.path }}/delete" method="POST">
       {% csrf_token %}
       <input type="submit" value="DELETE" hidden>
       <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-auto mt-3 block">Eliminar
       </button>
     </form>
+  {% endif %}
   </div>
 
   <style>
@@ -132,24 +134,24 @@
 {% endblock %}
 
 {% block javascripts %}
-  <script>
-    let postImages = {{post_images|safe}};
-    const CATEGORIES = {{json_categories|safe}};
-    const SUBCATEGORIES = {{subcategories|safe}};
-    const SELECTED_SUBCATEGORIES = {% firstof selected_subcategories|safe '[]' %};
-{#    {% if post.attributes %}#}
-{#      const SELECTED_ATTRIBUTES = JSON.parse("{{ post.attributes|safe }}");#}
-{#    {% else %}#}
-{#      const SELECTED_ATTRIBUTES = null;#}
-{#    {% endif %}#}
-  </script>
+
   {{ post.tags|json_script:"selected-tags" }}
   {{ post.attributes|json_script:"selected-attributes" }}
+  {{ categories|json_script:"categories" }}
+  {{ subcategories|json_script:"subcategories" }}
+
+  {% if is_updating %}
+    {{ selected_subcategories|json_script:"selected-subcategories" }}
+    {{ post_images|json_script:"post-images" }}
+  {% endif %}
+
 
   <script src="{% static 'dist/js/DashboardPostSelectCategory.js' %}"></script>
 
 
   <script>
+
+    let post_images = JSON.parse(document.getElementById('selected-subcategories').textContent)
     let validPostImagesIds = []
     Dropzone.autoDiscover = false;
     let csrftoken = Cookies.get('csrftoken');

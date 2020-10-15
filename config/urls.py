@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from django.views import defaults as default_views
-from django.views.generic import TemplateView
+from django.views.generic import RedirectView
 from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
@@ -15,6 +15,7 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
     path("users/", include("laya_shop.users.urls", namespace="users")),
+    path("search/", RedirectView.as_view(pattern_name="posts:search", permanent=True)),
     path("posts/", include("laya_shop.posts.urls", namespace="posts")),
     path("accounts/", include("allauth.urls")),
     path(

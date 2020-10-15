@@ -11,12 +11,10 @@ from business.models import Business
 from posts.models import Post, Category, SubCategory
 from posts.models import BusinessImage
 from .mixins import DashboardPermissionsMixin
-from django.http import HttpResponseBadRequest, Http404, HttpResponseRedirect
-from django.core.serializers import serialize
+from laya_shop.posts.serializers import SubcategorySerializer
 from json import dumps, loads
-from sorl.thumbnail import get_thumbnail
-from posts.mixins import PostClassificationMixin
-from dashboard.mixins import DashboardContextMixin
+from laya_shop.posts.mixins import PostClassificationMixin
+from laya_shop.dashboard.mixins import DashboardContextMixin
 
 # FORMS
 from .forms import PostForm
@@ -84,7 +82,7 @@ post_list_view = PostList.as_view()
 
 class PostCreate(PostClassificationMixin, DashboardPermissionsMixin, CreateView):
     model = Post
-    template_name = "dashboard/post_create.html"
+    template_name = "dashboard/post_detail.html"
     form_class = PostForm
 
     def get_context_data(self, **kwargs):
@@ -140,26 +138,20 @@ class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView)
         context["business"] = get_object_or_404(
             Business, slug=self.kwargs["business_slug"]
         )
-        context["post"] = self.get_object()
+        context["post"] = self.object
         post_images = []
-        for image in self.get_object().images.filter(is_valid=True):  # is_valid=True
+        for image in self.object.images.filter(is_valid=True):  # is_valid=True
             post_images.append(
                 {
-                    "url": image.thumbnail_350x350.url,
+                    "url": image.thumbnail_250x250.url,
                     "name": image.filename(),
                     "id": image.pk,
                 }
             )
 
-        context["selected_subcategories"] = dumps(
-            [
-                dict(id=i.pk, category=i.category.pk)
-                for i in self.get_object()
-                .subcategories.all()
-                .prefetch_related("category")
-            ]
-        )
+        context["selected_subcategories"] = SubcategorySerializer(self.object.subcategories.all(), many=True).data
         context["post_images"] = dumps(post_images)
+        context["is_updating"] = True
         return context
 
     def form_valid(self, form):
@@ -168,7 +160,6 @@ class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView)
         post.business = get_object_or_404(Business, slug=business_slug)
         # import pdb; pdb.set_trace()
         subcategories = self.request.POST.getlist("subcategories")
-
         post.attributes = loads(self.request.POST.get('additionalParameters', 'null'))
         if subcategories:
             try:
