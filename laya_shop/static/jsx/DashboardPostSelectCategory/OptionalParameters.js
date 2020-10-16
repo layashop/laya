@@ -5,7 +5,7 @@ import structure from './structure'
 
 const additionalOpt = []
 const SELECTED_ATTRIBUTES = JSON.parse(document.getElementById('selected-attributes').textContent)
-const initialSelectedParameters = typeof SELECTED_ATTRIBUTES === 'object' && SELECTED_ATTRIBUTES !== null ? SELECTED_ATTRIBUTES : {brand: 'Samsung'}
+const initialSelectedParameters = typeof SELECTED_ATTRIBUTES === 'object' && SELECTED_ATTRIBUTES !== null ? SELECTED_ATTRIBUTES : {}
 
 for( const type in structure ) {
     if (initialSelectedParameters[type] === undefined) {
