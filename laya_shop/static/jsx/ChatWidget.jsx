@@ -8,22 +8,20 @@ import ChatRoom from './ChatWidget/ChatRooms'
 
 const ChatWidget = () => {
     // Temporal Slug Data
-    const [slug , setSlug] = useState(BUSINESS)
-    const [userPK] = useState(USER)
-    console.log('Slug', slug)
-    console.log('user',USER)
+    const [slug , setSlug] = useState(`${BUSINESS}-${USER.pk}`)
+    const [user] = useState(USER)
+   
     return (
         <ThemeProvider theme={theme}> 
             <ChatUserContextProvider value={
-                {userPk: userPK}
+                {user: user}
             }>
-                <ChatRoom businessSlug={slug}></ChatRoom>
+                <ChatRoom slug={slug}></ChatRoom>
             </ChatUserContextProvider>
         </ThemeProvider>
     )
 }
 
-console.log('CHAT WIDGET')
 
 function renderWidget() {
     const widgetContainer = document.getElementById('chat-widget')

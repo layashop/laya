@@ -315,7 +315,10 @@
 <script src="https://unpkg.com/regenerator-runtime@0.13.1/runtime.js"></script>
 
 <script>
-  const USER = {% firstof user.pk 'null' %}
+  const USER = {
+    pk: {% firstof user.pk 'null' %},
+    name: `{% firstof user.name 'null'%}`
+  }
   const BUSINESS = '{{ object.business.slug }}'
   console.log('User', USER)
   console.log('Business', BUSINESS)
