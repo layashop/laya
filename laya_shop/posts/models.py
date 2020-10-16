@@ -5,20 +5,20 @@ from business.models import Business
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 from users.models import User
+from django.utils.text import slugify
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
-# Create your models here.
+
 from .utils import business_directory_files
 import os
 
-from django.db.models.signals import post_delete
-from django.dispatch import receiver
-from laya_shop.utils.thumbnails import ThumbModel
 
+from django.dispatch import receiver
 
 class Category(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, null=False, blank=False, unique=True)
     banner = models.ImageField(verbose_name='Banner', upload_to='categories', null=True, blank=True)
+    slug = models.SlugField(null=False, blank=True)
 
     def __str__(self):
         return self.name
@@ -26,6 +26,10 @@ class Category(models.Model):
     class Meta:
         verbose_name = "Category"
         verbose_name_plural = "Categories"
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Category, self).save(*args, **kwargs)
 
 
 class SubCategory(models.Model):

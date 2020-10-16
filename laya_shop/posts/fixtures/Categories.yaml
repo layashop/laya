@@ -2,47 +2,59 @@
   pk: 1
   fields:
     name: Vestimenta y Calzado
+    slug: vestimenta-y-calzado
 - model : posts.Category
   pk: 2
   fields:
     name: Producto Tecnlógicos
+    slug: producto-tecnologicos
 - model : posts.Category
   pk: 3
   fields:
     name: Cuidado Personal
+    slug: cuidado-personal
 - model : posts.Category
   pk: 4
   fields:
     name: Accesorios de Belleza
+    slug: accesorios-de-belleza
 - model : posts.Category
   pk: 5
   fields:
     name: Cosmeticos
+    slug: cosmeticos
 - model : posts.Category
   pk: 6
   fields:
     name: Alimentos
+    slug: alimentos
 - model : posts.Category
   pk: 7
   fields:
     name: Muebles
+    slug: muebles
 - model : posts.Category
   pk: 8
   fields:
     name: Artesanias y Arte
+    slug: artesanias-y-arte
 - model : posts.Category
   pk: 9
   fields:
     name: Hogar y Cocina
+    slug: hogar-y-cocina
 - model : posts.Category
   pk: 10
   fields:
     name: Mascotas
+    slug: mascotas
 - model : posts.Category
   pk: 11
   fields:
-    name: Musica
+    name: Música
+    slug: musica
 - model : posts.Category
   pk: 12
   fields:
     name: Deportes
+    slug: deportes

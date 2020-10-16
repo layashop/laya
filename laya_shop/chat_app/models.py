@@ -14,4 +14,4 @@ class ChatMessage(models.Model):
     chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE)
     send_verifier = models.UUIDField()
     message = models.TextField()
-    send_date = models.DateField()
+    send_date = models.DateField(null=True)

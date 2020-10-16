@@ -1,13 +1,14 @@
 from django.utils.decorators import method_decorator
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView
-from django.views.decorators.cache import cache_page
+from django.shortcuts import get_object_or_404
+from django.views.generic import ListView, DetailView, TemplateView
+
 from django.core.cache import caches
 from .decorators import  cache_on_auth
 
 from posts.filters import PostFilter
 from posts.mixins import PostClassificationMixin
-from posts.models import Post
+from posts.models import Post, Category
+
 
 cache = caches['default']
 
@@ -55,6 +56,19 @@ class PostDetail(DetailView):
         queryset = Post.objects.select_related('business', 'currency').prefetch_related('locations', 'subcategories__category')
         return get_object_or_404(queryset, pk=self.kwargs['pk'])
 
-
-
 post_detail_view = PostDetail.as_view()
+
+
+
+class CategoryDetail(DetailView):
+    model = Category
+    template_name = "posts/classification_detail.html"
+    slug_field = "slug"
+    slug_url_kwarg = "slug"
+    context_object_name = "category"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+category_detail_view = CategoryDetail.as_view()

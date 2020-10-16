@@ -19,13 +19,9 @@ from laya_shop.dashboard.mixins import DashboardContextMixin
 # FORMS
 from .forms import PostForm
 
-# Create your views here.
-
 
 # LogicRequiredMixin verifica que el usuario este logeado, UserPassesTestMixin es una verificacion
 # UserPasessTestMixin no verifica que el usuario este logeado, asi que primero va el LoginRequiredMixin
-
-
 class Index(DashboardPermissionsMixin, DashboardContextMixin, TemplateView):
     template_name = "dashboard/index.html"
 

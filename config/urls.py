@@ -16,7 +16,7 @@ urlpatterns = [
     # User management
     path("users/", include("laya_shop.users.urls", namespace="users")),
     path("search/", RedirectView.as_view(pattern_name="posts:search", permanent=True)),
-    path("posts/", include("laya_shop.posts.urls", namespace="posts")),
+    path("", include("laya_shop.posts.urls", namespace="posts")),
     path("accounts/", include("allauth.urls")),
     path(
         "<str:business_slug>/dashboard/",
