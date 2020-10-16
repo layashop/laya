@@ -4,53 +4,55 @@
 
 {% block content %}
   <div class="flex flex-col md:flex-row">
-    <div id="search-component" style="min-width: 300px">
-    </div>
-    <div class="pt-8 grid grid-cols-2 gap-2 px-2 sm:grid-cols-3 md:grid-cols-4 sm:gap-4 sm:px-4">
-{#      {% cache 3600 search_cache_name %}#}
-        {% for post in object_list  %}
-        <div class="flex flex-col ">
-        {% if post.images %}
-          {% with media=post.images.all.0 %}
-              <img src="{{ media.thumbnail_200x200.url }}"  class="w-full h-auto rounded">
-          {% endwith %}
-        {% endif %}
-        {% if post.discount %}
-        {% endif %}
-        <a href="{% url 'posts:detail' post.pk %}">
-          <h3 class="truncate">{{ post.title }}</h3>
-        </a>
-        <div class="flex items-start whitespace-no-wrap">
-          {% if post.discount %}
-            <span class="text-black text-lg font-medium">{{ post.currency.symbol }} {{ post.final_price }}</span>
-            <span class="text-green-700 line-through text-sm ml-2">{{ post.currency.symbol }} {{ post.price }}</span>
-          {% else %}
-            <span class="text-black text-lg font-medium">{{ post.currency.symbol }} {{ post.price }}</span>
-          {% endif %}
-        </div>
-        <div class="flex flex-wrap">
-          {% if post.discount %}
-            <span class="mr-2 rounded bg-gray-200 py-1 px-2 text-xs">Descuento</span>
-          {% endif %}
-        </div>
+    {% if object_list %}
+      <div id="search-component" style="min-width: 300px">
+      </div>
+      <div class="pt-8 grid grid-cols-2 gap-2 px-2 sm:grid-cols-3 md:grid-cols-4 sm:gap-4 sm:px-4">
+        {#      {% cache 3600 search_cache_name %}#}
+        {% for post in object_list %}
+          <div class="flex flex-col ">
+            {% if post.images %}
+              {% with media=post.images.all.0 %}
+                <img src="{{ media.thumbnail_200x200.url }}" class="w-full h-auto rounded">
+              {% endwith %}
+            {% endif %}
+            {% if post.discount %}
+            {% endif %}
+            <a href="{% url 'posts:detail' post.pk %}">
+              <h3 class="truncate">{{ post.title }}</h3>
+            </a>
+            <div class="flex items-start whitespace-no-wrap">
+              {% if post.discount %}
+                <span class="text-black text-lg font-medium">{{ post.currency.symbol }} {{ post.final_price }}</span>
+                <span class="text-green-700 line-through text-sm ml-2">{{ post.currency.symbol }} {{ post.price }}</span>
+              {% else %}
+                <span class="text-black text-lg font-medium">{{ post.currency.symbol }} {{ post.price }}</span>
+              {% endif %}
+            </div>
+            <div class="flex flex-wrap">
+              {% if post.discount %}
+                <span class="mr-2 rounded bg-gray-200 py-1 px-2 text-xs">Descuento</span>
+              {% endif %}
+            </div>
 
-          {#        <span class="block">{{  }}</span>#}
-        </div>
+            {#        <span class="block">{{  }}</span>#}
+          </div>
+        {% endfor %}
 
-      {% endfor %}
-{#      {% endcache %}#}
-    </div>
-
-
+        {#      {% endcache %}#}
+      </div>
+    {% else %}
+      <div class="py-10 px-5 text-center text-2xl">
+        <h1>No hemos encontrado resultados para lo que estabas buscando :(</h1>
+      </div>
+    {% endif %}
   </div>
 
 {% endblock %}
 
 
 {% block javascript %}
-  <script>
-    const CATEGORIES = {{json_categories|safe}};
-  </script>
+  {{ categories|json_script:"categories" }}
   <script src="{% static 'dist/js/SearchPageWidget.js' %}"></script>
 {% endblock %}
 

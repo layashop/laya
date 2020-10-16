@@ -25,6 +25,8 @@ const SearchWidget = ({ ...props }) => {
     return Object.keys(currencyObj).map(el=>({value:el, label: `${el} (${currencyObj[el].symbol})`}))
   }
 
+  let CATEGORIES = document.getElementById('categories')?.textContent
+  CATEGORIES = CATEGORIES ? JSON.parse(CATEGORIES) : null
   const catOptions = CATEGORIES ? CategoryConvert(CATEGORIES) : baseData.categories.map((element) => {
     return { label: element.name, value: element.id, subcat: element.subcategories }
   })

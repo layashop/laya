@@ -10,11 +10,11 @@
 
 /* Header */
 
-header{
-    margin: 20px 0 ;
-    display: flex;
-    justify-content: center;
-}
+/*header{*/
+
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*}*/
 .header-container{
     padding: 0 10px;
     width: 100%;

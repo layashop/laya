@@ -156,9 +156,10 @@ class Post(models.Model):
             self.modified_at = timezone.now()
             self.base_price = round((self.price / self.currency.rate), 3)
         else:
+            #Si cambió, recalcular
             if self.__original_price != self.price:
-                print("CAMBIANDOOOOOOOOOOOOOOOO")
                 self.base_price = round((self.price / self.currency.rate), 3)
+
             self.modified_at = timezone.now()
 
         super(Post, self).save(*args, **kwargs)

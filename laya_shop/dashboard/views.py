@@ -187,8 +187,6 @@ class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView)
         return super(PostDetail, self).form_valid(form)
 
     def get_success_url(self):
-        # una vez termina de editar, redirigimos a index del dashboard
-        # return reverse('dashboard:post_list', args=(self.kwargs['business_slug'],))
         return self.request.path_info
 
 
