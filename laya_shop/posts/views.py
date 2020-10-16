@@ -7,7 +7,7 @@ from .decorators import  cache_on_auth
 
 from posts.filters import PostFilter
 from posts.mixins import PostClassificationMixin
-from posts.models import Post, Category
+from posts.models import Post, Category, SubCategory
 
 
 cache = caches['default']
@@ -69,6 +69,9 @@ class CategoryDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['highlight'] = Post.objects.select_related('business').all()[:6]
+        context['posts'] = Post.objects.all()[:6]
+        context['subcategories'] = self.object.subcategories.all()
         return context
 
 category_detail_view = CategoryDetail.as_view()

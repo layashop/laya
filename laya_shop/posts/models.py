@@ -20,6 +20,12 @@ class Category(models.Model):
     banner = models.ImageField(verbose_name='Banner', upload_to='categories', null=True, blank=True)
     slug = models.SlugField(null=False, blank=True)
 
+    thumbnail_640x100 = ImageSpecField(
+        source='banner', processors=[ResizeToFill(640, 150)], format='JPEG', options={'quality': 80})
+    thumbnail_768x200 = ImageSpecField(
+        source='banner', processors=[ResizeToFill(768, 200)], format='JPEG', options={'quality': 80})
+    thumbnail_1800x300 = ImageSpecField(
+        source='banner', processors=[ResizeToFill(1800, 300)], format='JPEG', options={'quality': 80})
     def __str__(self):
         return self.name
 

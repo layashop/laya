@@ -4,8 +4,8 @@
   <div x-ref="submenu" class="hidden">
     <div :class="menuOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'"
          class="fixed left-0 top-0 z-10 max-w-xs w-full h-full px-6 py-4 transition duration-300 transform overflow-y-auto bg-white border-r-2 border-gray-300">
-      <div class="flex justify-between mt-10 mb-4 border-b-2 ">
-        <span class="text-lg leading-8 border-gray-300">Navegación</span>
+      <div class="flex justify-between mt-10 mb-4 ">
+        <span class="text-lg leading-8 border-gray-300">Explorar departamentos</span>
         <svg @click="menuOpen = !menuOpen" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="30" height="30"
              viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round"
              stroke-linejoin="round">
@@ -15,15 +15,13 @@
         </svg>
       </div>
       <ul class="divide-y divide-gray-200 cursor-pointer">
-        <li class="hover:bg-gray-100 transition duration-300 py-4">
-          Vestimenta y calzado
-        </li>
-        <li class="hover:bg-gray-100 transition duration-300 py-4">
-          Vestimenta y calzado
-        </li>
-        <li class="hover:bg-gray-100 transition duration-300 py-4">
-          Vestimenta y calzado
-        </li>
+        {% for category in all_categories %}
+          <a href="{% url "posts:category_detail" category.slug %}">
+            <li class="hover:bg-gray-100 transition duration-300 py-4">
+              {{ category.name }}
+            </li>
+          </a>
+        {% endfor %}
       </ul>
     </div>
   </div>

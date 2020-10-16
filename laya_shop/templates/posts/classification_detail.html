@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="px-4">
+    <div class="py-2 flex flex-col">
+      <h1 class="text-2xl font-medium">{{ category.name }}</h1>
+      <div class="w-100">
+        <ul class="flex whitespace-no-wrap  overflow-x-auto py-2">
+          {% for subcategory in subcategories %}
+            <li class="mr-2">
+              <a href="{% url 'posts:search' %}?subcategory={{ subcategory.pk }}">
+                <span class="rounded-full bg-gray-200 py-1 px-2">{{ subcategory.name }}</span>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+    </div>
+    <div>
+      <h3 class="text-2xl ">Destacados</h3>
+      <div class="flex overflow-x-auto py-4">
+        {% for post in highlight %}
+          <div class="flex flex-col mx-2 flex-none">
+            <h6>{{ post.business.name }}</h6>
+            {% if post.images %}
+              {% with media=post.images.all.0 %}
+                <img src="{{ media.thumbnail_200x200.url }}" width="{{ media.thumbnail_200x200.width }}"
+                     height="{{ media.thumbnail_200x200.height }}" class="w-full h-auto rounded">
+              {% endwith %}
+            {% endif %}
+          </div>
+          <div class="flex flex-col mx-2 flex-none">
+            <h6>{{ post.business.name }}</h6>
+            {% if post.images %}
+              {% with media=post.images.all.0 %}
+                <img src="{{ media.thumbnail_200x200.url }}" width="{{ media.thumbnail_200x200.width }}"
+                     height="{{ media.thumbnail_200x200.height }}" class="w-full h-auto rounded">
+              {% endwith %}
+            {% endif %}
+          </div>
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}
