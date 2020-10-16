@@ -1,19 +1,69 @@
 {% load static %}
-<header>
-  <div class="flex px-4 py-2 items-center w-full sm:px-10 sm:pt-5">
-    <a href="/" class="flex-shrink-0 mr-4">
-      <img src="{% static 'images/logo.png' %}" alt="" srcset="" class="logo cursor-pointer">
-    </a>
-    <div class="relative text-gray-600 w-full">
-      <input class="w-full border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-full text-sm focus:outline-none"
-             type="search" name="search" placeholder="Search">
-      <button type="submit" class="absolute right-0 top-0 mt-3 mr-4">
-        <svg class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
-             xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"
-             viewBox="0 0 56.966 56.966" style="enable-background:new 0 0 56.966 56.966;" xml:space="preserve"
-             width="512px" height="512px">
-          <path d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z"/></svg>
-      </button>
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+<header x-data="{ menuOpen: false }" x-init="() => { $refs.submenu.classList.remove('hidden') }">
+  <div x-ref="submenu" class="hidden">
+    <div :class="menuOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'"
+         class="fixed left-0 top-0 z-10 max-w-xs w-full h-full px-6 py-4 transition duration-300 transform overflow-y-auto bg-white border-r-2 border-gray-300">
+      <div class="flex justify-between mt-10 mb-4 border-b-2 ">
+        <span class="text-lg leading-8 border-gray-300">Navegación</span>
+        <svg @click="menuOpen = !menuOpen" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="30" height="30"
+             viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round"
+             stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </div>
+      <ul class="divide-y divide-gray-200 cursor-pointer">
+        <li class="hover:bg-gray-100 transition duration-300 py-4">
+          Vestimenta y calzado
+        </li>
+        <li class="hover:bg-gray-100 transition duration-300 py-4">
+          Vestimenta y calzado
+        </li>
+        <li class="hover:bg-gray-100 transition duration-300 py-4">
+          Vestimenta y calzado
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="flex flex-col px-4 items-center w-full sm:px-10 sm:pt-5">
+    <div class="flex justify-start items-center w-full py-1">
+      <a href="/" class="flex-shrink-0">
+        <img src="{% static 'images/logo.png' %}" alt="" srcset="" class="cursor-pointer w-10">
+      </a>
+      {% if user.is_authenticated %}
+        {#        <svg class="ml-auto w-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="#9E9E9E" fill="none" stroke-linecap="round" stroke-linejoin="round">#}
+        {#          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>#}
+        {#          <circle cx="12" cy="7" r="4" />#}
+        {#          <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />#}
+        {#        </svg>#}
+        <span class="ml-auto font-semibold text-sm">Cuenta</span>
+      {% else %}
+        <span class="ml-auto font-semibold text-sm">Iniciar sesion</span>
+      {% endif %}
+    </div>
+    <div class="flex w-full">
+      <svg @click="menuOpen = !menuOpen" xmlns="http://www.w3.org/2000/svg" class="w-8 mr-2 cursor-pointer" viewBox="0 0 24 24"
+           stroke-width="1.5" stroke="#9E9E9E" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+        <line x1="4" y1="6" x2="20" y2="6"/>
+        <line x1="4" y1="12" x2="20" y2="12"/>
+        <line x1="4" y1="18" x2="20" y2="18"/>
+      </svg>
+      <div class="relative text-gray-600 w-full">
+        <form action="{% url 'posts:search' %}" method="GET">
+          <input class="w-full border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-full text-sm focus:outline-none"
+                 name="search" id="search-input" placeholder="Search">
+          <button type="submit" class="absolute right-0 top-0 mt-3 mr-4">
+            <svg class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
+                 xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"
+                 viewBox="0 0 56.966 56.966" style="enable-background:new 0 0 56.966 56.966;" xml:space="preserve"
+                 width="512px" height="512px">
+            <path d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z"/></svg>
+          </button>
+        </form>
+      </div>
     </div>
     {#        <div class="search-bar">#}
     {#            <input type="search" name="" id="">#}
@@ -30,12 +80,7 @@
       {% if user.is_authenticated %}
         <h3 class="flex items-center cursor-pointer hidden">
             <span class="mr-1">
-                <svg height="21" viewBox="0 0 21 21" width="21" xmlns="http://www.w3.org/2000/svg"><g
-                        fill="none" fill-rule="evenodd" stroke="#2a2e3b" stroke-linecap="round"
-                        stroke-linejoin="round" transform="translate(1 2)"><path
-                        d="m7.5.5c1.65685425 0 3 1.34314575 3 3v1c0 1.65685425-1.34314575 3-3 3s-3-1.34314575-3-3v-1c0-1.65685425 1.34314575-3 3-3zm7 14c0-.2427251 0-.4854502 0-.7281753 0-3.1864098-3.6862915-5.2718247-7-5.2718247s-7 2.0854149-7 5.2718247v.7281753c0 .5522847.44771525 1 1 1h12c.5522847 0 1-.4477153 1-1z"/><path
-                        d="m11.5199327.67783074c1.1547685.41741154 1.9800673 1.52341097 1.9800673 2.82216926v1c0 1.29707884-.8231657 2.40189702-1.9755891 2.82054652.6579909-.79913412.9865095-1.90625342.9855555-3.32135789s-.3309652-2.52222377-.9900337-3.32135789zm4.9800673 14.82216926h1c.5522847 0 1-.4477153 1-1 0-.2427251 0-.4854502 0-.7281753 0-2.1698712-1.7094418-3.82917861-3.8465775-4.66705336 0 0 2.8465775 2.39522866 1.8465775 6.39522866z"
-                        fill="#2a2e3b"/></g></svg>
+
             </span>
           Mi cuenta
         </h3>

@@ -142,7 +142,6 @@
 
   {% if is_updating %}
     {{ selected_subcategories|json_script:"selected-subcategories" }}
-    {{ post_images|json_script:"post-images" }}
   {% endif %}
 
 
@@ -150,8 +149,9 @@
 
 
   <script>
-
-    let post_images = JSON.parse(document.getElementById('selected-subcategories').textContent)
+    {% if is_updating %}
+      let postImages = {{ post_images|safe }}
+    {% endif %}
     let validPostImagesIds = []
     Dropzone.autoDiscover = false;
     let csrftoken = Cookies.get('csrftoken');

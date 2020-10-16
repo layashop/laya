@@ -33,7 +33,7 @@ class PostList(PostClassificationMixin, ListView):
         else:
             print("NO CACHEADO!")
             queryset = self.model.objects.select_related('currency').prefetch_related('images')
-            queryset = PostFilter(self.request.GET, queryset=queryset).qs
+            queryset = PostFilter(self.request.GET, queryset=queryset, request=self.request).qs
             cache.set(cache_key, queryset, 60*60)
             return queryset
 
