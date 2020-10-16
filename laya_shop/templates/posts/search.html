@@ -10,7 +10,9 @@
       <div class="pt-8 grid grid-cols-2 gap-2 px-2 sm:grid-cols-3 md:grid-cols-4 sm:gap-4 sm:px-4">
 
         {% for post in object_list %}
-          <div class="flex flex-col ">
+          {# AQUI EMPIEZAN LOS ELEMENTOS #}
+          <a href="{% url 'posts:detail' post.pk %}">
+            <div class="flex flex-col ">
             {% if post.images %}
               {% with media=post.images.all.0 %}
                 <img src="{{ media.thumbnail_200x200.url }}" class="w-full h-auto rounded">
@@ -18,9 +20,9 @@
             {% endif %}
             {% if post.discount %}
             {% endif %}
-            <a href="{% url 'posts:detail' post.pk %}">
+
               <h3 class="truncate">{{ post.title }}</h3>
-            </a>
+
             <div class="flex items-start whitespace-no-wrap">
               {% if post.discount %}
                 <span class="text-black text-lg font-medium">{{ post.currency.symbol }} {{ post.final_price }}</span>
@@ -34,9 +36,8 @@
                 <span class="mr-2 rounded bg-gray-200 py-1 px-2 text-xs">Descuento</span>
               {% endif %}
             </div>
-
-
           </div>
+          </a>
         {% endfor %}
 
       </div>
@@ -48,7 +49,6 @@
   </div>
 
 {% endblock %}
-
 
 {% block javascript %}
   {{ categories|json_script:"categories" }}

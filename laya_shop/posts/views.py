@@ -67,10 +67,14 @@ class CategoryDetail(DetailView):
     slug_url_kwarg = "slug"
     context_object_name = "category"
 
+    def get_object(self, queryset=None):
+        category = Category.objects.prefetch_related('subcategories')
+        return get_object_or_404(category, slug=self.kwargs['slug'])
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['highlight'] = Post.objects.select_related('business').all()[:6]
-        context['posts'] = Post.objects.all()[:6]
+        context['highlight'] = Post.objects.select_related('business').prefetch_related('images').all()[:2]
+        context['posts'] = Post.objects.select_related('business').prefetch_related('images').all()[:6]
         context['subcategories'] = self.object.subcategories.all()
         return context
 

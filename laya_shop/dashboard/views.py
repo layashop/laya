@@ -156,9 +156,10 @@ class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView)
         business_slug = self.kwargs["business_slug"]
         post = form.save(commit=False)
         post.business = get_object_or_404(Business, slug=business_slug)
-        # import pdb; pdb.set_trace()
         subcategories = self.request.POST.getlist("subcategories")
         post.attributes = loads(self.request.POST.get("additionalParameters", "null"))
+        post.tags = self.request.POST.getlist('tags', [])
+
         if subcategories:
             try:
                 post.subcategories.set(

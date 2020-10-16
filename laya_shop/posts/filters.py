@@ -8,6 +8,7 @@ class PostFilter(filters.FilterSet):
     category = filters.NumberFilter(method="filter_category")
     location = filters.NumberFilter(field_name='locations')
     state = filters.NumberFilter()
+    tags = filters.CharFilter(lookup_expr='icontains')
     subcategory = filters.NumberFilter(field_name='subcategories')
     lowPrice = filters.NumberFilter(method='filter_base_price')
     highPrice = filters.NumberFilter(method='filter_base_price')
@@ -56,5 +57,6 @@ class PostFilter(filters.FilterSet):
             "subcategories",
             "id",
             'state',
-            'delivery'
+            'delivery',
+            'tags'
         ]

@@ -31,7 +31,9 @@ SELECTED_SUBCATEGORIES = SELECTED_SUBCATEGORIES ? JSON.parse(SELECTED_SUBCATEGOR
 
 catOptions.unshift(baseCat)
 
-const defaultTags = undefined ? console.log('xd') : []
+
+let SELECTED_TAGS = document.getElementById('selected-tags')?.textContent
+const defaultTags = SELECTED_TAGS ? JSON.parse(SELECTED_TAGS)?.map(element => ({label: element, value: element})) : []
 
 
 const DashboardPostSelectCategory = () => {

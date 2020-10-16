@@ -1,5 +1,5 @@
 {% load static %}
-<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+
 <header x-data="{ menuOpen: false }" x-init="() => { $refs.submenu.classList.remove('hidden') }">
   <div x-ref="submenu" class="hidden">
     <div :class="menuOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'"
@@ -15,7 +15,7 @@
         </svg>
       </div>
       <ul class="divide-y divide-gray-200 cursor-pointer">
-        {% for category in all_categories %}
+        {% for category in POSTS__CATEGORIES %}
           <a href="{% url "posts:category_detail" category.slug %}">
             <li class="hover:bg-gray-100 transition duration-300 py-4">
               {{ category.name }}
@@ -52,7 +52,7 @@
       <div class="relative text-gray-600 w-full">
         <form action="{% url 'posts:search' %}" method="GET">
           <input class="w-full border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-full text-sm focus:outline-none"
-                 name="search" id="search-input" placeholder="Search">
+                 name="search" id="search-input" value="{{ SEARCH }}" placeholder="Search" autocomplete="off">
           <button type="submit" class="absolute right-0 top-0 mt-3 mr-4">
             <svg class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
                  xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"

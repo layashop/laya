@@ -135,13 +135,14 @@
 
 {% block javascripts %}
 
-  {{ post.tags|json_script:"selected-tags" }}
+
   {{ post.attributes|json_script:"selected-attributes" }}
   {{ categories|json_script:"categories" }}
   {{ subcategories|json_script:"subcategories" }}
 
   {% if is_updating %}
     {{ selected_subcategories|json_script:"selected-subcategories" }}
+    {{ post.tags|json_script:"selected-tags" }}
   {% endif %}
 
 

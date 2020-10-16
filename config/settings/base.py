@@ -194,6 +194,8 @@ TEMPLATES = [
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
                 "laya_shop.utils.context_processors.settings_context",
+                "laya_shop.posts.context_processors.classification_context",
+                "laya_shop.posts.context_processors.search_context"
             ],
         },
     }
