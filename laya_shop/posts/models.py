@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from random import randint
 from django.contrib.postgres.fields import JSONField, ArrayField
@@ -8,7 +9,6 @@ from users.models import User
 from django.utils.text import slugify
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
-
 from .utils import business_directory_files
 import os
 
@@ -158,6 +158,10 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def is_new(self):
+        return self.created_at >= timezone.now() - datetime.timedelta(days=7)
 
     def save(self, *args, **kwargs):
 
