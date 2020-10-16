@@ -2,11 +2,12 @@ import React, { useContext, useEffect, userContext, useState } from "react";
 import { Box } from "theme-ui";
 import ChatUserContext from "./UserContext";
 import { v4 as uuid } from "uuid";
+import ChatRoomMessage from "./ChatRoomMessage";
 
 const API = "localhost:8000";
 
-const ChatRoom = ({ businessSlug }) => {
-  const { userPk } = useContext(ChatUserContext);
+const ChatRoom = ({ slug }) => {
+  const { user } = useContext(ChatUserContext);
   const [chatSocket, setChatSocket] = useState();
   const [messageText, setMessageText] = useState("");
   const [chatLog, setChatLog] = useState([]);
@@ -14,15 +15,19 @@ const ChatRoom = ({ businessSlug }) => {
   const [chatRoom, setChatRoom] = useState();
   const [lastMessage, setLastMessageUUID] = useState();
 
+  console.log('In Chat Room')
   const getChatRoom = async () => {
     const request = await fetch(
-      `http://${API}/api/chat-app/chat-room/?slug=${businessSlug}-${userPk}`
+      `http://${API}/api/chat-app/chat-room/?slug=${slug}`
     );
     const data = await request.json();
     console.log("Chat Room", data);
     setChatRoom(...data);
   };
-
+  const getLastMessage = () => {
+    console.log('Last Message 2',lastMessage)
+    return lastMessage
+  }
   const sendMessage = (e) => {
     e.preventDefault();
     const messageVerifier = uuid();
@@ -31,10 +36,10 @@ const ChatRoom = ({ businessSlug }) => {
   const addMessage = (newMessage) => {
       console.log('lastMessage', lastMessage)
       console.log('new message', newMessage)
-    if (newMessage.sendVerifier === lastMessage) {
+    if (newMessage.sendVerifier === getLastMessage()) {
       console.log("Enviado");
     }
-    setChatLog([...chatLog, newMessage]);
+    setChatLog(prevState => [...prevState, newMessage]);
   };
   const checkConnection = () => {
     if (!chatSocket || chatSocket.readyState == WebSocket.CLOSED)
@@ -42,6 +47,7 @@ const ChatRoom = ({ businessSlug }) => {
   };
 
   const createWSConnection = () => {
+    const [businessSlug, userPk] = slug.split('-')
     const ws = new WebSocket(`ws://${API}/ws/chat/${businessSlug}/${userPk}/`);
     ws.onopen = () => {
       console.log("Connected to WebSocket");
@@ -61,37 +67,47 @@ const ChatRoom = ({ businessSlug }) => {
     };
   };
   useEffect(() => {
-    if (userPk) {
+    if (user && slug) {
       createWSConnection();
       getChatRoom();
     }
     return () => {
       chatSocket?.close();
     };
-  }, [userPk]);
+  }, [user, slug]);
   useEffect(() => {
     if (chatRoom && chatSocket) {
         console.log('Last Message', lastMessage)
       const newMessage = {
         type: "chat_message",
         message: messageText,
-        userId: userPk,
+        userId: user.pk,
+        senderName : user.name,
         chatRoomId: chatRoom.id,
         sendVerifier: lastMessage,
       };
+      setMessageText('')
       chatSocket.send(JSON.stringify(newMessage));
+
     }
   }, [lastMessage]);
   return (
-    <Box as="div">
-      <Box as="div">Old Messages</Box>
+    <Box as="div" id="chat-room">
+      <Box as="div" className="chat-messages flex flex-col bg-gray-200 px-2 chat-services overflow-auto">
+        {chatLog.map(message => {
+          return <ChatRoomMessage key={message.sendVerifier} message={message}></ChatRoomMessage>
+        })}
+      </Box>
       <Box as="hr"></Box>
-      <form onSubmit={sendMessage}>
+      <form onSubmit={sendMessage}
+      className="bg-white flex">
         <input
+        className="pl-4 pr-16 py-2  focus:outline-none w-10/12"
           placeholder="Message..."
           value={messageText}
           onChange={handleChange}
         ></input>
+        <button className="w-2/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">Send</button>
       </form>
     </Box>
   );

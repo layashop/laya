@@ -89,18 +89,18 @@ class PostCreate(PostClassificationMixin, DashboardPermissionsMixin, CreateView)
         return context
 
     def get_success_url(self):
-        #una vez termina de editar, redirigimos a index del dashboard
-        return reverse('dashboard:post_list', args=(self.kwargs['business_slug'],))
+        # una vez termina de editar, redirigimos a index del dashboard
+        return reverse("dashboard:post_list", args=(self.kwargs["business_slug"],))
 
     def form_valid(self, form):
 
         business_slug = self.kwargs["business_slug"]
         form.instance.business = get_object_or_404(Business, slug=business_slug)
         post = form.save(commit=False)
-        subcategories = self.request.POST.getlist('subcategories')
-        post.attributes = loads(self.request.POST.get('additionalParameters', 'null'))
+        subcategories = self.request.POST.getlist("subcategories")
+        post.attributes = loads(self.request.POST.get("additionalParameters", "null"))
         post.save()
-        #Ahora vamos con las queries que no actualizan a la instancia como tal
+        # Ahora vamos con las queries que no actualizan a la instancia como tal
         if subcategories:
             try:
                 post.subcategories.set(
@@ -145,7 +145,9 @@ class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView)
                 }
             )
 
-        context["selected_subcategories"] = SubcategorySerializer(self.object.subcategories.all(), many=True).data
+        context["selected_subcategories"] = SubcategorySerializer(
+            self.object.subcategories.all(), many=True
+        ).data
         context["post_images"] = dumps(post_images)
         context["is_updating"] = True
         return context
@@ -156,16 +158,14 @@ class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView)
         post.business = get_object_or_404(Business, slug=business_slug)
         # import pdb; pdb.set_trace()
         subcategories = self.request.POST.getlist("subcategories")
-        post.attributes = loads(self.request.POST.get('additionalParameters', 'null'))
+        post.attributes = loads(self.request.POST.get("additionalParameters", "null"))
         if subcategories:
             try:
                 post.subcategories.set(
                     SubCategory.objects.filter(pk__in=[int(i) for i in subcategories])
                 )
                 post.subcategories.remove(
-                    *post.subcategories.exclude(
-                        pk__in=[int(i) for i in subcategories]
-                    )
+                    *post.subcategories.exclude(pk__in=[int(i) for i in subcategories])
                 )
             except ValueError as e:
                 pass
@@ -174,9 +174,9 @@ class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView)
             BusinessImage.objects.filter(
                 business__slug=business_slug, pk__in=image_ids
             ).update(post=post, is_valid=True)
-            BusinessImage.objects.filter(business__slug=business_slug, post=post).exclude(
-                pk__in=image_ids
-            ).delete()
+            BusinessImage.objects.filter(
+                business__slug=business_slug, post=post
+            ).exclude(pk__in=image_ids).delete()
         except ValueError as e:
             # Si hay un error no hacemos nada, se ignoran las imagenes xd
             print(e)
@@ -206,7 +206,8 @@ class ChatApp(DashboardContextMixin, TemplateView):
     template_name = "dashboard/chat_dashboard.html"
 
     def get_context_data(self, **kwargs):
-        context = super(Index, self).get_context_data(**kwargs)
+        context = super(ChatApp, self).get_context_data(**kwargs)
+        print(context.get("business").__dict__)
         return context
 
 
