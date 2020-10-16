@@ -2,7 +2,7 @@
 const bBreakpoints = [
   `480px`,
   `680px`, // 40rem
-  `920px`, // 56rem
+  `768px`, // 56rem
   `1280px`, // 80rem
   `1480px`, // 80rem
 ]

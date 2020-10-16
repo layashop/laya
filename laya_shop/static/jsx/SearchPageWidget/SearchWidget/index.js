@@ -164,7 +164,7 @@ const SearchWidget = ({ ...props }) => {
     <Box __css={{ '& label': { my: 'xsmall', display: 'block' } }}{...props}>
       <form onSubmit={handleSubmit}>
         <Searchbar onChange={setSearch} value={search} />
-        <Box as="div" __css={{ display: ['flex', null, 'none'], justifyContent: 'center', mt: 'xsmall' }}><Box as="span" __css={{
+        <Box as="div" __css={{ display: ['flex', null, null, 'none'], justifyContent: 'center', mt: 'xsmall' }}><Box as="span" __css={{
           border: '0', color: '#0051b5',
           bg: '#eef', borderRadius: '4px',
           cursor: 'pointer',
@@ -177,7 +177,7 @@ const SearchWidget = ({ ...props }) => {
           {`${hideFilters ? 'Mostrar' : 'Ocultar'} filtros de búsqueda`}
         </Box>
         </Box>
-        <Box __css={{ display: hideFilters ? ['none', null, 'block'] : 'block' }}>
+        <Box __css={{ display: hideFilters ? ['none', null, null, 'block'] : 'block' }}>
           <label>
             Departamento
       <ReactSelector
