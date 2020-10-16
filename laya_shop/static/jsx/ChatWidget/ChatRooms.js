@@ -86,23 +86,28 @@ const ChatRoom = ({ slug }) => {
         chatRoomId: chatRoom.id,
         sendVerifier: lastMessage,
       };
+      setMessageText('')
       chatSocket.send(JSON.stringify(newMessage));
+
     }
   }, [lastMessage]);
   return (
-    <Box as="div">
-      <Box as="div">
+    <Box as="div" id="chat-room">
+      <Box as="div" className="chat-messages flex flex-col bg-gray-200 px-2 chat-services overflow-auto">
         {chatLog.map(message => {
           return <ChatRoomMessage key={message.sendVerifier} message={message}></ChatRoomMessage>
         })}
       </Box>
       <Box as="hr"></Box>
-      <form onSubmit={sendMessage}>
+      <form onSubmit={sendMessage}
+      className="bg-white flex">
         <input
+        className="pl-4 pr-16 py-2  focus:outline-none w-10/12"
           placeholder="Message..."
           value={messageText}
           onChange={handleChange}
         ></input>
+        <button className="w-2/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">Send</button>
       </form>
     </Box>
   );

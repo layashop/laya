@@ -1,15 +1,19 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import ChatUserContext from './UserContext'
 
 const ChatRoomMessage = ({message}) => {
-
-
-    return <div>
-        <div>
+    const {user} = useContext(ChatUserContext)
+    console.log('User',user)
+    console.log('Message', message.userId  )
+    console.log('Is from User', message.userId === user.pk )
+    return <div className={`${ message.userId === user.pk ? "bg-white text-gray-700 self-start" 
+    : "bg-teal-600 text-white self-end"} w-2/3 h-auto p-2  my-2 rounded-md shadow mr-3`}>
+        <div className="font-semibold">
             {message.senderName}
         </div>
-        <div>
+        <p className="break-words">
             {message.message}
-        </div>
+        </p>
     </div>
 }
 

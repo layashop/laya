@@ -260,3 +260,26 @@ footer h5:hover{
     }
 
 }
+
+.chat-widget .widget-container{
+    height: 80%;
+}
+
+.chat-widget #chat-room {
+    height: 95%
+}
+
+
+.chat-widget .chat-messages {
+    height: 90%
+}
+
+@media(min-width: 640px){
+
+.chat-widget .widget-container{
+    height: 400px;
+}
+.chat-widget .chat-room {
+    height: 350px;
+}
+}
