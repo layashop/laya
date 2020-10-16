@@ -1,32 +1,60 @@
 {% load static %}
-<header>
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+<header x-data="{ menuOpen: false }" x-init="() => { $refs.submenu.classList.remove('hidden') }">
+  <div x-ref="submenu" class="hidden">
+    <div :class="menuOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'"
+         class="fixed left-0 top-0 z-10 max-w-xs w-full h-full px-6 py-4 transition duration-300 transform overflow-y-auto bg-white border-r-2 border-gray-300">
+      <div class="flex justify-between mt-10 mb-4 border-b-2 ">
+        <span class="text-lg leading-8 border-gray-300">Navegación</span>
+        <svg @click="menuOpen = !menuOpen" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="30" height="30"
+             viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round"
+             stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </div>
+      <ul class="divide-y divide-gray-200 cursor-pointer">
+        <li class="hover:bg-gray-100 transition duration-300 py-4">
+          Vestimenta y calzado
+        </li>
+        <li class="hover:bg-gray-100 transition duration-300 py-4">
+          Vestimenta y calzado
+        </li>
+        <li class="hover:bg-gray-100 transition duration-300 py-4">
+          Vestimenta y calzado
+        </li>
+      </ul>
+    </div>
+  </div>
   <div class="flex flex-col px-4 items-center w-full sm:px-10 sm:pt-5">
     <div class="flex justify-start items-center w-full py-1">
       <a href="/" class="flex-shrink-0">
         <img src="{% static 'images/logo.png' %}" alt="" srcset="" class="cursor-pointer w-10">
       </a>
       {% if user.is_authenticated %}
-{#        <svg class="ml-auto w-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="#9E9E9E" fill="none" stroke-linecap="round" stroke-linejoin="round">#}
-{#          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>#}
-{#          <circle cx="12" cy="7" r="4" />#}
-{#          <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />#}
-{#        </svg>#}
+        {#        <svg class="ml-auto w-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="#9E9E9E" fill="none" stroke-linecap="round" stroke-linejoin="round">#}
+        {#          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>#}
+        {#          <circle cx="12" cy="7" r="4" />#}
+        {#          <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />#}
+        {#        </svg>#}
         <span class="ml-auto font-semibold text-sm">Cuenta</span>
       {% else %}
         <span class="ml-auto font-semibold text-sm">Iniciar sesion</span>
       {% endif %}
     </div>
     <div class="flex w-full">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-8 mr-2" viewBox="0 0 24 24" stroke-width="1.5" stroke="#9E9E9E" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <svg @click="menuOpen = !menuOpen" xmlns="http://www.w3.org/2000/svg" class="w-8 mr-2 cursor-pointer" viewBox="0 0 24 24"
+           stroke-width="1.5" stroke="#9E9E9E" fill="none" stroke-linecap="round" stroke-linejoin="round">
         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-        <line x1="4" y1="6" x2="20" y2="6" />
-        <line x1="4" y1="12" x2="20" y2="12" />
-        <line x1="4" y1="18" x2="20" y2="18" />
+        <line x1="4" y1="6" x2="20" y2="6"/>
+        <line x1="4" y1="12" x2="20" y2="12"/>
+        <line x1="4" y1="18" x2="20" y2="18"/>
       </svg>
       <div class="relative text-gray-600 w-full">
         <form action="{% url 'posts:search' %}" method="GET">
           <input class="w-full border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-full text-sm focus:outline-none"
-               name="search" id="search-input" placeholder="Search">
+                 name="search" id="search-input" placeholder="Search">
           <button type="submit" class="absolute right-0 top-0 mt-3 mr-4">
             <svg class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
                  xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"
