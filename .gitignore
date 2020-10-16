@@ -266,6 +266,7 @@ tags
 ### Project template
 
 laya_shop/media/
+media/
 
 .pytest_cache/
 
