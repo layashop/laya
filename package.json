@@ -35,8 +35,8 @@
     "last 2 versions"
   ],
   "scripts": {
-    "dev": "gulp",
-    "build": "gulp generate-assets",
+    "dev": "npm run jsx-watch",
+    "build": "npm run jsx-build",
     "jsx-watch": "parcel watch ./laya_shop/static/jsx/*.jsx --out-dir ./laya_shop/static/dist/js/",
     "jsx-build": "parcel build ./laya_shop/static/jsx/*.jsx --out-dir ./laya_shop/static/dist/js/",
     "generate-tailwind": "tailwindcss build > ./laya_shop/static/dist/css/tailwind.css",
