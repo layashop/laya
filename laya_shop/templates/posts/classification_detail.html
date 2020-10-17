@@ -35,15 +35,19 @@
           <h3 class="text-2xl">Destacados</h3>
           <div class="flex overflow-x-auto py-4">
             {% for post in highlight %}
-              <div class="flex flex-col mx-2 flex-none">
-                <h6>{{ post.business.name }}</h6>
-                {% if post.images %}
-                  {% with media=post.images.all.0 %}
-                    <img src="{{ media.thumbnail_200x200.url }}" width="{{ media.thumbnail_200x200.width }}"
-                         height="{{ media.thumbnail_200x200.height }}" class="w-full h-auto rounded">
-                  {% endwith %}
-                {% endif %}
-              </div>
+                <a href="{% url "posts:detail" post.pk %}">
+                <div class="flex flex-col mx-2 flex-none">
+                  <h6>{{ post.business.name }}</h6>
+                  {% if post.images %}
+
+
+                    {% with media=post.images.all.0 %}
+                      <img src="{{ media.thumbnail_200x200.url }}" width="{{ media.thumbnail_200x200.width }}"
+                           height="{{ media.thumbnail_200x200.height }}" class="w-full h-auto rounded">
+                    {% endwith %}
+                  {% endif %}
+                </div>
+                </a>
             {% endfor %}
           </div>
         {% endif %}
