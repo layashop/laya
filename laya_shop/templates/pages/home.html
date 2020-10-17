@@ -21,7 +21,7 @@
         {% for category in categories %}
         <div class="box relative">
 {#            <img src="{{ category.banner.url }}" width="{{ category.banner.width }}" height="{{ category.banner.height }}">#}
-            <a href="{% url 'posts:search' %}?category={{ category.pk }}">
+            <a href="{% url 'posts:category_detail' category.slug %}">
               <div class="inside-text absolute">
                   <h4>{{ category.name }}</h4>
               </div>

@@ -73,9 +73,10 @@ class CategoryDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['highlight'] = Post.objects.select_related('business').prefetch_related('images').all()[:2]
+
         context['posts'] = Post.objects.select_related('business').prefetch_related('images').all()[:6]
         context['subcategories'] = self.object.subcategories.all()
+        context['highlight'] = Post.objects.prefetch_related('images').filter(subcategories__category=self.object, highlighted=True).distinct()
         return context
 
 category_detail_view = CategoryDetail.as_view()
