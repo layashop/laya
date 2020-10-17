@@ -39,8 +39,6 @@
                 <div class="flex flex-col mx-2 flex-none">
                   <h6>{{ post.business.name }}</h6>
                   {% if post.images %}
-
-
                     {% with media=post.images.all.0 %}
                       <img src="{{ media.thumbnail_200x200.url }}" width="{{ media.thumbnail_200x200.width }}"
                            height="{{ media.thumbnail_200x200.height }}" class="w-full h-auto rounded">
