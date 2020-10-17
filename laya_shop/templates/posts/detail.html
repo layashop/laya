@@ -60,6 +60,9 @@
         <div class="w-100 text-sm text-gray-500">
           Publicado el {{ object.created_at|date:"d/m/Y" }}
         </div>
+        <div class="w-100 text-sm">
+          Calificación: {{ object.score }} estrellas
+        </div>
         <div class="w-100 text-gray-700">
           Por {{ object.business.name }}
         </div>
