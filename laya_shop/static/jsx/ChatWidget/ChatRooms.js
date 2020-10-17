@@ -4,7 +4,7 @@ import ChatUserContext from "./UserContext";
 import { v4 as uuid } from "uuid";
 import ChatRoomMessage from "./ChatRoomMessage";
 
-const API = "localhost:8000";
+const API = `${window.location.hostname}:${window.location.port}`;
 
 const ChatRoom = ({ slug }) => {
   const { user } = useContext(ChatUserContext);
@@ -15,7 +15,6 @@ const ChatRoom = ({ slug }) => {
   const [chatRoom, setChatRoom] = useState();
   const [lastMessage, setLastMessageUUID] = useState();
 
-  console.log('In Chat Room')
   const getChatRoom = async () => {
     const request = await fetch(
       `http://${API}/api/chat-app/chat-room/?slug=${slug}`
@@ -97,7 +96,7 @@ const ChatRoom = ({ slug }) => {
         {chatLog.map(message => {
           return <ChatRoomMessage key={message.sendVerifier} message={message}></ChatRoomMessage>
         })}
-        {!user.pk ? (<a href='/accounts/login/?next=/posts/1'><div className="bg-red-500 text-white self-start  w-2/3 h-auto p-2  my-2 rounded-md shadow mx-2">
+        {!user.pk ? (<a href={`/accounts/login/?next=${window.location.pathname}`}><div className="bg-red-500 text-white self-start  w-2/3 h-auto p-2  my-2 rounded-md shadow mx-2">
           Necesitas un usuario para poder mandar un mensaje has click aqui para iniciar sesion
         </div></a>) : null}
       </Box>
