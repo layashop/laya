@@ -65,7 +65,7 @@
           </div>
 
           <div class="flex items-center mt-6">
-            <button id="trigger-chat" class="px-8 py-2 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-500
+            <button id="trigger-chat" class="px-8 py-2 bg-indigo-600 text-white text-sm font-medium rounded transition duration-300 hover:bg-indigo-500
                         focus:outline-none focus:bg-indigo-500">Contactar al emprendedor
             </button>
             {#                        <button class="mx-2 text-gray-600 border rounded-md p-2 hover:bg-gray-200 focus:outline-none">#}
@@ -101,17 +101,33 @@
             <h5 class="mt-6 mb-2 text-xl">Categorías</h5>
             <div class="flex flex-wrap">
               {% for subcategory in object.subcategories.all %}
-                <a href="{% url 'posts:search' %}?subcategory={{ subcategory.pk }}" class="py-1 px-3 mr-2 mb-2 rounded border focus:outline-none
+                <a href="{% url 'posts:search' %}?subcategory={{ subcategory.pk }}" class="py-1 px-3 mr-2 mb-2 rounded border transition duration-300 hover:bg-gray-200 focus:outline-none
                             focus:bg-gray-300">{{ subcategory.name }}
                 </a>
               {% endfor %}
             </div>
           </div>
+          {% if object.tags %}
+            <div class="my-3">
+              <h5 class="mt-6 mb-2 text-xl">Etiquetas</h5>
+              <div class="flex flex-wrap">
+                {% for tag in object.tags %}
+                  <a href="{% url 'posts:search' %}?tags={{ tag }}" class="py-1 px-3 mr-2 mb-2 rounded border transition duration-300 hover:bg-gray-200 focus:outline-none
+                            focus:bg-gray-300">{{ tag }}
+                  </a>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
         </div>
       </div>
+      {% if object.description %}
+        <h3 class="text-2xl mb-4 border-b-2 border-grey-700">Descripción del producto</h3>
+        <p class="text-base">{{ object.description }}</p>
+      {% endif %}
       {% if object.attributes %}
         <div class="mt-16">
-          <h3 class="text-xl mb-4">Información adicional</h3>
+          <h3 class="text-2xl mb-4 border-b-2 border-grey-700">Información adicional</h3>
           <table class="w-full md:w-2/3">
             <tbody>
             {% for key, value in object.attributes.items %}
@@ -149,7 +165,7 @@
       {% endif %}
       {{ object.tags.all }}
       <div class="mt-16">
-        <h3 class="text-gray-600 text-2xl font-medium">Más Productos</h3>
+        <h3 class="border-grey-700 border-b-2 text-2xl font-medium">Más Productos</h3>
         <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-6">
           <div class="w-full max-w-sm mx-auto rounded-md shadow-md overflow-hidden">
             <div class="flex items-end justify-end h-56 w-full bg-cover"

@@ -13,33 +13,40 @@
           {# AQUI EMPIEZAN LOS ELEMENTOS #}
           <a href="{% url 'posts:detail' post.pk %}">
             <div class="flex flex-col ">
-            {% if post.is_new %}
-              <h2>ES NUEVO</h2>
-            {% endif %}
-            {% if post.images %}
-              {% with media=post.images.all.0 %}
-                <img src="{{ media.thumbnail_200x200.url }}" class="w-full h-auto rounded">
-              {% endwith %}
-            {% endif %}
-            {% if post.discount %}
-            {% endif %}
+              {% if post.images %}
+                {% with media=post.images.all.0 %}
+                  <img src="{{ media.thumbnail_200x200.url }}" class="w-full h-auto rounded">
+                {% endwith %}
+              {% endif %}
+              {% if post.discount %}
+              {% endif %}
 
               <h3 class="truncate">{{ post.title }}</h3>
 
-            <div class="flex items-start whitespace-no-wrap">
-              {% if post.discount %}
-                <span class="text-black text-lg font-medium">{{ post.currency.symbol }} {{ post.final_price }}</span>
-                <span class="text-green-700 line-through text-sm ml-2">{{ post.currency.symbol }} {{ post.price }}</span>
-              {% else %}
-                <span class="text-black text-lg font-medium">{{ post.currency.symbol }} {{ post.price }}</span>
-              {% endif %}
+              <div class="flex items-start whitespace-no-wrap">
+                {% if post.discount %}
+                  <span class="text-black text-lg font-medium">{{ post.currency.symbol }} {{ post.final_price|floatformat:2 }}</span>
+                  <span class="text-red-700 line-through text-sm ml-2">{{ post.currency.symbol }} {{ post.price|floatformat:2 }}</span>
+                {% else %}
+                  <span class="text-black text-lg font-medium">{{ post.currency.symbol }} {{ post.price|floatformat:2 }}</span>
+                {% endif %}
+              </div>
+              <div class="text-sm text-gray-600">
+                <p>Estado: {% if post.state == 1 %}Nuevo{% endif %}{% if post.state == 2 %}Usado{% endif %}
+                  {% if post.state == 3 %}Por pedido{% endif %}</p>
+              </div>
+              <div class="flex flex-wrap">
+                {% if post.discount %}
+                  <span class="mr-2 mt-1 rounded bg-red-200 py-1 px-2 text-xs">Descuento</span>
+                {% endif %}
+                {% if post.promo %}
+                  <span class="mr-2 mt-1 rounded bg-blue-200 py-1 px-2 text-xs">Promoción</span>
+                {% endif %}
+                {% if post.is_new %}
+                  <span class="mr-2 mt-1 rounded bg-green-200 py-1 px-2 text-xs">Novedad</span>
+                {% endif %}
+              </div>
             </div>
-            <div class="flex flex-wrap">
-              {% if post.discount %}
-                <span class="mr-2 rounded bg-gray-200 py-1 px-2 text-xs">Descuento</span>
-              {% endif %}
-            </div>
-          </div>
           </a>
         {% endfor %}
 
