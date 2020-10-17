@@ -159,7 +159,7 @@ class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView)
         subcategories = self.request.POST.getlist("subcategories")
         post.attributes = loads(self.request.POST.get("additionalParameters", "null"))
         post.tags = self.request.POST.getlist('tags', [])
-
+        # import pdb; pdb.set_trace()
         if subcategories:
             try:
                 post.subcategories.set(

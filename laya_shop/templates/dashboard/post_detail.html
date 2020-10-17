@@ -4,11 +4,7 @@
 {% block title %} Dashboard {% endblock title %}
 
 {% block content %}
-  {{ object.base_price }}
   <div class="mx-10 py-20">
-    {% for image in object.images.all %}
-      {{ image.thumbnail_250x250.url }}
-    {% endfor %}
     <form class="flex flex-col" action="{{ request.path }}" method="POST" enctype="multipart/form-data"
           id="post-detail">
       <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3 ml-auto block my-3">
