@@ -32,6 +32,9 @@
                 {% endif %}
               </div>
               <div class="text-sm text-gray-600">
+                Califación: {{ post.score }} estrellas
+              </div>
+              <div class="text-sm text-gray-600">
                 <p>Estado: {% if post.state == 1 %}Nuevo{% endif %}{% if post.state == 2 %}Usado{% endif %}
                   {% if post.state == 3 %}Por pedido{% endif %}</p>
               </div>
