@@ -60,7 +60,7 @@
 </div>
 
 {% endblock %}
-{% block javascript %}
+{% block extra_javascript %}
 <script>
     const USER = {% firstof user.pk 'null'%}
     console.log('User', USER)

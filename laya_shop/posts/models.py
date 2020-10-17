@@ -93,7 +93,7 @@ class Post(models.Model):
     discount = models.PositiveIntegerField(null=True, blank=True,
                                            validators=[MinValueValidator(0), MaxValueValidator(99)])
     # <<<<<<<<<<<<<<<<
-
+    highlighted = models.BooleanField(default=False)
     # KARMA
     # karma_points = models.IntegerField(null=True)  # Maybe ?
     # <<<<<<<<<<<<<<<<
