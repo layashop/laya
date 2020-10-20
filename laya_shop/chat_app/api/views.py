@@ -1,12 +1,14 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.mixins import ListModelMixin
 from django_filters import rest_framework as filters
-from chat_app.models import ChatRoom
+from chat_app.models import ChatRoom, ChatMessage
 from chat_app.api.serializers import (
     ChatRoomSerializer,
     ChatRoomUserSerializer,
     ChatRoomBusinessSerializer,
+    ChatMessageSerializer,
 )
-from chat_app.api.filters import ChatRoomFilters
+from chat_app.api.filters import ChatRoomFilters, ChatRoomMessageFilters
 
 
 class ChatRoomViewSet(ModelViewSet):
@@ -36,3 +38,10 @@ class ChatRoomViewSet(ModelViewSet):
         if serializer:
             return serializer
         return ChatRoomSerializer
+
+
+class ChatRoomMessagesViewSet(ListModelMixin, GenericViewSet):
+    serializer_class = ChatMessageSerializer
+    queryset = ChatMessage.objects.all()
+    filter_backends = [filters.DjangoFilterBackend]
+    filter_class = ChatRoomMessageFilters

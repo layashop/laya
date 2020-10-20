@@ -1,6 +1,6 @@
 from json import dumps as json_dumps, loads as json_loads
 from channels.generic.websocket import AsyncWebsocketConsumer
-from chat_app.utils import createChatRoom
+from chat_app.utils import create_chat_room, save_message
 
 
 class WSConsumer(AsyncWebsocketConsumer):
@@ -13,7 +13,7 @@ class WSConsumer(AsyncWebsocketConsumer):
         self.room_name = "-".join(filter(None, [emprendedor, user_id]))
         print("user_id", user_id)
         if user_id:
-            await createChatRoom(self.room_name)
+            await create_chat_room(self.room_name)
         self.room_group_name = "chat-%s" % self.room_name
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
@@ -28,4 +28,5 @@ class WSConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         message = event
         print(message)
+        await save_message(message)
         await self.send(text_data=json_dumps(message))

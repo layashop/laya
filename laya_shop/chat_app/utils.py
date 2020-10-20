@@ -2,12 +2,12 @@ from channels.db import database_sync_to_async
 from chat_app.models import ChatMessage, ChatRoom
 from business.models import Business
 from utils.models import safe_get
+from datetime import datetime
 
 
 @database_sync_to_async
-def createChatRoom(slug):
+def create_chat_room(slug):
     # import pdb
-
     # pdb.set_trace()
     if safe_get(ChatRoom, slug=slug) is None:
         business_slug, user_id = slug.split("-")
@@ -16,3 +16,18 @@ def createChatRoom(slug):
             ChatRoom.objects.create(
                 slug=slug, user_id=int(user_id), business_id=business.id
             )
+
+
+@database_sync_to_async
+def save_message(message):
+    print("save Message")
+    new_message = ChatMessage.objects.create(
+        user_id=message.get("user"),
+        sender_name=message.get("sender_name"),
+        chat_room_id=message.get("chat_room"),
+        send_verifier=message.get("send_verifier"),
+        message=message.get("message"),
+        send_date=datetime.now(),
+    )
+    if new_message.pk:
+        print("Created")

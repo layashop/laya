@@ -11,6 +11,7 @@ class ChatRoom(models.Model):
 
 class ChatMessage(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    sender_name = models.CharField(max_length=50)
     chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE)
     send_verifier = models.UUIDField()
     message = models.TextField()

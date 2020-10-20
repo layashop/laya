@@ -23,6 +23,12 @@ const ChatRoom = ({ slug }) => {
     console.log("Chat Room", data);
     setChatRoom(...data);
   };
+  const getMessages = async () => {
+    const request = await fetch(`http://${API}/api/chat-app/chat-message/?slug=${slug}`)
+     const data = await request.json();
+     console.log('Chat messages', data)
+    setChatLog(data);
+  }
   const getLastMessage = () => {
     console.log('Last Message 2',lastMessage)
     return lastMessage
@@ -47,6 +53,7 @@ const ChatRoom = ({ slug }) => {
 
   const createWSConnection = () => {
     const [businessSlug, userPk] = slug.split('-')
+    const addMessageWS = addMessage.bind(this)
     const ws = new WebSocket(`ws://${API}/ws/chat/${businessSlug}/${userPk}/`);
     ws.onopen = () => {
       console.log("Connected to WebSocket");
@@ -58,7 +65,7 @@ const ChatRoom = ({ slug }) => {
     };
     ws.onmessage = (e) => {
       const data = JSON.parse(e.data);
-      addMessage(data);
+      addMessageWS(data);
     };
     ws.onerror = (err) => {
       console.error("Socket error:", err.message);
@@ -69,6 +76,7 @@ const ChatRoom = ({ slug }) => {
     if (user.pk && slug) {
       createWSConnection();
       getChatRoom();
+      getMessages();
     }
     return () => {
       chatSocket?.close();
@@ -80,10 +88,10 @@ const ChatRoom = ({ slug }) => {
       const newMessage = {
         type: "chat_message",
         message: messageText,
-        userId: user.pk,
-        senderName : user.name,
-        chatRoomId: chatRoom.id,
-        sendVerifier: lastMessage,
+        user: user.pk,
+        sender_name : user.name,
+        chat_room: chatRoom.id,
+        send_verifier: lastMessage,
       };
       setMessageText('')
       chatSocket.send(JSON.stringify(newMessage));
@@ -94,7 +102,7 @@ const ChatRoom = ({ slug }) => {
     <Box as="div" id="chat-room">
       <Box as="div" className="chat-messages flex flex-col bg-gray-200 px-2 chat-services overflow-auto">
         {chatLog.map(message => {
-          return <ChatRoomMessage key={message.sendVerifier} message={message}></ChatRoomMessage>
+          return <ChatRoomMessage key={message.send_verifier} message={message}></ChatRoomMessage>
         })}
         {!user.pk ? (<a href={`/accounts/login/?next=${window.location.pathname}`}><div className="bg-red-500 text-white self-start  w-2/3 h-auto p-2  my-2 rounded-md shadow mx-2">
           Necesitas un usuario para poder mandar un mensaje has click aqui para iniciar sesion
