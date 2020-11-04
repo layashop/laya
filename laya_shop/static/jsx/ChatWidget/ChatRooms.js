@@ -29,18 +29,14 @@ const ChatRoom = ({ slug }) => {
      console.log('Chat messages', data)
     setChatLog(data);
   }
-  const getLastMessage = () => {
-    console.log('Last Message 2',lastMessage)
-    return lastMessage
-  }
+
+
   const sendMessage = (e) => {
     e.preventDefault();
     const messageVerifier = uuid();
     setLastMessageUUID(messageVerifier);
   };
   const addMessage = (newMessage) => {
-      console.log('lastMessage', lastMessage)
-      console.log('new message', newMessage)
     if (newMessage.sendVerifier === getLastMessage()) {
       console.log("Enviado");
     }
@@ -51,9 +47,14 @@ const ChatRoom = ({ slug }) => {
       createWSConnection();
   };
 
+   const onMessageHandler = (e) => {
+      console.log(lastMessage)
+      const data = JSON.parse(e.data);
+      addMessage(data);
+    };
+
   const createWSConnection = () => {
     const [businessSlug, userPk] = slug.split('-')
-    const addMessageWS = addMessage.bind(this)
     const ws = new WebSocket(`ws://${API}/ws/chat/${businessSlug}/${userPk}/`);
     ws.onopen = () => {
       console.log("Connected to WebSocket");
@@ -63,17 +64,24 @@ const ChatRoom = ({ slug }) => {
       console.log("Connection Closed, attempting to reconnect", e.reason);
       setTimeout(checkConnection);
     };
-    ws.onmessage = (e) => {
-      const data = JSON.parse(e.data);
-      addMessageWS(data);
-    };
+   
+    ws.onmessage = onMessageHandler
     ws.onerror = (err) => {
       console.error("Socket error:", err.message);
       ws.close();
     };
   };
+
+
+  const createDeal = () => {
+
+  }
+  
   useEffect(() => {
     if (user.pk && slug) {
+      if(chatLog.length > 0){
+         setChatLog([]);
+      }
       createWSConnection();
       getChatRoom();
       getMessages();
@@ -82,6 +90,9 @@ const ChatRoom = ({ slug }) => {
       chatSocket?.close();
     };
   }, [user, slug]);
+
+
+
   useEffect(() => {
     if (chatRoom && chatSocket) {
         console.log('Last Message', lastMessage)
@@ -99,7 +110,7 @@ const ChatRoom = ({ slug }) => {
     }
   }, [lastMessage]);
   return (
-    <Box as="div" id="chat-room">
+    <Box as="div" id="chat-room" >
       <Box as="div" className="chat-messages flex flex-col bg-gray-200 px-2 chat-services overflow-auto">
         {chatLog.map(message => {
           return <ChatRoomMessage key={message.send_verifier} message={message}></ChatRoomMessage>
@@ -112,13 +123,15 @@ const ChatRoom = ({ slug }) => {
       <form onSubmit={sendMessage}
       className="bg-white flex">
         <input
-        className="pl-4 pr-16 py-2  focus:outline-none w-10/12"
+        className="pl-4 pr-16 py-2  focus:outline-none w-8/12"
           placeholder="Message..."
           value={messageText}
           onChange={handleChange}
         ></input>
-        <button className="w-2/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">Send</button>
+        <button onClick={createDeal} className="w-1/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">Deal</button>
+        <button className="w-1/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">Send</button>
       </form>
+      
     </Box>
   );
 };

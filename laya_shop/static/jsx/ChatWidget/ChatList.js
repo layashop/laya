@@ -6,7 +6,7 @@ import ChatUserContext from './UserContext'
 
 const API = 'api/chat-app/chat-room/'
 
-const ChatList = ({businessSlug, setChatRoomSlug}) => {
+const ChatList = ({chatSelected, businessSlug, setChatRoomSlug}) => {
     const {userPk} = useContext(ChatUserContext)
     const [chatRooms, setChatRooms] = useState([])
     const [loading, error, sendRequest] = FetchHook.useFetch()
@@ -30,9 +30,9 @@ const ChatList = ({businessSlug, setChatRoomSlug}) => {
     if(loading === FetchHook.LOADING) return <div>Loading...</div>
     
     console.log('ChatRoom', chatRooms)
-    return (<div>
+    return (<div className={`divide-y divide-blue-400 divide-opacity-50 px-5  ${chatSelected ?'hidden md:block w-4/12' : 'w-full'}`  }>
         {chatRooms.map((chatRoom) => {
-            return <ChatRoomItem key={chatRoom.slug} businessSlug={businessSlug || chatRoom.business.slug}
+            return <ChatRoomItem   key={chatRoom.slug} businessSlug={businessSlug || chatRoom.business.slug}
             user={chatRoom.user} setChatRoomSlug={setChatRoomSlug}></ChatRoomItem>
         })}
         </div>)
