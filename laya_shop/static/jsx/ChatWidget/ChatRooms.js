@@ -3,6 +3,7 @@ import { Box } from "theme-ui";
 import ChatUserContext from "./UserContext";
 import { v4 as uuid } from "uuid";
 import ChatRoomMessage from "./ChatRoomMessage";
+import { useModal, Modal } from "../utils/Modal";
 
 const API = `${window.location.hostname}:${window.location.port}`;
 
@@ -14,6 +15,7 @@ const ChatRoom = ({ slug }) => {
   const handleChange = (e) => setMessageText(e.target.value);
   const [chatRoom, setChatRoom] = useState();
   const [lastMessage, setLastMessageUUID] = useState();
+  const [show, openModal, onOk, onCancel] = useModal()
 
   const getChatRoom = async () => {
     const request = await fetch(
@@ -128,10 +130,17 @@ const ChatRoom = ({ slug }) => {
           value={messageText}
           onChange={handleChange}
         ></input>
-        <button onClick={createDeal} className="w-1/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">Deal</button>
+        <button onClick={openModal} className="w-1/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">Deal</button>
         <button className="w-1/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">Send</button>
       </form>
-      
+      <Modal show={show} 
+      onCancel={onCancel}
+      title='Deal'
+      >
+        <div>
+          Leonel se la Come
+        </div>
+      </Modal>
     </Box>
   );
 };
