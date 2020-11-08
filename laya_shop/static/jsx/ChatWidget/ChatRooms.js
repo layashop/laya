@@ -3,6 +3,7 @@ import { Box } from "theme-ui";
 import ChatUserContext from "./UserContext";
 import { v4 as uuid } from "uuid";
 import ChatRoomMessage from "./ChatRoomMessage";
+import { iteratee, unionBy } from "lodash";
 
 const API = `${window.location.hostname}:${window.location.port}`;
 
@@ -44,21 +45,16 @@ const ChatRoom = ({ slug }) => {
       send_verifier: messageVerifier,
     };
     setMessageText('')
+    setChatSession( chatSessionValues => [...chatSessionValues, newMessage] )
     chatSocket.send(JSON.stringify(newMessage));
 
   };
   const addMessage = (newMessage) => {
+    
     setChatSession(prevState => {
-      return prevState.map( message => {
-        if(message.send_verifier === newMessage.send_verifier){
-          return newMessage
-        }else{
-          return message
-        }
-      })
-
+      return unionBy(prevState, [newMessage], iteratee('send_verifier'))
     });
-  };
+  }
   const checkConnection = () => {
     if (!chatSocket || chatSocket.readyState == WebSocket.CLOSED)
       createWSConnection();
@@ -109,11 +105,6 @@ const ChatRoom = ({ slug }) => {
 
 
 
-  useEffect(() => {
-    if (chatRoom && chatSocket) {
-   
-    }
-  }, [lastMessage]);
   return (
     <Box as="div" id="chat-room" >
       <Box as="div" className="chat-messages flex flex-col bg-gray-200 px-2 chat-services overflow-auto">
