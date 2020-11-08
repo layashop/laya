@@ -10,10 +10,11 @@ const ChatRoom = ({ slug }) => {
   const { user } = useContext(ChatUserContext);
   const [chatSocket, setChatSocket] = useState();
   const [messageText, setMessageText] = useState("");
-  const [chatLog, setChatLog] = useState([]);
+  const [chatHistory, setChatHistory] = useState([]);
+  const [chatSession, setChatSession] = useState([])
   const handleChange = (e) => setMessageText(e.target.value);
   const [chatRoom, setChatRoom] = useState();
-  const [lastMessage, setLastMessageUUID] = useState();
+  // const [lastMessage, setLastMessageUUID] = useState();
 
   const getChatRoom = async () => {
     const request = await fetch(
@@ -27,20 +28,36 @@ const ChatRoom = ({ slug }) => {
     const request = await fetch(`http://${API}/api/chat-app/chat-message/?slug=${slug}`)
      const data = await request.json();
      console.log('Chat messages', data)
-    setChatLog(data);
+    setChatHistory(data);
   }
 
 
   const sendMessage = (e) => {
     e.preventDefault();
     const messageVerifier = uuid();
-    setLastMessageUUID(messageVerifier);
+      const newMessage = {
+      type: "chat_message",
+      message: messageText,
+      user: user.pk,
+      sender_name : user.name,
+      chat_room: chatRoom.id,
+      send_verifier: messageVerifier,
+    };
+    setMessageText('')
+    chatSocket.send(JSON.stringify(newMessage));
+
   };
   const addMessage = (newMessage) => {
-    if (newMessage.sendVerifier === getLastMessage()) {
-      console.log("Enviado");
-    }
-    setChatLog(prevState => [...prevState, newMessage]);
+    setChatSession(prevState => {
+      return prevState.map( message => {
+        if(message.send_verifier === newMessage.send_verifier){
+          return newMessage
+        }else{
+          return message
+        }
+      })
+
+    });
   };
   const checkConnection = () => {
     if (!chatSocket || chatSocket.readyState == WebSocket.CLOSED)
@@ -48,7 +65,6 @@ const ChatRoom = ({ slug }) => {
   };
 
    const onMessageHandler = (e) => {
-      console.log(lastMessage)
       const data = JSON.parse(e.data);
       addMessage(data);
     };
@@ -79,10 +95,10 @@ const ChatRoom = ({ slug }) => {
   
   useEffect(() => {
     if (user.pk && slug) {
-      if(chatLog.length > 0){
-         setChatLog([]);
+      if(chatHistory.length > 0){
+         setChatHistory([]);
       }
-      createWSConnection();
+      if(!chatSocket) createWSConnection();
       getChatRoom();
       getMessages();
     }
@@ -95,24 +111,16 @@ const ChatRoom = ({ slug }) => {
 
   useEffect(() => {
     if (chatRoom && chatSocket) {
-        console.log('Last Message', lastMessage)
-      const newMessage = {
-        type: "chat_message",
-        message: messageText,
-        user: user.pk,
-        sender_name : user.name,
-        chat_room: chatRoom.id,
-        send_verifier: lastMessage,
-      };
-      setMessageText('')
-      chatSocket.send(JSON.stringify(newMessage));
-
+   
     }
   }, [lastMessage]);
   return (
     <Box as="div" id="chat-room" >
       <Box as="div" className="chat-messages flex flex-col bg-gray-200 px-2 chat-services overflow-auto">
-        {chatLog.map(message => {
+        {chatHistory.map(message => {
+          return <ChatRoomMessage key={message.send_verifier} message={message}></ChatRoomMessage>
+        })}
+          {chatSession.map(message => {
           return <ChatRoomMessage key={message.send_verifier} message={message}></ChatRoomMessage>
         })}
         {!user.pk ? (<a href={`/accounts/login/?next=${window.location.pathname}`}><div className="bg-red-500 text-white self-start  w-2/3 h-auto p-2  my-2 rounded-md shadow mx-2">
