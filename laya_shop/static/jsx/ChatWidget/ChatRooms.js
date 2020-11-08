@@ -34,7 +34,7 @@ class ChatRoom extends Component {
 
         if (prevProp.slug !== this.props.slug) {
             if (this.state.chatLog.length > 0) {
-                this.setChatLog([]);
+                this.setState({chatLog: []})
             }
             this.createWSConnection();
             this.getChatRoom();
@@ -98,7 +98,7 @@ class ChatRoom extends Component {
                     type: "chat_message",
                     message: this.state.messageText,
                     user: user.pk,
-                    sender_name: user.name,
+                    sender_name: user.name || user.username ,
                     chat_room: this.state.chatRoom.id,
                     send_verifier: messageVerifier,
                 };
