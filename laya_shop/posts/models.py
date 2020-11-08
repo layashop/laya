@@ -236,6 +236,12 @@ class BusinessImage(models.Model):
     def filename(self):
         return os.path.basename(self.image.name)
 
+    def images_url(self):
+        return {
+            '200x200': self.thumbnail_200x200.url,
+            '250x250': self.thumbnail_250x250.url,
+            '512x512': self.thumbnail_512x512.url
+        }
     def __str__(self):
         if self.post:
             return "%s %s" % (self.post, self.pk)

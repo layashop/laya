@@ -5,17 +5,22 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView
 
 from django.http import Http404, HttpResponse
-from rest_framework import views
+from rest_framework import views, viewsets
 
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from .permissions import IsBusinessMember
 from posts.models import BusinessImage
 from business.models import Business
+from posts.models import Post
+from .serializers import PostChatThumbnail
 # Create your views here.
 
 
 
-
+class PostChatThumbnailViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostChatThumbnail
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 class BusinessGetObject():
     def get_object(self):

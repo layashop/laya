@@ -304,4 +304,4 @@ CORS_URLS_REGEX = r"^/api/.*$"
 ASGI_APPLICATION = "chat_app.routing.websocket_application"
 
 
-APPEND_SLASH = False
+APPEND_SLASH = True
