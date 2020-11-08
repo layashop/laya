@@ -3,46 +3,61 @@
 {% load i18n %}
 {% load account socialaccount %}
 {% load crispy_forms_tags %}
+{% load widget_tweaks static %}
 
-{% block head_title %}{% trans "Sign In" %}{% endblock %}
+{% block head_title %}{% trans "Iniciar Sesión" %}{% endblock %}
 
 {% block inner %}
+  <div class="max-w-5xl mx-auto px-10 mt-10 text-center">
+    <h1 class="text-4xl">{% trans "Iniciar Sesión" %}</h1>
 
-<h1>{% trans "Sign In" %}</h1>
+    {% get_providers as socialaccount_providers %}
 
-{% get_providers as socialaccount_providers %}
+    {% if socialaccount_providers %}
+      <p>{% blocktrans with site.name as site_name %}Please sign in with one
+        of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
+        for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
 
-{% if socialaccount_providers %}
-<p>{% blocktrans with site.name as site_name %}Please sign in with one
-of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
-for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
+      <div class="socialaccount_ballot">
 
-<div class="socialaccount_ballot">
+        <ul class="socialaccount_providers">
+          {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+        </ul>
 
-  <ul class="socialaccount_providers">
-    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
-  </ul>
+        <div class="login-or">{% trans 'or' %}</div>
 
-  <div class="login-or">{% trans 'or' %}</div>
+      </div>
 
-</div>
+      {% include "socialaccount/snippets/login_extra.html" %}
 
-{% include "socialaccount/snippets/login_extra.html" %}
+    {% else %}
+      <p class="mb-4">{% blocktrans %}Si no ha creado una cuenta aún, por favor
+        <a href="{{ signup_url }}" class="text-blue-700 underline">regístrese</a> primero.{% endblocktrans %}</p>
+    {% endif %}
 
-{% else %}
-<p>{% blocktrans %}If you have not created an account yet, then please
-<a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
-{% endif %}
+    <form class="login" method="POST" action="{% url 'account_login' %}">
+      {% csrf_token %}
+      {#      {{ form|crispy }}#}
+      <div class="mb-4 mx-auto max-w-xs text-left">
+        <label  for="{{ form.login.auto_id }}">Usuario: </label>
+        {% render_field form.login class+="border-solid border border-gray-600 p-1 rounded-md w-full" placeholder="Usuario" %}
+      </div>
+            <div class="mb-4 mx-auto max-w-xs text-left">
+        <label  for="{{ form.password.auto_id }}">Contraseña: </label>
+        {% render_field form.password class+="border-solid border border-gray-600 p-1 rounded-md w-full" placeholder="Contraseña" %}
+      </div>
+      <div class="mb-4">
+        <label class="mr-2" for="{{ form.remember.auto_id }}">Recordarme? </label>
+        {% render_field form.remember %}
+      </div>
 
-<form class="login" method="POST" action="{% url 'account_login' %}">
-  {% csrf_token %}
-  {{ form|crispy }}
-  {% if redirect_field_value %}
-  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-  {% endif %}
-  <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
-  <button class="primaryAction btn btn-primary" type="submit">{% trans "Sign In" %}</button>
-</form>
+      {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+      {% endif %}
+      <a class="p-2 bg-red-100 hover:shadow-xs rounded-xs" href="{% url 'account_reset_password' %}">{% trans "¿Olvidaste contraseña?" %}</a>
+      <button class="p-2 bg-indigo-100 hover:shadow-xs rounded-xs" type="submit">{% trans "Ingresar" %}</button>
+    </form>
+  </div>
 
 {% endblock %}
 

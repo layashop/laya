@@ -50,9 +50,8 @@ const ChatRoom = ({ slug }) => {
 
   };
   const addMessage = (newMessage) => {
-    
     setChatSession(prevState => {
-      return unionBy(prevState, [newMessage], iteratee('send_verifier'))
+      return unionBy([newMessage], prevState, iteratee('send_verifier'))
     });
   }
   const checkConnection = () => {
@@ -76,7 +75,7 @@ const ChatRoom = ({ slug }) => {
       console.log("Connection Closed, attempting to reconnect", e.reason);
       setTimeout(checkConnection);
     };
-   
+
     ws.onmessage = onMessageHandler
     ws.onerror = (err) => {
       console.error("Socket error:", err.message);
@@ -88,7 +87,7 @@ const ChatRoom = ({ slug }) => {
   const createDeal = () => {
 
   }
-  
+
   useEffect(() => {
     if (user.pk && slug) {
       if(chatHistory.length > 0){
@@ -130,7 +129,7 @@ const ChatRoom = ({ slug }) => {
         <button onClick={createDeal} className="w-1/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">Deal</button>
         <button className="w-1/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">Send</button>
       </form>
-      
+
     </Box>
   );
 };
