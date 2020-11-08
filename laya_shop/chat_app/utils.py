@@ -30,4 +30,4 @@ def save_message(message):
         send_date=datetime.now(),
     )
     if new_message.pk:
-        print("Created")
+        return new_message
