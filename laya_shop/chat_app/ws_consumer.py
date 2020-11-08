@@ -1,6 +1,8 @@
 from json import dumps as json_dumps, loads as json_loads
 from channels.generic.websocket import AsyncWebsocketConsumer
+from datetime import datetime
 from chat_app.utils import create_chat_room, save_message
+from chat_app.api.serializers import ChatMessageSerializer
 
 
 class WSConsumer(AsyncWebsocketConsumer):
@@ -28,5 +30,5 @@ class WSConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         message = event
         print(message)
-        await save_message(message)
-        await self.send(text_data=json_dumps(message))
+        new_message = await save_message(message)
+        await self.send(text_data=json_dumps(ChatMessageSerializer(new_message).data))
