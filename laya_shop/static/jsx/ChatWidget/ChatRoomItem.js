@@ -13,12 +13,12 @@ const ChatRoomItem = ({
         const chatSlug = `${businessSlug }-${user.id }`
         setChatRoomSlug({
             slug: chatSlug,
-            chatTitle : user?.name|| user?.username || business?.name 
+            chatTitle : user?.name|| user?.username || business?.name
         })
     }
 
 
-    return <div className='p-2' onClick={handleClick}> 
+    return <div className='p-2 hover:bg-gray-200 p-1 pr-3 pb-2 cursor-pointer transition duration-200' onClick={handleClick}>
         <div>
             {user?.name|| user?.username || business?.name }
         </div>

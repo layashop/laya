@@ -14,7 +14,9 @@ const ChatRoomMessage = ({message}) => {
 
     let isOnlyLink = false
 
-    if (message.message.match(/^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)&/)) {
+    console.log(message.message)
+
+    if (message.message.match(/^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/)) {
         isOnlyLink = true
     }
 
