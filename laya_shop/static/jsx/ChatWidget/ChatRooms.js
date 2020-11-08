@@ -4,6 +4,7 @@ import ChatUserContext from "./UserContext";
 import { v4 as uuid } from "uuid";
 import ChatRoomMessage from "./ChatRoomMessage";
 import { iteratee, unionBy } from "lodash";
+import IconResolver from "./IconResolver";
 
 const API = `${window.location.hostname}:${window.location.port}`;
 
@@ -55,7 +56,7 @@ const ChatRoom = ({ slug }) => {
     });
   }
   const checkConnection = () => {
-    if (!chatSocket || chatSocket.readyState == WebSocket.CLOSED)
+    if (!chatSocket || chatSocket.readyState === WebSocket.CLOSED)
       createWSConnection();
   };
 
@@ -105,31 +106,29 @@ const ChatRoom = ({ slug }) => {
 
 
   return (
-    <Box as="div" id="chat-room" >
-      <Box as="div" className="chat-messages flex flex-col bg-gray-200 px-2 chat-services overflow-auto">
+    <Box as="div" id="chat-room" class="absolute">
+      <Box as="div" className="chat-messages flex flex-col bg-gray-200 px-2 chat-services overflow-y-auto pb-3" style={{minHeight:'300px'}}>
         {chatHistory.map(message => {
-          return <ChatRoomMessage key={message.send_verifier} message={message}></ChatRoomMessage>
+          return <ChatRoomMessage key={message.send_verifier} message={message}/>
         })}
           {chatSession.map(message => {
-          return <ChatRoomMessage key={message.send_verifier} message={message}></ChatRoomMessage>
+          return <ChatRoomMessage key={message.send_verifier} message={message}/>
         })}
         {!user.pk ? (<a href={`/accounts/login/?next=${window.location.pathname}`}><div className="bg-red-500 text-white self-start  w-2/3 h-auto p-2  my-2 rounded-md shadow mx-2">
           Necesitas un usuario para poder mandar un mensaje has click aqui para iniciar sesion
         </div></a>) : null}
       </Box>
-      <Box as="hr"></Box>
       <form onSubmit={sendMessage}
-      className="bg-white flex">
+      className="bg-white flex sticky bottom-0 w-100 border-t border-blue-500 border-opacity-50">
         <input
-        className="pl-4 pr-16 py-2  focus:outline-none w-8/12"
+        className="pl-4 pr-16 py-2 my-2  focus:outline-none w-8/12"
           placeholder="Message..."
           value={messageText}
           onChange={handleChange}
-        ></input>
-        <button onClick={createDeal} className="w-1/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">Deal</button>
-        <button className="w-1/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">Send</button>
+        />
+        <button className="w-1/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">Enviar<IconResolver icon="send"/></button>
+        <button onClick={createDeal} className="w-1/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">Deal<IconResolver icon="deal"/></button>
       </form>
-
     </Box>
   );
 };
