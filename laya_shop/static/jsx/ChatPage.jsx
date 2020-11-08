@@ -27,10 +27,7 @@ const ChatPage = () => {
     }
 
     return (
-        <div style={{
-            paddingTop: 72,
-        }}
-             className="lg:mx h-screen"
+        <div className="md:pt-20 lg:mx h-screen"
 
         >
             <div className='bg-white h-full flex w-full divide-x border-t-2 border-blue-500 border-opacity-50'>
