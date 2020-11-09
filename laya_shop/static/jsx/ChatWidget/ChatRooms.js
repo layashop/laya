@@ -4,10 +4,16 @@ import ChatUserContext from "./UserContext";
 import {v4 as uuid} from "uuid";
 import ChatRoomMessage from "./ChatRoomMessage";
 import {iteratee, unionBy} from "lodash";
+import ChatRoomOwnMessage from "./ChatRoomOwnMessage";
+import ChatRoomMessageOther from "./ChatRoomMessageOther";
+import ChatRoomHistoric from './ChatRoomHistoric'
+
 import IconResolver from "./IconResolver";
 
 import './emoji-mart.css';
 import {Picker} from 'emoji-mart';
+
+const API = `${window.location.hostname}:${window.location.port}`;
 
 const emojiTrans = {
     search: 'Buscar',
@@ -38,8 +44,6 @@ const emojiTrans = {
         6: 'Tono oscuro',
     },
 }
-
-const API = `${window.location.hostname}:${window.location.port}`;
 
 const ChatRoom = ({slug, isWidget}) => {
     const {user} = useContext(ChatUserContext);
@@ -72,6 +76,7 @@ const ChatRoom = ({slug, isWidget}) => {
         setIsOpenEmoji(!isOpenEmoji)
     }
 
+
     const sendMessage = (e) => {
         e.preventDefault();
 
@@ -79,7 +84,7 @@ const ChatRoom = ({slug, isWidget}) => {
             return;
         }
 
-        const cleanMessage =  messageText.replace(/\s\s+/g, ' ')
+        const cleanMessage = messageText.replace(/\s\s+/g, ' ')
 
         const messageVerifier = uuid();
         const newMessage = {
@@ -90,24 +95,31 @@ const ChatRoom = ({slug, isWidget}) => {
             chat_room: chatRoom.id,
             send_verifier: messageVerifier,
         };
+        chatSocket.send(JSON.stringify(newMessage));
         setMessageText('')
         setChatSession(chatSessionValues => [...chatSessionValues, newMessage])
-        chatSocket.send(JSON.stringify(newMessage));
 
     };
-    const addMessage = (newMessage) => {
-        setChatSession(prevState => {
-            return unionBy([newMessage], prevState, iteratee('send_verifier'))
-        });
+    const updateMessages = (newMessages) => {
+        console.log('newMessage', newMessages)
+        if (newMessages.type === 'seen_messages') {
+            setChatHistory(prevState => {
+                return unionBy(Array.isArray(newMessages) ? newMessages : [newMessages], prevState, iteratee('send_verifier'))
+            })
+        } else {
+            setChatSession(prevState => {
+                return unionBy(Array.isArray(newMessages) ? newMessages : [newMessages], prevState, iteratee('send_verifier'))
+            });
+        }
     }
     const checkConnection = () => {
-        if (!chatSocket || chatSocket.readyState === WebSocket.CLOSED)
+        if (!chatSocket || chatSocket.readyState == WebSocket.CLOSED)
             createWSConnection();
     };
 
     const onMessageHandler = (e) => {
         const data = JSON.parse(e.data);
-        addMessage(data);
+        updateMessages(data);
     };
 
     const createWSConnection = () => {
@@ -134,30 +146,60 @@ const ChatRoom = ({slug, isWidget}) => {
 
     }
 
+    const markAsSeen = (messageId) => {
+        if (chatSocket) {
+            chatSocket.send(JSON.stringify({
+                type: "seen_messages_current",
+                user_id: user.pk,
+                message_id: messageId
+            }))
+        }
+    }
+
+    const bulkMarkAsSeen = (userId) => {
+        if (chatSocket) {
+            chatSocket.send(JSON.stringify({
+                type: "seen_messages",
+                user_id: userId,
+                slug: slug
+            }))
+        }
+    }
+
     useEffect(() => {
         if (user.pk && slug) {
             if (chatHistory.length > 0) {
                 setChatHistory([]);
+                setChatSession([])
             }
             if (!chatSocket) createWSConnection();
+            if (chatSocket) chatSocket.close()
             getChatRoom();
             getMessages();
         }
         return () => {
+            console.log('Change in user, or slug')
             chatSocket?.close();
         };
     }, [user, slug]);
 
+    console.log(chatSocket)
 
     return (
         <Box as="div" id="chat-room">
             <Box as="div" className="chat-messages flex flex-col bg-gray-200 px-2 chat-services overflow-y-auto pb-3"
                  style={{minHeight: isWidget ? '' : '70vh'}}>
-                {chatHistory.map(message => {
-                    return <ChatRoomMessage key={message.send_verifier} message={message}/>
-                })}
+                <ChatRoomHistoric websocket={chatSocket} markAsSeen={bulkMarkAsSeen}>
+                    {chatHistory.map(message => {
+                        return <ChatRoomMessage message={message}/>
+                    })}
+                </ChatRoomHistoric>
                 {chatSession.map(message => {
-                    return <ChatRoomMessage key={message.send_verifier} message={message}/>
+                    if (message.user === user.pk) {
+                        return <ChatRoomOwnMessage message={message}/>
+                    } else {
+                        return <ChatRoomMessageOther message={message} markAsSeen={markAsSeen}/>
+                    }
                 })}
                 {!user.pk ? (<a href={`/accounts/login/?next=${window.location.pathname}`}>
                     <div className="bg-red-500 text-white self-start  w-2/3 h-auto p-2  my-2 rounded-md shadow mx-2">
@@ -182,11 +224,12 @@ const ChatRoom = ({slug, isWidget}) => {
                 <span className="relative">
                       <button onClick={emojiModalHandler}
                               className="text-teal-600 bg-white  hover:text-teal-500 m-1 p-3 w-auto transistion-color duration-100 focus:outline-none">😋</button>
-                                {isOpenEmoji && <Picker i18n={emojiTrans} showPreview={false} title="Emojis" native={true}
-                                                        onSelect={(emoji) => setMessageText(`${messageText}${emoji.native}`)}
-                                                        style={{position: 'absolute', right: 0, top: '-420px', zIndex: 20}}/>}
+                    {isOpenEmoji && <Picker i18n={emojiTrans} showPreview={false} title="Emojis" native={true}
+                                            onSelect={(emoji) => setMessageText(`${messageText}${emoji.native}`)}
+                                            style={{position: 'absolute', right: 0, top: '-420px', zIndex: 20}}/>}
                 </span>
             </form>
+
         </Box>
     );
 };

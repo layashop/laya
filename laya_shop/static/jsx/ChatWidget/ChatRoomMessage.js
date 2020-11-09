@@ -10,6 +10,9 @@ const linkReplacer = (a) => {
 
 const ChatRoomMessage = ({message}) => {
 
+    if (!message.message) {
+        return <></>
+    }
 
     const [isLoaded, setIsLoaded] = useState(false)
 
