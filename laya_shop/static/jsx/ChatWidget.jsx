@@ -42,7 +42,7 @@ const ChatWidget = () => {
                                 </svg>
                             </div>
                         </div>
-                        <ChatRoom slug={slug}></ChatRoom>
+                        <ChatRoom slug={slug} isWidget={true}/>
                     </div>
 
                 </div>

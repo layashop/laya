@@ -20,13 +20,18 @@ const ChatRoomMessage = ({message}) => {
         isOnlyLink = true
     }
 
-    let richMessage = message.message.replace('<', "&lt")
-    richMessage = richMessage.replace('>', "&gt")
+    let richMessage = message.message.replace('&', "&amp;")
+    richMessage = richMessage.replace('>', "&gt;")
+    richMessage = richMessage.replace('<', "&lt;")
 
     richMessage = richMessage.replace(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g, linkReplacer)
-    const date = message.send_date ? new Date(message.send_date) : undefined
-    const {user} = useContext(ChatUserContext)
+    let date = undefined
 
+    if (message.send_date ) {
+        date = new Date(message.send_date)
+        date.setHours(date.getHours() + 6)
+    }
+    const {user} = useContext(ChatUserContext)
 
 
 

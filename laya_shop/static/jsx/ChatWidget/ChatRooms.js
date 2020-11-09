@@ -41,7 +41,7 @@ const emojiTrans = {
 
 const API = `${window.location.hostname}:${window.location.port}`;
 
-const ChatRoom = ({slug}) => {
+const ChatRoom = ({slug, isWidget}) => {
     const {user} = useContext(ChatUserContext);
     const [chatSocket, setChatSocket] = useState();
     const [messageText, setMessageText] = useState("");
@@ -74,10 +74,17 @@ const ChatRoom = ({slug}) => {
 
     const sendMessage = (e) => {
         e.preventDefault();
+
+        if (messageText.length === 0 || messageText.match(/^\s*$/)) {
+            return;
+        }
+
+        const cleanMessage =  messageText.replace(/\s\s+/g, ' ')
+
         const messageVerifier = uuid();
         const newMessage = {
             type: "chat_message",
-            message: messageText,
+            message: cleanMessage,
             user: user.pk,
             sender_name: user.name,
             chat_room: chatRoom.id,
@@ -145,7 +152,7 @@ const ChatRoom = ({slug}) => {
     return (
         <Box as="div" id="chat-room">
             <Box as="div" className="chat-messages flex flex-col bg-gray-200 px-2 chat-services overflow-y-auto pb-3"
-                 style={{minHeight: '70vh'}}>
+                 style={{minHeight: isWidget ? '' : '70vh'}}>
                 {chatHistory.map(message => {
                     return <ChatRoomMessage key={message.send_verifier} message={message}/>
                 })}
@@ -167,18 +174,18 @@ const ChatRoom = ({slug}) => {
                     onChange={handleChange}
                 />
                 <button
-                    className="w-1/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">Enviar<IconResolver
+                    className="w-1/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">{!isWidget && "Enviar"}<IconResolver
                     icon="send"/></button>
                 <button onClick={createDeal}
-                        className="w-1/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">Deal<IconResolver
+                        className="w-1/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">{!isWidget && "Deal"}<IconResolver
                     icon="deal"/></button>
                 <span className="relative">
-          <button onClick={emojiModalHandler}
-                  className="text-teal-600 bg-white  hover:text-teal-500 m-1 p-3 w-auto transistion-color duration-100 focus:outline-none">😋</button>
-                    {isOpenEmoji && <Picker i18n={emojiTrans} showPreview={false} title="Emojis" native={true}
-                                            onSelect={(emoji) => setMessageText(`${messageText}${emoji.native}`)}
-                                            style={{position: 'absolute', right: 0, top: '-420px', zIndex: 20}}/>}
-        </span>
+                      <button onClick={emojiModalHandler}
+                              className="text-teal-600 bg-white  hover:text-teal-500 m-1 p-3 w-auto transistion-color duration-100 focus:outline-none">😋</button>
+                                {isOpenEmoji && <Picker i18n={emojiTrans} showPreview={false} title="Emojis" native={true}
+                                                        onSelect={(emoji) => setMessageText(`${messageText}${emoji.native}`)}
+                                                        style={{position: 'absolute', right: 0, top: '-420px', zIndex: 20}}/>}
+                </span>
             </form>
         </Box>
     );
