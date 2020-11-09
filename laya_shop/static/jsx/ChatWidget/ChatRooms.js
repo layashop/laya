@@ -102,11 +102,38 @@ const ChatRoom = ({slug, isWidget}) => {
     };
     const updateMessages = (newMessages) => {
         console.log('newMessage', newMessages)
-        if (newMessages.type === 'seen_messages') {
+        if (newMessages.type === 'seen_messages') { 
+
             setChatHistory(prevState => {
-                return unionBy(Array.isArray(newMessages) ? newMessages : [newMessages], prevState, iteratee('send_verifier'))
+              const historicMessages=   newMessages.messages.reduce((acc, current) => {
+              console.log('Current ', current.send_verifier)
+              const isInHistoric = prevState.findIndex(message => message.send_verifier === current.send_verifier )
+              if(isInHistoric !== -1){
+                
+                acc.push(current)
+              }
+              return acc
+            }, [])
+                        console.log('Historic Message', historicMessages)
+
+                return unionBy(historicMessages, prevState, iteratee('send_verifier'))
             })
+    
+            setChatSession(prevState => {
+                const sessionMessages=   newMessages.messages.reduce((acc, current) => {
+              console.log('Current ', current.send_verifier)
+              const isInSession = prevState.findIndex(message => message.send_verifier === current.send_verifier )
+              if(isInSession !== -1){
+                
+                acc.push(current)
+              }
+              return acc
+            }, [])
+            console.log('Session Message', sessionMessages)
+                return unionBy(sessionMessages, prevState, iteratee('send_verifier'))
+            });
         } else {
+          console.log('New Messages Received', newMessages);
             setChatSession(prevState => {
                 return unionBy(Array.isArray(newMessages) ? newMessages : [newMessages], prevState, iteratee('send_verifier'))
             });
@@ -183,16 +210,15 @@ const ChatRoom = ({slug, isWidget}) => {
         };
     }, [user, slug]);
 
-    console.log(chatSocket)
 
     return (
         <Box as="div" id="chat-room">
             <Box as="div" className="chat-messages flex flex-col bg-gray-200 px-2 chat-services overflow-y-auto pb-3"
                  style={{minHeight: isWidget ? '' : '70vh'}}>
                 <ChatRoomHistoric websocket={chatSocket} markAsSeen={bulkMarkAsSeen}>
-                    {chatHistory.map(message => {
-                        return <ChatRoomMessage message={message}/>
-                    })}
+                  {chatHistory.map(message => {
+                      return <ChatRoomMessage message={message}/>
+                  })}
                 </ChatRoomHistoric>
                 {chatSession.map(message => {
                     if (message.user === user.pk) {

@@ -1,19 +1,22 @@
-import React, { useContext, useLayoutEffect } from 'react'
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
 import ChatRoomMessage from './ChatRoomMessage'
 import ChatUserContext from './UserContext'
 
-const ChatRoomHistoricMessages = ({children, websocket, markAsSeen}) => {
+const ChatRoomHistoricMessages = ({children, websocket, markAsSeen, }) => {
+    const [sent, setSent] = useState(false)
     const {user} = useContext(ChatUserContext)
-    useLayoutEffect(()=>{
-        if(websocket){
+    useEffect(()=>{
+        if(websocket && !sent){
+                    console.log('On Layout Effect', websocket)
+
             markAsSeen(user.pk)
+            setSent(true)
         }
         
-    },[websocket])
+    },[websocket, sent])
 
-    console.log(children)
     return <>{children}</>
 }
 
 
-export default React.memo(ChatRoomHistoricMessages)
+export default ChatRoomHistoricMessages

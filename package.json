@@ -4,8 +4,9 @@
   "dependencies": {
     "emoji-mart": "^3.0.0",
     "lodash": "^4.17.20",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "prop-types": "*",
+    "react": "*",
+    "react-dom": "*",
     "react-tiny-link": "^3.6.0",
     "theme-ui": "^0.3.1",
     "uuid": "^8.3.1"

@@ -42,6 +42,6 @@ class ChatRoomViewSet(ModelViewSet):
 
 class ChatRoomMessagesViewSet(ListModelMixin, GenericViewSet):
     serializer_class = ChatMessageSerializer
-    queryset = ChatMessage.objects.all()
+    queryset = ChatMessage.objects.all().order_by("send_date")
     filter_backends = [filters.DjangoFilterBackend]
     filter_class = ChatRoomMessageFilters

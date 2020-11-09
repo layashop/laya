@@ -37,7 +37,9 @@ const ChatRoomMessage = ({message}) => {
     const {user} = useContext(ChatUserContext)
 
 
-
+    // console.log(`Message: `, message)
+    // console.log(`Seen:${message.seen} 
+    // Send Date: ${message.send_date} , Date: ${date} `)
     return <div className={`${message.user === user.pk ? "bg-white text-gray-700 self-start"
         : "bg-teal-600 text-white self-end"} w-2/3 h-auto p-2  my-2 rounded-md shadow mr-3`}>
         <div className="flex justify-between">

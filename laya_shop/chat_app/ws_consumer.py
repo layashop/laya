@@ -7,6 +7,7 @@ from chat_app.utils import (
     update_message,
     update_messages,
     get_count,
+    get_message,
 )
 from chat_app.api.serializers import ChatMessageSerializer
 
@@ -35,9 +36,15 @@ class WSConsumer(AsyncWebsocketConsumer):
 
     async def chat_message(self, event):
         message = event
-        print(message)
+        print("Message Received", message)
         new_message = await save_message(message)
-        await self.send(text_data=json_dumps(ChatMessageSerializer(new_message).data))
+        if new_message is not None:
+            await self.send(
+                text_data=json_dumps(ChatMessageSerializer(new_message).data)
+            )
+        else:
+            message = await get_message(message.get("send_verifier"))
+            await self.send(text_data=json_dumps(ChatMessageSerializer(message).data))
 
     async def seen_messages_current(self, event):
         message_id = event.get("message_id")
