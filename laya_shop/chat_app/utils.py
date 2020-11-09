@@ -31,3 +31,26 @@ def save_message(message):
     )
     if new_message.pk:
         return new_message
+
+
+@database_sync_to_async
+def update_message(message_id):
+    message = safe_get(ChatMessage, id=message_id)
+    message.seen = True
+    message.save()
+    return message
+
+
+@database_sync_to_async
+def update_messages(user_id, slug):
+    messages = ChatMessage.objects.filter(chat_room__slug=slug)
+    messages = messages.exclude(user__id=user_id)
+    messages.update(seen=True)
+    for m in messages:
+        print(m.__dict__)
+    return messages
+
+
+@database_sync_to_async
+def get_count(queryset):
+    return queryset.count()

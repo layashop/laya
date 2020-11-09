@@ -17,6 +17,7 @@ class ChatMessage(models.Model):
     send_verifier = models.UUIDField()
     message = models.TextField()
     send_date = models.DateTimeField(null=True)
+    seen = models.BooleanField(default=False)
 
 
 class Deal(models.Model):
