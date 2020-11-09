@@ -3,7 +3,7 @@ import {Box} from "theme-ui";
 import ChatUserContext from "./UserContext";
 import {v4 as uuid} from "uuid";
 import ChatRoomMessage from "./ChatRoomMessage";
-import {iteratee, unionBy} from "lodash";
+import {iteratee, unionBy, orderBy} from "lodash";
 import ChatRoomOwnMessage from "./ChatRoomOwnMessage";
 import ChatRoomMessageOther from "./ChatRoomMessageOther";
 import ChatRoomHistoric from './ChatRoomHistoric'
@@ -102,14 +102,14 @@ const ChatRoom = ({slug, isWidget}) => {
     };
     const updateMessages = (newMessages) => {
         console.log('newMessage', newMessages)
-        if (newMessages.type === 'seen_messages') { 
+        if (newMessages.type === 'seen_messages') {
 
             setChatHistory(prevState => {
               const historicMessages=   newMessages.messages.reduce((acc, current) => {
               console.log('Current ', current.send_verifier)
               const isInHistoric = prevState.findIndex(message => message.send_verifier === current.send_verifier )
               if(isInHistoric !== -1){
-                
+
                 acc.push(current)
               }
               return acc
@@ -118,13 +118,13 @@ const ChatRoom = ({slug, isWidget}) => {
 
                 return unionBy(historicMessages, prevState, iteratee('send_verifier'))
             })
-    
+
             setChatSession(prevState => {
                 const sessionMessages=   newMessages.messages.reduce((acc, current) => {
               console.log('Current ', current.send_verifier)
               const isInSession = prevState.findIndex(message => message.send_verifier === current.send_verifier )
               if(isInSession !== -1){
-                
+
                 acc.push(current)
               }
               return acc
@@ -210,17 +210,19 @@ const ChatRoom = ({slug, isWidget}) => {
         };
     }, [user, slug]);
 
+    const orderedChatHistory = orderBy(chatHistory, ['id'], ['asc'])
+    const orderedChatSession = orderBy(chatSession, ['id'], ['asc'])
 
     return (
         <Box as="div" id="chat-room">
             <Box as="div" className="chat-messages flex flex-col bg-gray-200 px-2 chat-services overflow-y-auto pb-3"
                  style={{minHeight: isWidget ? '' : '70vh'}}>
                 <ChatRoomHistoric websocket={chatSocket} markAsSeen={bulkMarkAsSeen}>
-                  {chatHistory.map(message => {
+                  {orderedChatHistory.map(message => {
                       return <ChatRoomMessage message={message}/>
                   })}
                 </ChatRoomHistoric>
-                {chatSession.map(message => {
+                {orderedChatSession.map(message => {
                     if (message.user === user.pk) {
                         return <ChatRoomOwnMessage message={message}/>
                     } else {
