@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticate
 from .permissions import IsBusinessMember
 from posts.models import BusinessImage
 from business.models import Business
+from django_filters.rest_framework import DjangoFilterBackend
 from posts.models import Post
 from .serializers import PostChatThumbnail
 # Create your views here.
@@ -21,8 +22,11 @@ class PostChatThumbnailViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostChatThumbnail
     permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['business_id']
 
-class BusinessGetObject():
+
+class BusinessGetObject:
     def get_object(self):
         business_slug = self.request.POST.get('business') or self.request.GET.get('business') or None
         # import pdb; pdb.set_trace()
@@ -34,7 +38,7 @@ class BusinessGetObject():
             raise Http404
 
 
-#Aqui se suben las imagenes desde el create view
+# Aqui se suben las imagenes desde el create view
 class BusinessTemporalImageView(BusinessGetObject, views.APIView):
     permission_classes = (IsAuthenticated, IsBusinessMember)
 

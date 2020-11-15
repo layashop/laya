@@ -15,6 +15,6 @@ class PostChatThumbnail(serializers.ModelSerializer):
     images = BusinessImageSerializer(many=True)
     class Meta:
         model = Post
-        fields = ['id','title', 'description', 'final_price', 'images']
+        fields = ['id', 'title', 'description', 'final_price', 'images', 'business_id']
         depth = 1
 
