@@ -6,11 +6,11 @@ const ChatRoomMessageOther = ({message, markAsSeen }) => {
 
     useEffect(()=>{
         console.log('Marking for Seen', !message.seen)
-        if(!message.seen){
+        if(message.send_verifier && !message.seen ){
             markAsSeen(message.id)
         }
     },[message])
     return <ChatRoomMessage message={message}/>
 } 
 
-export default memo(ChatRoomMessageOther, compareMessageProps)
+export default ChatRoomMessageOther

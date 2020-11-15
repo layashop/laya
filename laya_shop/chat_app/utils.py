@@ -21,16 +21,19 @@ def create_chat_room(slug):
 @database_sync_to_async
 def save_message(message):
     print("save Message")
-    new_message = ChatMessage.objects.create(
-        user_id=message.get("user"),
-        sender_name=message.get("sender_name"),
-        chat_room_id=message.get("chat_room"),
-        send_verifier=message.get("send_verifier"),
-        message=message.get("message"),
-        send_date=datetime.now(),
-    )
-    if new_message.pk:
-        return new_message
+    try:
+        new_message = ChatMessage.objects.create(
+            user_id=message.get("user"),
+            sender_name=message.get("sender_name"),
+            chat_room_id=message.get("chat_room"),
+            send_verifier=message.get("send_verifier"),
+            message=message.get("message"),
+            send_date=datetime.now(),
+        )
+        if new_message.pk:
+            return new_message
+    except:
+        pass
 
 
 @database_sync_to_async
@@ -54,3 +57,7 @@ def update_messages(user_id, slug):
 @database_sync_to_async
 def get_count(queryset):
     return queryset.count()
+
+@database_sync_to_async
+def get_message(send_verifier):
+    return safe_get(ChatMessage, send_verifier=send_verifier)

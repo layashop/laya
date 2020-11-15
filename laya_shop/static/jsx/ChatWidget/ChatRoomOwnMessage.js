@@ -11,4 +11,4 @@ const ChatRoomOwnMessage = ({message, edit, }) => {
     return <ChatRoomMessage message={message}/>
 } 
 
-export default memo(ChatRoomOwnMessage, compareMessageProps)
+export default ChatRoomOwnMessage

@@ -1,8 +1,6 @@
 import React, { createContext, useState } from "react"
 import {render, unmountComponentAtNode} from 'react-dom'
-import { ThemeProvider, Box } from "theme-ui"
 import  {ChatUserContextProvider} from './ChatWidget/UserContext'
-import theme from './utils/theme'
 import ChatRoom from './ChatWidget/ChatRooms'
 
 
@@ -26,13 +24,12 @@ const ChatWidget = () => {
         removeComponent()
     }
     return (
-        <ThemeProvider theme={theme}> 
             <ChatUserContextProvider value={
                 {user: user}
             }>
                 {/*  fixed bottom-0 right-0 */}
-                <Box as="div"
-                    className="chat-widget fixed bottom-0 sm:right-0 flex justify-center sm:justify-end items-end  w-full h-screen sm:bg-opacity-0 bg-black bg-opacity-25"
+                <div as="div"
+                    className="chat-widget fixed bottom-0 sm:right-0 flex justify-center sm:justify-end items-end z-10  w-full h-screen sm:bg-opacity-0 bg-black bg-opacity-25"
                     onClick={onClick}
                 >
                     <div onClick={e => e.stopPropagation()} className="widget-container flex flex-col shadow-lg sm:w-2/3 md:w-1/3 lg:w-1/4 ">
@@ -45,12 +42,11 @@ const ChatWidget = () => {
                                 </svg>
                             </div>
                         </div>
-                        <ChatRoom slug={slug}></ChatRoom>
+                        <ChatRoom slug={slug} isWidget={true}/>
                     </div>
-                
-                </Box>
+
+                </div>
             </ChatUserContextProvider>
-        </ThemeProvider>
     )
 }
 
