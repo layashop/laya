@@ -10,5 +10,5 @@ class MultipleIdsFilterBackend(filters.BaseFilterBackend):
         try:
             ids = [int(id) for id in ids]
             return queryset.filter(pk__in=ids)
-        except:
+        except TypeError:
             return queryset
