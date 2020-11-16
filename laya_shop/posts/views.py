@@ -55,7 +55,7 @@ class PostDetail(DetailView):
     def get_object(self):
         queryset = Post.objects.select_related('business', 'currency').prefetch_related('locations',
                                                                                         'subcategories__category')
-        return get_object_or_404(queryset, pk=self.kwargs['pk'])
+        return get_object_or_404(queryset, pk=self.kwargs['pk'], business__slug=self.kwargs['business_slug'])
 
 
 post_detail_view = PostDetail.as_view()

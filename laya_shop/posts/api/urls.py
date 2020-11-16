@@ -3,7 +3,7 @@ from rest_framework.routers import SimpleRouter
 from . import views
 
 router = SimpleRouter()
-router.register(r'preview', views.PostChatThumbnailViewSet)
+router.register('preview', views.PostChatThumbnailViewSet)
 
 app_name = "posts"
 urlpatterns = [
@@ -13,5 +13,5 @@ urlpatterns = [
         views.BusinessTemporalDetailView.as_view(),
         name="temp_detail_image",
     ),
-    path('', include(router.urls))
-]
+
+] + [path('', include(router.urls))]

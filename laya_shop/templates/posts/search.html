@@ -11,7 +11,7 @@
 
         {% for post in object_list %}
           {# AQUI EMPIEZAN LOS ELEMENTOS #}
-          <a href="{% url 'posts:detail' post.pk %}">
+          <a href="{% url 'posts:detail' post.business.slug post.pk %}">
             <div class="flex flex-col ">
               {% if post.images %}
                 {% with media=post.images.all.0 %}

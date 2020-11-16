@@ -7,6 +7,6 @@ app_name = "posts"
 urlpatterns = [
     path('posts/', RedirectView.as_view(pattern_name="posts:search")),
     path('posts/search/', post_list_view, name="search"),
-    path('posts/<pk>/', post_detail_view, name="detail"),
+    path('<business_slug>/posts/<pk>/', post_detail_view, name="detail"),
     path('category/<slug>/', category_detail_view, name="category_detail")
 ]

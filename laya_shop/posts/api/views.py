@@ -9,6 +9,7 @@ from rest_framework import views, viewsets
 
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from .permissions import IsBusinessMember
+from .filters import MultipleIdsFilterBackend
 from posts.models import BusinessImage
 from business.models import Business
 from django_filters.rest_framework import DjangoFilterBackend
@@ -17,12 +18,11 @@ from .serializers import PostChatThumbnail
 # Create your views here.
 
 
-
 class PostChatThumbnailViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostChatThumbnail
     permission_classes = [IsAuthenticatedOrReadOnly]
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [MultipleIdsFilterBackend, DjangoFilterBackend]
     filterset_fields = ['business_id']
 
 
