@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, userContext, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import {Box} from "theme-ui";
 import ChatUserContext from "./UserContext";
 import {v4 as uuid} from "uuid";
@@ -7,6 +7,7 @@ import {iteratee, unionBy, orderBy} from "lodash";
 import ChatRoomOwnMessage from "./ChatRoomOwnMessage";
 import ChatRoomMessageOther from "./ChatRoomMessageOther";
 import ChatRoomHistoric from './ChatRoomHistoric'
+import PostSelector from "../PostSelector/PostSelector";
 
 import IconResolver from "./IconResolver";
 
@@ -14,6 +15,8 @@ import './emoji-mart.css';
 import {Picker} from 'emoji-mart';
 
 const API = `${window.location.hostname}:${window.location.port}`;
+
+const PRODUCT_INFO = document.getElementById('post_info')
 
 const emojiTrans = {
     search: 'Buscar',
@@ -50,10 +53,14 @@ const ChatRoom = ({slug, isWidget}) => {
     const [chatSocket, setChatSocket] = useState();
     const [messageText, setMessageText] = useState("");
     const [isOpenEmoji, setIsOpenEmoji] = useState(false);
+    const [isOpenDeal, setIsOpenDeal] = useState(false);
+    const [isOpenSubmenu, setIsOpenSubmenu] = useState(false);
+    const [isOpenPostSelector, setIsOpenPostSelector] = useState(false);
     const [chatHistory, setChatHistory] = useState([]);
-    const [chatSession, setChatSession] = useState([])
+    const [chatSession, setChatSession] = useState([]);
     const handleChange = (e) => setMessageText(e.target.value);
     const [chatRoom, setChatRoom] = useState();
+    const overlayRef = useRef();
     // const [lastMessage, setLastMessageUUID] = useState();
 
     const getChatRoom = async () => {
@@ -76,15 +83,21 @@ const ChatRoom = ({slug, isWidget}) => {
         setIsOpenEmoji(!isOpenEmoji)
     }
 
+    const dealModalHandler = (e) => {
+        e.preventDefault()
+        setIsOpenSubmenu(!isOpenSubmenu)
+    }
 
-    const sendMessage = (e) => {
+
+    const sendMessage = (e, message) => {
         e.preventDefault();
 
-        if (messageText.length === 0 || messageText.match(/^\s*$/)) {
+
+        if ((messageText.length === 0 || messageText.match(/^\s*$/)) && !message) {
             return;
         }
 
-        const cleanMessage = messageText.replace(/\s\s+/g, ' ')
+        const cleanMessage = message || messageText.replace(/\s\s+/g, ' ')
 
         const messageVerifier = uuid();
         const newMessage = {
@@ -95,45 +108,61 @@ const ChatRoom = ({slug, isWidget}) => {
             chat_room: chatRoom.id,
             send_verifier: messageVerifier,
         };
+
         chatSocket.send(JSON.stringify(newMessage));
-        setMessageText('')
+        if (!message) {
+            setMessageText('')
+        }
         setChatSession(chatSessionValues => [...chatSessionValues, newMessage])
 
     };
+
+    const sendCurrent = (e) => {
+        sendMessage(e, `||laya?product?{"id":[${PRODUCT_INFO.dataset.postId}]}||`)
+        setIsOpenSubmenu(false)
+    }
+
+    const sendList = (e) => {
+        e.preventDefault()
+        setIsOpenSubmenu(false)
+        setIsOpenPostSelector(true)
+    }
+
+
     const updateMessages = (newMessages) => {
         console.log('newMessage', newMessages)
         if (newMessages.type === 'seen_messages') {
 
             setChatHistory(prevState => {
-              const historicMessages=   newMessages.messages.reduce((acc, current) => {
-              console.log('Current ', current.send_verifier)
-              const isInHistoric = prevState.findIndex(message => message.send_verifier === current.send_verifier )
-              if(isInHistoric !== -1){
+                const historicMessages = newMessages.messages.reduce((acc, current) => {
+                    console.log('Current ', current.send_verifier)
+                    const isInHistoric = prevState.findIndex(message => message.send_verifier === current.send_verifier)
+                    if (isInHistoric !== -1) {
 
-                acc.push(current)
-              }
-              return acc
-            }, [])
-                        console.log('Historic Message', historicMessages)
+                        acc.push(current)
+                    }
+                    return acc
+                }, [])
+                console.log('Historic Message', historicMessages)
 
                 return unionBy(historicMessages, prevState, iteratee('send_verifier'))
             })
 
             setChatSession(prevState => {
-                const sessionMessages=   newMessages.messages.reduce((acc, current) => {
-              console.log('Current ', current.send_verifier)
-              const isInSession = prevState.findIndex(message => message.send_verifier === current.send_verifier )
-              if(isInSession !== -1){
+                const sessionMessages = newMessages.messages.reduce((acc, current) => {
+                    console.log('Current ', current.send_verifier)
+                    const isInSession = prevState.findIndex(message => message.send_verifier === current.send_verifier)
+                    if (isInSession !== -1) {
 
-                acc.push(current)
-              }
-              return acc
-            }, [])
-            console.log('Session Message', sessionMessages)
+                        acc.push(current)
+                    }
+                    return acc
+                }, [])
+                console.log('Session Message', sessionMessages)
                 return unionBy(sessionMessages, prevState, iteratee('send_verifier'))
             });
         } else {
-          console.log('New Messages Received', newMessages);
+            console.log('New Messages Received', newMessages);
             setChatSession(prevState => {
                 return unionBy(Array.isArray(newMessages) ? newMessages : [newMessages], prevState, iteratee('send_verifier'))
             });
@@ -168,10 +197,6 @@ const ChatRoom = ({slug, isWidget}) => {
         };
     };
 
-
-    const createDeal = () => {
-
-    }
 
     const markAsSeen = (messageId) => {
         if (chatSocket) {
@@ -210,6 +235,7 @@ const ChatRoom = ({slug, isWidget}) => {
         };
     }, [user, slug]);
 
+
     const orderedChatHistory = orderBy(chatHistory, ['id'], ['asc'])
     const orderedChatSession = orderBy(chatSession, ['id'], ['asc'])
 
@@ -218,9 +244,9 @@ const ChatRoom = ({slug, isWidget}) => {
             <Box as="div" className="chat-messages flex flex-col bg-gray-200 px-2 chat-services overflow-y-auto pb-3"
                  style={{minHeight: isWidget ? '' : '70vh'}}>
                 <ChatRoomHistoric websocket={chatSocket} markAsSeen={bulkMarkAsSeen}>
-                  {orderedChatHistory.map(message => {
-                      return <ChatRoomMessage message={message}/>
-                  })}
+                    {orderedChatHistory.map(message => {
+                        return <ChatRoomMessage message={message}/>
+                    })}
                 </ChatRoomHistoric>
                 {orderedChatSession.map(message => {
                     if (message.user === user.pk) {
@@ -235,31 +261,82 @@ const ChatRoom = ({slug, isWidget}) => {
                     </div>
                 </a>) : null}
             </Box>
-            <form onSubmit={sendMessage}
-                  className="bg-white flex sticky bottom-0 w-100 border-t border-blue-500 border-opacity-50">
+            <Box as="form" onSubmit={sendMessage}
+                 className="bg-white flex bottom-0 w-100 border-t border-blue-500 border-opacity-50"
+                 sx={{position: isWidget ? '' : 'sticky'}}
+            >
                 <input
                     className="pl-4 pr-16 py-2 my-2  focus:outline-none w-8/12"
                     placeholder="Message..."
                     value={messageText}
                     onChange={handleChange}
                 />
-                <button
-                    className="w-1/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">{!isWidget && "Enviar"}<IconResolver
-                    icon="send"/></button>
-                <button onClick={createDeal}
-                        className="w-1/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">{!isWidget && "Deal"}<IconResolver
-                    icon="deal"/></button>
+                <span className="relative">
+                    <button
+                        className="h-full text-teal-600 bg-white hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">{!isWidget && "Enviar"}<IconResolver
+                        icon="send"/></button>
+                </span>
+                <span className="relative">
+                    <button onClick={dealModalHandler}
+                            className="h-full text-teal-600 bg-white hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none">{!isWidget && "Adjuntar"}<IconResolver
+                        icon="more"/></button>
+                    {isOpenSubmenu && <Box as="div" sx={{
+                        right: '-20px',
+                        top: isWidget ? '-180px' : '-147px',
+                        zIndex: 20,
+                        bg: 'white',
+                        width: '280px',
+                        position: 'absolute',
+                        p: 10
+                    }}>
+                        <h4 className="text-xl">Seleccione una opción</h4>
+                        <hr className="pb-2"/>
+                        {isWidget && (<button className="hover:bg-gray-200 w-full text-left transistion duration-100"
+                                              onClick={sendCurrent}><IconResolver icon="upright"/> Enviar este producto
+                        </button>)}
+                        <button className="hover:bg-gray-200 w-full text-left transistion duration-100"
+                                onClick={sendList}><IconResolver icon="search"/>Enviar otro producto
+                        </button>
+                        <button className="hover:bg-gray-200 w-full text-left transistion duration-100"><IconResolver
+                            icon="deal"/>Enviar acuerdo
+                        </button>
+                    </Box>}
+                </span>
                 <span className="relative">
                       <button onClick={emojiModalHandler}
-                              className="text-teal-600 bg-white  hover:text-teal-500 m-1 p-3 w-auto transistion-color duration-100 focus:outline-none">😋</button>
+                              className="text-teal-600 bg-white h-full hover:text-teal-500 m-1 p-3 w-auto transistion-color duration-100 focus:outline-none">😋</button>
                     {isOpenEmoji && <Picker i18n={emojiTrans} showPreview={false} title="Emojis" native={true}
                                             onSelect={(emoji) => setMessageText(`${messageText}${emoji.native}`)}
                                             style={{position: 'absolute', right: 0, top: '-420px', zIndex: 20}}/>}
                 </span>
-            </form>
+            </Box>
+            {isOpenPostSelector && (<Box
+                __css={{
+                    display: 'flex',
+                    position: 'fixed',
+                    zIndex: 100,
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100vh',
+                    bg: 'rgba(0,0,0,0.5)',
+                    alignItems: "center",
+                    justifyContent: 'center'
+                }}
+                ref={overlayRef}
+                onClick={e => {
+                    e.preventDefault()
+                    if (e.target === overlayRef.current) {
+                        setIsOpenPostSelector(false)
 
+                    }
+                }}>
+                <Box __css={{width: '50%', bg: 'white', borderRadius: '10px'}}>
+                    <PostSelector businessId={PRODUCT_INFO.dataset.businessId}/>
+                </Box>
+            </Box>)}
         </Box>
     );
-};
+}
 
 export default ChatRoom;

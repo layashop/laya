@@ -2,26 +2,28 @@
 {% load static %}
 
 {% block content %}
-<div id="chat_app">
-</div>
+  <div class="hidden" id="post_info" data-business-id="{{ business.id }}"></div>
+  <div id="chat_app">
+  </div>
 {% endblock %}
 {% block stylesheets %}
-    <link rel="stylesheet" href="{% static 'assets/css/emoji-mart.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/emoji-mart.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/loader.css' %}">
 {% endblock stylesheets %}
 {% block javascripts %}
-<script src="https://unpkg.com/regenerator-runtime@0.13.1/runtime.js"></script>
+  <script src="https://unpkg.com/regenerator-runtime@0.13.1/runtime.js"></script>
 
-<script>
+  <script>
     // const BUSINESS = JSON.parse("{{ business_json |safe }}")
     const BUSINESS = {
-        slug: '{{ business.slug | safe}}'
+      slug: '{{ business.slug | safe}}'
     }
     const USER = {
-        pk: {% firstof user.pk 'null' %},
-        name: `{% firstof user.first_name 'null'%}`
+      pk: {% firstof user.pk 'null' %},
+      name: `{% firstof user.first_name 'null'%}`
     }
 
     console.log('Business', BUSINESS)
-</script>
-<script src="{% static 'dist/js/ChatPage.js' %}"></script>
-{% endblock  %}
+  </script>
+  <script src="{% static 'dist/js/ChatPage.js' %}"></script>
+{% endblock %}
