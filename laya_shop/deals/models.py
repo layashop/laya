@@ -23,7 +23,7 @@ class Deal(models.Model):
         RETURNED = 8, 'Devuelto'
 
     status = models.IntegerField(choices=State.choices, default=State.PENDING)
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(blank=True, null=True)
     expires_at = models.DateTimeField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
