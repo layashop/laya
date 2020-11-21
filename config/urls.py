@@ -32,9 +32,9 @@ urlpatterns = [
     path("api/posts/", include("laya_shop.posts.api.urls", namespace="api_posts")),
     path(
         "api/chat-app/",
-        include("laya_shop.chat_app.api.urls", namespace="api_chat_app"),
+        include("laya_shop.chat_app.api.urls",),
     ),
-
+    path('api/deals/', include("laya_shop.deals.api.urls", namespace="api_chat_app")),
     # DRF auth token
     path("auth-token/", obtain_auth_token),
 ] + urlpatterns
