@@ -67,6 +67,8 @@
             Por {{ object.business.name }}
           </div>
 
+        <div class="hidden" id="post_info" data-post-id="{{ object.id }}" data-business-id="{{ object.business_id }}"></div>
+
           <div class="flex items-center mt-6">
             <button id="trigger-chat" class="px-8 py-2 bg-indigo-600 text-white text-sm font-medium rounded transition duration-300 hover:bg-indigo-500
                         focus:outline-none focus:bg-indigo-500">Contactar al emprendedor
@@ -301,6 +303,7 @@
 
 
 {% block extra_styles %}
+  <link rel="stylesheet" href="{% static 'assets/css/loader.css' %}">
   <link rel="stylesheet" href="{% static 'assets/css/emoji-mart.css' %}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@latest/dist/css/splide.min.css">
 {% endblock %}
