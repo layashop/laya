@@ -61,7 +61,20 @@ const ChatRoom = ({slug, isWidget}) => {
     const handleChange = (e) => setMessageText(e.target.value);
     const [chatRoom, setChatRoom] = useState();
     const overlayRef = useRef();
-    // const [lastMessage, setLastMessageUUID] = useState();
+
+
+    // post selector
+    const [ isLoadedPostData, setIsLoadedPostData ] = useState(false);
+    const [postData, setPostData] = useState([])
+    const [selectedPost, setSelectedPost] = useState([])
+    useEffect(() => {
+        fetch(`${window.origin}/api/posts/preview?&business_id=${PRODUCT_INFO.dataset.businessId}`)
+            .then(result => result.json())
+            .then(data => {
+                setPostData(data)
+                setIsLoadedPostData(true)
+            })
+    }, [])
 
     const getChatRoom = async () => {
         const request = await fetch(
@@ -126,6 +139,13 @@ const ChatRoom = ({slug, isWidget}) => {
         e.preventDefault()
         setIsOpenSubmenu(false)
         setIsOpenPostSelector(true)
+    }
+
+    const submitList = (e) => {
+        const text = selectedPost.reduce(((previousValue, currentValue) => `${previousValue},${currentValue.id}`), '').substr(1)
+        sendMessage(e, `||laya?product?{"id":[${text}]}||`)
+        setIsOpenPostSelector(false)
+        setSelectedPost([])
     }
 
 
@@ -332,7 +352,7 @@ const ChatRoom = ({slug, isWidget}) => {
                     }
                 }}>
                 <Box __css={{width: '50%', bg: 'white', borderRadius: '10px'}}>
-                    <PostSelector businessId={PRODUCT_INFO.dataset.businessId}/>
+                    <PostSelector isLoaded={isLoadedPostData} data={postData} selected={selectedPost} setSelected={setSelectedPost} onSubmit={submitList}/>
                 </Box>
             </Box>)}
         </Box>

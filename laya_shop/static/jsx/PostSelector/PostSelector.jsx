@@ -1,25 +1,14 @@
 import React, {useEffect, useState} from 'react'
 import {Box} from 'theme-ui'
+import _ from 'lodash'
 import IconResolver from "../ChatWidget/IconResolver";
 
-const PostSelector = ({businessId}) => {
+const PostSelector = ({isLoaded, data, selected, setSelected, onSubmit}) => {
 
-    const [isLoaded, setIsLoaded] = useState(false)
-    const [data, setData] = useState([])
-    const [selected, setSelected] = useState([])
     const [searchText, setSearchText] = useState('')
     const [searchQuery, setSearchQuery] = useState('')
 
     const enableSubmit = selected.length > 0
-
-    useEffect(() => {
-        fetch(`${window.origin}/api/posts/preview?&business_id=${businessId}`)
-            .then(result => result.json())
-            .then(data => {
-                setData(data)
-                setIsLoaded(true)
-            })
-    }, [])
 
     return (<>
         <Box as="h3" __css={{
@@ -76,11 +65,16 @@ const PostSelector = ({businessId}) => {
                  borderBottomRightRadius: '10px',
              }}>
             {isLoaded ? (<>{data.length > 0 ? data.map((item, index) => {
+
+                    const selectedIndex = _.findIndex(selected, {id: item.id})
+
+                    console.log(selected, selectedIndex)
+
                     return (
                         <>{searchQuery === '' || item.title.toLowerCase().includes(searchQuery.toLowerCase()) ?
                             <Box __css={{
                                 border: '2px solid',
-                                borderColor: selected.includes(index) ? '#348ceb' : 'transparent',
+                                borderColor: selectedIndex !== -1 ? '#348ceb' : 'transparent',
                                 borderRadius: '5px',
                                 bg: 'white',
                                 boxShadow: '0 0 2rem 0 rgba(136, 152, 170, 0.15)',
@@ -90,12 +84,11 @@ const PostSelector = ({businessId}) => {
                                 p: '10px',
                             }}
                                  onClick={() => {
-                                     const indexOf = selected.indexOf(index)
-                                     if (indexOf === -1) {
-                                         setSelected([...selected, index])
+                                     if (selectedIndex === -1) {
+                                         setSelected([...selected, data[index]])
                                      } else {
                                          const newSelected = [...selected]
-                                         newSelected.splice(indexOf, 1)
+                                         newSelected.splice(selectedIndex, 1)
                                          setSelected(newSelected)
                                      }
                                  }}
@@ -111,7 +104,13 @@ const PostSelector = ({businessId}) => {
                 </Box>}</>) : <div className="loader-dark mt-4">Loading...</div>}
         </Box>
         <Box className="bg-gray-100" __css={{display: 'flex', justifyContent: 'flex-end', borderBottomLeftRadius: '10px', borderBottomRightRadius: '10px',}}>
-            <Box as="button" __css={{
+            <Box as="button"
+                onClick={(e)=>{
+                    if(enableSubmit) {
+                        onSubmit(e)
+                    }
+                }}
+                 __css={{
                 bg: enableSubmit ? '#3473d9' : '#d9d9d9',
                 color: enableSubmit ? 'white' : 'black',
                 transition: '0.5s',
