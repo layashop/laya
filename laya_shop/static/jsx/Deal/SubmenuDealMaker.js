@@ -1,6 +1,24 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {Box} from 'theme-ui'
 import DealMaker from "./DealMaker";
+import _ from 'lodash'
+
+
+const getCookie = (name) => {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
 const choices = {
     1: "Pendiente",
@@ -24,51 +42,127 @@ const SubmenuDealMaker = ({
     // -1 : buscando
     // -2 : creando
     // 0+ : uno en especifico
+    const [searchText, setSearchText] = useState('')
     const [selectedDealIndex, setSelectedDealIndex] = useState(-1)
     // el que se esta creando/editando
     const [activeDeal, setActiveDeal] = useState({})
 
-    const submitHandler = (e, deal) => {
+    const submitHandler = (e) => {
         e.preventDefault()
-        if (Object.hasOwnProperty('savedData')) {
-            console.log(deal)
+
+        const products = selectedPost.map(item => {
+            return _.find(activeDeal.products, {id: item.id})
+        })
+
+
+        if (activeDeal.id) {
+            return console.log('wtf')
+        } else {
+            const {status, ...data} = activeDeal
+
+            data.originalStatus = status
+            data.originalSendDate = new Date()
+            data.pending = 'pending'
+
+            /// DIAS PARA EXPIRARSE
+            const expires_at = new Date()
+            expires_at.setDate(expires_at.getDate() + 3)
+
+            const newEntry = {
+                user,
+                business,
+                sent_by: isBusiness ? 2: 1,
+                status: 1,
+                expires_at,
+                history: [data],
+            }
+
+            fetch(`/api/deals/`, {
+                method: 'POST',
+                body: JSON.stringify(newEntry),
+                headers: {
+                    'Content-Type': 'application/json',
+                    "X-CSRFToken": getCookie('csrftoken')
+                }
+            }).then(response => response.json())
+                .then(data => console.log(data))
+
         }
 
-        setSelectedDealIndex(-1)
+
     }
 
     const openMaker = (e, index) => {
         if (index === -1) {
-            setActiveDeal({})
+            setActiveDeal({currency: 1, date: new Date(), deliveryMethod: 1, status: 5})
+            setSelectedPost([])
             setSelectedDealIndex(-2)
         } else {
+
+            const data = dealData[index].history[dealData[index].history.length - 1]
+
             setActiveDeal({
                 id: dealData[index].id,
-                status: dealData[index].status,
-                data: dealData[index].history[dealData[index].history.length - 1]
+                ...data
             })
+            const selectedProducts = []
+            for (let i of data.products) {
+                const index = _.findIndex(postData, {id: data.products[i].id})
+                if (index !== -1) {
+                    selectedProducts.push(index)
+                }
+            }
+            setSelectedPost(selectedProducts)
             setSelectedDealIndex(index)
         }
     }
 
 
     useEffect(() => {
-        setTimeout(() => isLoadedDeal(true), 1500)
+        setTimeout(() => setIsLoadedDealData(true), 1500)
     }, [])
     return (<Box __css={{
         maxHeight: ['75vh', '60vh'],
         minHeight: ['75vh', '60vh'],
-        width: ['100%', '80%', '60%'],
-        display: 'flex'
+        display: 'flex',
+        flexDirection: 'column',
     }}>
         {selectedDealIndex === -1 && <>
-            <Box __css={{display: 'flex'}}>
-                <Box as="h3">Seleccione un acuerdo</Box>
+            <Box __css={{
+                display: 'flex', justifyContent: 'space-between', width: '100%', pb: '12px',
+                mt: '16px',
+                px: '30px',
+                fontSize: '30px',
+                borderBottom: '2px solid rgba(66, 153, 225, 0.5)'
+            }}>
+                <Box as="h3" __css={{fontSize: '30px'}}>Seleccione un acuerdo</Box>
                 <Box as="button" onClick={e => openMaker(e, -1)}>Nuevo acuerdo</Box>
             </Box>
-            <Box>
-                <Box as="input"/>
-                <Box as="button">Limpiar</Box>
+            <Box __css={{
+                minHeight: '50px',
+                button: {
+                    cursor: 'pointer',
+                    color: 'rgb(49, 151, 149)',
+                    flex: 1,
+                    px: '5px',
+                    py: '4px',
+                    bg: 'white',
+                    transition: '100ms',
+                    ':hover': {
+                        bg: 'rgb(226, 232, 240)',
+                    }
+                },
+                display: 'flex',
+                alignItems: 'stretch'
+            }}>
+                <Box as="input" __css={{bg: 'white', width: '80%', px: '30px'}} placeholder="Busque por ID"
+                     onChange={e => setSearchText(e.target.value)}
+                     value={searchText}
+                />
+                <Box as="button" onClick={e => {
+                    e.preventDefault()
+                    setSearchQuery(searchText)
+                }}>Limpiar Búsqueda</Box>
             </Box>
             <Box>
                 {isLoadedDealData && dealData.length > 0 && <Box __css={{display: 'flex'}}>

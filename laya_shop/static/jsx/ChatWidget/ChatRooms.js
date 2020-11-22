@@ -362,14 +362,14 @@ const ChatRoom = ({slug, isWidget}) => {
                         setSelectedPost([])
                     }
                 }}>
-                <Box __css={{width: '50%', bg: 'white', borderRadius: '10px'}}>
+                <Box __css={{width: ["100%", '80%'], bg: 'white', borderRadius: '10px'}}>
                     {modalMode === 'sendList' &&
                     <PostSelector isLoaded={isLoadedPostData} data={postData} selected={selectedPost}
                                   setSelected={setSelectedPost} onSubmit={submitList}/>}
                     {modalMode === 'sendDeal' &&
                     <SubmenuDealMaker isLoadedPostData={isLoadedPostData} postData={postData} user={slug.split('-')[1]}
                                       business={PRODUCT_INFO.dataset.businessId} selectedPost={selectedPost}
-                                      setSelected={setSelectedPost} onSubmit={submitDeal}
+                                      setSelectedPost={setSelectedPost} onSubmit={submitDeal}
                                       isBusiness={slug.split('-')[1] !== user}/>}
                 </Box>
             </Box>)}
