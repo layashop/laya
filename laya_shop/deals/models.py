@@ -8,19 +8,21 @@ from users.models import User
 
 
 class Deal(models.Model):
-    business = models.ForeignKey(Business, on_delete=models.CASCADE, related_name='deals')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='deals')
+    business = models.ForeignKey(
+        Business, on_delete=models.CASCADE, related_name="deals"
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="deals")
     history = JSONField(blank=False, null=False)
 
     class State(models.IntegerChoices):
-        PENDING = 1, 'Pendiente'
-        REJECTED = 2, 'rechazado'
-        CANCELLED = 3, 'Cancelado'
-        RESERVED = 4, 'Reservado'
-        SETTLED = 5, 'Acordado'
-        DELIVERY = 6, 'Delivery'
-        DELIVERED = 7, 'Entregado'
-        RETURNED = 8, 'Devuelto'
+        PENDING = 1, "Pendiente"
+        REJECTED = 2, "Rechazado"
+        CANCELLED = 3, "Cancelado"
+        RESERVED = 4, "Reservado"
+        SETTLED = 5, "Acordado"
+        DELIVERY = 6, "Delivery"
+        DELIVERED = 7, "Entregado"
+        RETURNED = 8, "Devuelto"
 
     status = models.IntegerField(choices=State.choices, default=State.PENDING)
     created_at = models.DateTimeField(blank=True, null=True)
@@ -31,4 +33,3 @@ class Deal(models.Model):
             self.created_at = timezone.now()
 
         super(Deal, self).save(*args, **kwargs)
-

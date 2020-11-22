@@ -5,34 +5,33 @@
 
 {% block content %}
 
-  <div class="max-w-5xl mx-auto px-10 mt-10 text-center">
-    <h1 class="text-4xl mb-2">Información de usuario</h1>
-    <div class="mb-2 mx-auto max-w-m">
-      <h2 class="font-bold">Usuario:</h2>
-      {{ object.username }}
-    </div>
-    {% if object.name %}
-      <div class="mb-2 mx-auto max-w-xs">
-        <h2 class="font-bold">Nombre:</h2>
-        {{ object.name }}
-      </div>
-    {% endif %}
-
+<div class="max-w-5xl mx-auto px-10 mt-10 text-center">
+  <h1 class="text-4xl mb-2">Información de usuario</h1>
+  <div class="mb-2 mx-auto max-w-m">
+    <h2 class="font-bold">Usuario:</h2>
+    {{ object.username }}
   </div>
-
-  {% if object == request.user %}
-    <!-- Action buttons -->
-    <div class="mt-4 mx-auto max-w-xs text-center">
-      <a class="p-2 bg-red-100 hover:shadow-xs rounded-xs" href="{% url 'users:update' %}" role="button">My Info</a>
-      <a class="p-2 bg-red-100 hover:shadow-xs rounded-xs" href="{% url 'account_email' %}" role="button">E-Mail</a>
-
-    </div>
-
-    </div>
-    <!-- End Action buttons -->
+  {% if object.name %}
+  <div class="mb-2 mx-auto max-w-xs">
+    <h2 class="font-bold">Nombre:</h2>
+    {{ object.name }}
+  </div>
   {% endif %}
 
+</div>
 
-  </div>
+{% if object == request.user %}
+<!-- Action buttons -->
+<div class="mt-4 mx-auto max-w-xs text-center">
+  <a class="p-2 bg-red-100 hover:shadow-xs rounded-xs" href="{% url 'users:update' %}" role="button">My Info</a>
+  <a class="p-2 bg-red-100 hover:shadow-xs rounded-xs" href="{% url 'account_email' %}" role="button">E-Mail</a>
+  <a class="p-2 bg-red-100 hover:shadow-xs rounded-xs" href="{% url 'users:chats' %}" role="button">Chat</a>
+</div>
+
+</div>
+<!-- End Action buttons -->
+{% endif %}
+
+
+</div>
 {% endblock content %}
-

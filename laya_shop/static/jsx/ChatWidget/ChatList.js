@@ -16,9 +16,9 @@ const ChatList = ({chatSelected, businessSlug, setChatRoomSlug}) => {
         const queryData = async () => {
             let url = `http://localhost:8000/${API}?type=${businessSlug ? 'business' : 'user'}`
             if(businessSlug){
-                url += `business_slug=${businessSlug}`
+                url += `&business_slug=${businessSlug}`
             }else{
-                url += `user_id=${userPk}`
+                url += `&user_id=${userPk}`
             }
             const data = await sendRequest(url)
             if(!data.error){
@@ -29,7 +29,7 @@ const ChatList = ({chatSelected, businessSlug, setChatRoomSlug}) => {
     }, [])
     if(loading === FetchHook.LOADING) return <div>Loading...</div>
 
-    console.log('ChatRoom', chatRooms)
+    console.log('ChatRoom', businessSlug)
     return (<div className={`${chatSelected ?'hidden md:block w-4/12' : 'w-full'} overflow-y-auto`  }>
         <h2 className="text-2xl px-5 mb-2 border-b border-blue-400 border-opacity-50">Salas de chat</h2>
         <div className="divide-y px-5 divide-blue-400 divide-opacity-50">
