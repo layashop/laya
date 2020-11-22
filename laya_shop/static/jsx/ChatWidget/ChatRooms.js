@@ -13,6 +13,7 @@ import IconResolver from "./IconResolver";
 
 import './emoji-mart.css';
 import {Picker} from 'emoji-mart';
+import SubmenuDealMaker from "../Deal/SubmenuDealMaker";
 
 const API = `${window.location.hostname}:${window.location.port}`;
 
@@ -55,16 +56,16 @@ const ChatRoom = ({slug, isWidget}) => {
     const [isOpenEmoji, setIsOpenEmoji] = useState(false);
     const [isOpenDeal, setIsOpenDeal] = useState(false);
     const [isOpenSubmenu, setIsOpenSubmenu] = useState(false);
-    const [isOpenPostSelector, setIsOpenPostSelector] = useState(false);
+    const [isOpenModal, setIsOpenModal] = useState(false);
+    const [modalMode, setModalMode] = useState('')
     const [chatHistory, setChatHistory] = useState([]);
     const [chatSession, setChatSession] = useState([]);
     const handleChange = (e) => setMessageText(e.target.value);
     const [chatRoom, setChatRoom] = useState();
     const overlayRef = useRef();
 
-
     // post selector
-    const [ isLoadedPostData, setIsLoadedPostData ] = useState(false);
+    const [isLoadedPostData, setIsLoadedPostData] = useState(false);
     const [postData, setPostData] = useState([])
     const [selectedPost, setSelectedPost] = useState([])
     useEffect(() => {
@@ -135,16 +136,24 @@ const ChatRoom = ({slug, isWidget}) => {
         setIsOpenSubmenu(false)
     }
 
-    const sendList = (e) => {
+    const openModal = (e, mode) => {
         e.preventDefault()
         setIsOpenSubmenu(false)
-        setIsOpenPostSelector(true)
+        setModalMode(mode)
+        setIsOpenModal(true)
     }
 
     const submitList = (e) => {
         const text = selectedPost.reduce(((previousValue, currentValue) => `${previousValue},${currentValue.id}`), '').substr(1)
         sendMessage(e, `||laya?product?{"id":[${text}]}||`)
-        setIsOpenPostSelector(false)
+        setIsOpenModal(false)
+        setSelectedPost([])
+    }
+
+    const submitDeal = (e, id) => {
+        const text = `||laya?deal?{"id": ${id}}||`
+        sendMessage(e, text)
+        setIsOpenModal(false)
         setSelectedPost([])
     }
 
@@ -311,13 +320,15 @@ const ChatRoom = ({slug, isWidget}) => {
                     }}>
                         <h4 className="text-xl">Seleccione una opción</h4>
                         <hr className="pb-2"/>
-                        {isWidget && (<button className="hover:bg-gray-200 w-full text-left transistion duration-100"
+                        {isWidget && (<button className="hover:bg-gray-200 w-full text-left transition duration-100"
                                               onClick={sendCurrent}><IconResolver icon="upright"/> Enviar este producto
                         </button>)}
-                        <button className="hover:bg-gray-200 w-full text-left transistion duration-100"
-                                onClick={sendList}><IconResolver icon="search"/>Enviar otro producto
+                        <button className="hover:bg-gray-200 w-full text-left transition duration-100"
+                                onClick={(e) => openModal(e, 'sendList')}><IconResolver icon="search"/>Enviar otro
+                            producto
                         </button>
-                        <button className="hover:bg-gray-200 w-full text-left transistion duration-100"><IconResolver
+                        <button className="hover:bg-gray-200 w-full text-left transition duration-100"
+                                onClick={(e) => openModal(e, 'sendDeal')}><IconResolver
                             icon="deal"/>Enviar acuerdo
                         </button>
                     </Box>}
@@ -330,7 +341,7 @@ const ChatRoom = ({slug, isWidget}) => {
                                             style={{position: 'absolute', right: 0, top: '-420px', zIndex: 20}}/>}
                 </span>
             </Box>
-            {isOpenPostSelector && (<Box
+            {isOpenModal && (<Box
                 __css={{
                     display: 'flex',
                     position: 'fixed',
@@ -347,12 +358,19 @@ const ChatRoom = ({slug, isWidget}) => {
                 onClick={e => {
                     e.preventDefault()
                     if (e.target === overlayRef.current) {
-                        setIsOpenPostSelector(false)
-
+                        setIsOpenModal(false)
+                        setSelectedPost([])
                     }
                 }}>
                 <Box __css={{width: '50%', bg: 'white', borderRadius: '10px'}}>
-                    <PostSelector isLoaded={isLoadedPostData} data={postData} selected={selectedPost} setSelected={setSelectedPost} onSubmit={submitList}/>
+                    {modalMode === 'sendList' &&
+                    <PostSelector isLoaded={isLoadedPostData} data={postData} selected={selectedPost}
+                                  setSelected={setSelectedPost} onSubmit={submitList}/>}
+                    {modalMode === 'sendDeal' &&
+                    <SubmenuDealMaker isLoadedPostData={isLoadedPostData} postData={postData} user={slug.split('-')[1]}
+                                      business={PRODUCT_INFO.dataset.businessId} selectedPost={selectedPost}
+                                      setSelected={setSelectedPost} onSubmit={submitDeal}
+                                      isBusiness={slug.split('-')[1] !== user}/>}
                 </Box>
             </Box>)}
         </Box>
