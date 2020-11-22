@@ -8,9 +8,9 @@ const ChatRoomItem = ({
     setChatRoomSlug,
 }) => {
 
-    console.log('User',user)
+    console.log('User in ChatRoom Item',user)
     const handleClick = () => {
-        const chatSlug = `${businessSlug }-${user.id }`
+        const chatSlug = `${businessSlug }-${user.id || user}`
         setChatRoomSlug({
             slug: chatSlug,
             chatTitle : user?.name|| user?.username || business?.name

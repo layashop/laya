@@ -22,6 +22,7 @@ const ChatList = ({chatSelected, businessSlug, setChatRoomSlug}) => {
             }
             const data = await sendRequest(url)
             if(!data.error){
+                console.log()
                 setChatRooms(data)
             }
         }
@@ -35,7 +36,7 @@ const ChatList = ({chatSelected, businessSlug, setChatRoomSlug}) => {
         <div className="divide-y px-5 divide-blue-400 divide-opacity-50">
             {chatRooms.map((chatRoom) => {
                 return <ChatRoomItem key={chatRoom.slug} businessSlug={businessSlug || chatRoom.business.slug}
-                                     user={chatRoom.user} setChatRoomSlug={setChatRoomSlug} />
+                                     user={chatRoom.user} business={chatRoom.business} setChatRoomSlug={setChatRoomSlug} />
             })}
         </div>
         </div>)
