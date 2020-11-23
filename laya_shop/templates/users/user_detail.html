@@ -25,7 +25,8 @@
 <div class="mt-4 mx-auto max-w-xs text-center">
   <a class="p-2 bg-red-100 hover:shadow-xs rounded-xs" href="{% url 'users:update' %}" role="button">My Info</a>
   <a class="p-2 bg-red-100 hover:shadow-xs rounded-xs" href="{% url 'account_email' %}" role="button">E-Mail</a>
-  <a class="p-2 bg-red-100 hover:shadow-xs rounded-xs" href="{% url 'users:chats' %}" role="button">Chat</a>
+  <a class="p-2 bg-red-100 hover:shadow-xs rounded-xs" href="{% url 'users:chats' object.username %}"
+    role="button">Chat</a>
 </div>
 
 </div>
