@@ -1,13 +1,27 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-
-<h1>Hola chavos</h1>
+<div id="deals">
+</div>
 {% endblock %}
-
-
+{% block stylesheets %}
+<link rel="stylesheet" href="{% static 'assets/css/loader.css' %}">
+{% endblock stylesheets %}
 {% block extra_javascript %}
-  <script>
-    let hola = "Adios"
-  </script>
-{% endblock %}
+<script src="https://unpkg.com/regenerator-runtime@0.13.1/runtime.js"></script>
+
+<script>
+  // const BUSINESS = JSON.parse("{{ business_json |safe }}")
+
+  const USER = {
+    id: {{ user.pk | safe }},
+  name: '{{ user.name | safe}}',
+    username : '{{ user.username | safe}}'
+
+    }
+  const IS_USER = true
+
+</script>
+<script src="{% static 'dist/js/DealsPage.js' %}"></script>
+{% endblock extra_javascript %}
