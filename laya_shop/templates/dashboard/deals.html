@@ -1,0 +1,32 @@
+{% extends 'dashboard/layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="hidden" id="post_info" data-business-id="{{ business.id }}"></div>
+<div id="deals">
+</div>
+{% endblock %}
+{% block stylesheets %}
+<link rel="stylesheet" href="{% static 'assets/css/loader.css' %}">
+{% endblock stylesheets %}
+{% block javascripts %}
+<script src="https://unpkg.com/regenerator-runtime@0.13.1/runtime.js"></script>
+
+<script>
+    // const BUSINESS = JSON.parse("{{ business_json |safe }}")
+    const BUSINESS = {
+        id: {{ business.id | safe}},
+    name: '{{ business.name | safe}}'
+    }
+    const USER = {
+        id: {{ user.pk | safe }},
+    name: '{{ user.name | safe}}',
+        username : '{{ user.username | safe}}'
+
+    }
+    const IS_USER = false
+
+    console.log('Business', BUSINESS)
+</script>
+<script src="{% static 'dist/js/DealsPage.js' %}"></script>
+{% endblock %}

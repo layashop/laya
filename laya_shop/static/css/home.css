@@ -283,3 +283,13 @@ footer h5:hover{
     height: 350px;
 }
 }
+
+  @media print {
+    body > *  {
+        display: hidden;
+    }
+
+    body > .printable {
+        display: block!important;
+    }
+}

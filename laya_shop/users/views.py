@@ -71,3 +71,14 @@ class UserChatPage(LoginRequiredMixin, TemplateView):
 
 
 user_chat_view = UserChatPage.as_view()
+
+
+class UserDealsPage(LoginRequiredMixin, TemplateView):
+    template_name = "users/deals.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+user_deals_view = UserDealsPage.as_view()

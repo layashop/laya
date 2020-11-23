@@ -158,7 +158,7 @@ class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView)
         post.business = get_object_or_404(Business, slug=business_slug)
         subcategories = self.request.POST.getlist("subcategories")
         post.attributes = loads(self.request.POST.get("additionalParameters", "null"))
-        post.tags = self.request.POST.getlist('tags', [])
+        post.tags = self.request.POST.getlist("tags", [])
         # import pdb; pdb.set_trace()
         if subcategories:
             try:
@@ -213,3 +213,14 @@ class ChatApp(DashboardContextMixin, TemplateView):
 
 
 chat_app_view = ChatApp.as_view()
+
+
+class DealsView(DashboardContextMixin, TemplateView):
+    template_name = "dashboard/deals.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(DealsView, self).get_context_data(**kwargs)
+        return context
+
+
+deals_view = DealsView.as_view()
