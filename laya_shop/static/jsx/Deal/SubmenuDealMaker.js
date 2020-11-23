@@ -71,7 +71,7 @@ const SubmenuDealMaker = ({
             const newEntry = {
                 user,
                 business,
-                sent_by: isBusiness ? 2: 1,
+                sent_by: isBusiness ? 2 : 1,
                 status: 1,
                 expires_at,
                 history: [data],
@@ -119,7 +119,12 @@ const SubmenuDealMaker = ({
 
 
     useEffect(() => {
-        setTimeout(() => setIsLoadedDealData(true), 1500)
+        fetch(`/api/deals/?business=${business}&user=${user}`)
+            .then(res => res.json())
+            .then(data => {
+                setDealData(data.filter(entry => !(entry.status === 2 || entry.status === 3 || entry.status === 8 || entry.status === 7)))
+                setIsLoadedDealData(true)
+            })
     }, [])
     return (<Box __css={{
         maxHeight: ['75vh', '60vh'],
@@ -164,20 +169,32 @@ const SubmenuDealMaker = ({
                     setSearchQuery(searchText)
                 }}>Limpiar Búsqueda</Box>
             </Box>
-            <Box>
-                {isLoadedDealData && dealData.length > 0 && <Box __css={{display: 'flex'}}>
-                    {dealData.maps((item, index) => {
-                        // rechazado || cancelado || devuelto
-                        if (item.status === 2 || item.status === 3 || item.status === 8)
-                            return (
-                                <Box onClick={() => openMaker(e, index)}>
-                                    <Box>#{`${_.padStart(item.id, 7, '0')}`}</Box>
-                                    <Box>${choices[item.status]}</Box>
-                                </Box>
-                            )
+            <Box className="bg-gray-100"
+                 __css={{flex: 1, borderBottomLeftRadius: '10px', borderBottomRightRadius: '10px', overflowY: 'auto'}}>
+                {isLoadedDealData && dealData.length > 0 && <Box __css={{display: 'flex', flexWrap: 'wrap'}}>
+                    {dealData.map((item, index) => {
+                        return (
+                            <Box key={item.id}
+                                 __css={{
+                                     width: ['100%', null, 'calc(50% - 20px)'],
+                                     m: '10px',
+                                     borderRadius: '10px',
+                                     bg: 'white',
+                                     transition: '0.1s',
+                                     ':hover': {bg: '#eee'},
+                                     cursor: 'pointer',
+                                     p: '20px',
+                                     fontSize: '18px',
+                                     display: 'flex',
+                                     justifyContent: 'space-between'
+                                 }} onClick={() => openMaker(e, index)}>
+                                <Box __css={{fontWeight: 'bold'}}>Acuerdo #{`${_.padStart(item.id, 7, '0')}`}</Box>
+                                <Box>{choices[item.status]}</Box>
+                            </Box>
+                        )
                     })}
                 </Box>}
-                {isLoadedDealData && dealData.length === 0 && <Box>No existen registros previos</Box>}
+                {isLoadedDealData && dealData.length === 0 && <Box>No existen registros previos editables</Box>}
                 {!isLoadedDealData && <div className="loader-dark mt-4">Loading...</div>}
             </Box>
         </>}

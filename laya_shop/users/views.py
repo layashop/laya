@@ -9,7 +9,7 @@ User = get_user_model()
 
 
 class UserDealView(LoginRequiredMixin, TemplateView):
-    template_name = 'users/deals.html'
+    template_name = "users/deals.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -59,3 +59,15 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 
 
 user_redirect_view = UserRedirectView.as_view()
+
+
+class UserChatPage(LoginRequiredMixin, TemplateView):
+    template_name = "users/user_chat.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["business"] = dict()
+        return context
+
+
+user_chat_view = UserChatPage.as_view()
