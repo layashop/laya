@@ -2,23 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {Box} from 'theme-ui'
 import DealMaker from "./DealMaker";
 import _ from 'lodash'
-
-
-const getCookie = (name) => {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
+import getCookie from "../utils/getCookies";
 
 const choices = {
     1: "Pendiente",
@@ -70,7 +54,7 @@ const SubmenuDealMaker = ({
             const oldHistory = [...dealData[selectedDealIndex].history]
 
             if (oldHistory[oldHistory.length - 1].pending === 'pending') {
-                oldHistory[oldHistory.length - 1].pending = 'changed'
+                oldHistory.slice(0,-1)
             }
 
             const newEntry = {
