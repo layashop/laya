@@ -30,10 +30,10 @@ const DealMaker = ({activeDeal, isNew, setActiveDeal, isLoadedPost, postData, se
 
     useEffect(() => {
         const products = activeDeal.products ? [...activeDeal.products] : []
-        for (let i of products) {
-            const productData = _.find(postData, {id: products[i].id})
-            products[i].title = productData.title
-            products[i].thumbnail = productData.images[0].sizes['200x200']
+        for (let product of products) {
+            const productData = _.find(postData, {id: product.id})
+            product.title = productData.title
+            product.thumbnail = productData.images[0].sizes['200x200']
         }
         setActiveDeal({...activeDeal, products: products})
     }, [])
@@ -290,9 +290,13 @@ const DealMaker = ({activeDeal, isNew, setActiveDeal, isLoadedPost, postData, se
             <Box __css={{
                 display: 'flex',
                 justifyContent: 'flex-end',
+                alignItems:'center',
                 borderBottomLeftRadius: '10px',
                 borderBottomRightRadius: '10px',
+                mb: '15px',
+                         mr: '30px',
             }}>
+                {activeDeal.hasOwnProperty("id") && <Box __css={{mr: '10px'}}>Si hay una petición anterior, será sobreescrita</Box>}
                 <Box as="button"
                      onClick={(e) => {
                          if (enableSubmit) {
@@ -306,8 +310,6 @@ const DealMaker = ({activeDeal, isNew, setActiveDeal, isLoadedPost, postData, se
                          cursor: enableSubmit ? 'pointer' : 'not-allowed',
                          px: '20px',
                          py: '5px',
-                         mb: '15px',
-                         mr: '30px',
                          borderRadius: '5px'
                      }}>
                     Enviar

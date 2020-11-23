@@ -64,6 +64,8 @@ const ChatRoom = ({slug, isWidget, businessId}) => {
     const [chatRoom, setChatRoom] = useState();
     const overlayRef = useRef();
 
+    const isInBusiness= Number.parseInt(slug.split('-')[1]) !== user.pk
+
     // post selector
     const [isLoadedPostData, setIsLoadedPostData] = useState(false);
     const [postData, setPostData] = useState([])
@@ -104,7 +106,10 @@ const ChatRoom = ({slug, isWidget, businessId}) => {
 
 
     const sendMessage = (e, message) => {
+        if(e) {
         e.preventDefault();
+        }
+
 
 
         if ((messageText.length === 0 || messageText.match(/^\s*$/)) && !message) {
@@ -150,9 +155,9 @@ const ChatRoom = ({slug, isWidget, businessId}) => {
         setSelectedPost([])
     }
 
-    const submitDeal = (e, id) => {
+    const submitDeal = (id) => {
         const text = `||laya?deal?{"id": ${id}}||`
-        sendMessage(e, text)
+        sendMessage(null, text)
         setIsOpenModal(false)
         setSelectedPost([])
     }
@@ -274,14 +279,14 @@ const ChatRoom = ({slug, isWidget, businessId}) => {
                  style={{minHeight: isWidget ? '' : '70vh'}}>
                 <ChatRoomHistoric websocket={chatSocket} markAsSeen={bulkMarkAsSeen}>
                     {orderedChatHistory.map(message => {
-                        return <ChatRoomMessage message={message}/>
+                        return <ChatRoomMessage message={message} slug={isInBusiness ? slug.split('-')[0] : undefined}/>
                     })}
                 </ChatRoomHistoric>
                 {orderedChatSession.map(message => {
                     if (message.user === user.pk) {
-                        return <ChatRoomOwnMessage message={message}/>
+                        return <ChatRoomOwnMessage message={message} slug={isInBusiness ? slug : undefined}/>
                     } else {
-                        return <ChatRoomMessageOther message={message} markAsSeen={markAsSeen}/>
+                        return <ChatRoomMessageOther message={message} markAsSeen={markAsSeen} slug={isInBusiness ? slug.split('-')[0] : undefined}/>
                     }
                 })}
                 {!user.pk ? (<a href={`/accounts/login/?next=${window.location.pathname}`}>
@@ -370,7 +375,7 @@ const ChatRoom = ({slug, isWidget, businessId}) => {
                     <SubmenuDealMaker isLoadedPostData={isLoadedPostData} postData={postData} user={slug.split('-')[1]}
                                       business={businessId||PRODUCT_INFO.dataset.businessId} selectedPost={selectedPost}
                                       setSelectedPost={setSelectedPost} onSubmit={submitDeal}
-                                      isBusiness={slug.split('-')[1] !== user}/>}
+                                      isBusiness={isInBusiness}/>}
                 </Box>
             </Box>)}
         </Box>

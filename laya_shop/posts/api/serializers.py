@@ -1,5 +1,10 @@
 from rest_framework import serializers
-from posts.models import Post, BusinessImage
+from posts.models import Post, BusinessImage, Business
+
+class BusinessSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Business
+        fields = ["slug"]
 
 class BusinessImageSerializer(serializers.ModelSerializer):
     sizes = serializers.SerializerMethodField('get_image_url')
@@ -13,8 +18,9 @@ class BusinessImageSerializer(serializers.ModelSerializer):
 
 class PostChatThumbnail(serializers.ModelSerializer):
     images = BusinessImageSerializer(many=True)
+    business = BusinessSerializer()
     class Meta:
         model = Post
-        fields = ['id', 'title', 'description', 'final_price', 'images', 'business_id', 'promo', 'currency']
+        fields = ['id', 'title', 'description', 'final_price', 'images', 'business_id', 'promo', 'currency', 'business']
         depth = 1
 

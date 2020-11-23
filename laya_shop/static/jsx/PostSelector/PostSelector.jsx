@@ -15,7 +15,7 @@ const PostSelector = ({isLoaded, data, selected, setSelected, onSubmit, isEmbedd
             pb: '12px',
             mt: '16px',
             px: '30px',
-            fontSize: '30px',
+            fontSize: ['24px',null,'30px'],
             borderBottom: '2px solid rgba(66, 153, 225, 0.5)'
         }}>Seleccione productos</Box>}
         <Box className="bg-gray-100" __css={{

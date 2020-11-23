@@ -92,6 +92,16 @@ const icons = {
             <circle cx="12" cy="12" r="9"/>
             <path d="M10 10l4 4m0 -4l-4 4"/>
         </svg>
+    ),
+    dealSent: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="inline-block icon-tabler icon-tabler-cash" width="48" height="48"
+             viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round"
+             strokeLinejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <rect x="7" y="9" width="14" height="10" rx="2"/>
+            <circle cx="14" cy="14" r="2"/>
+            <path d="M17 9v-2a2 2 0 0 0 -2 -2h-10a2 2 0 0 0 -2 2v6a2 2 0 0 0 2 2h2"/>
+        </svg>
     )
 
 }

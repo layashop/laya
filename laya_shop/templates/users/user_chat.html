@@ -4,30 +4,33 @@
 {% block title %}Usuario {{ object.username }}{% endblock %}
 
 {% block content %}
-<div class="hidden" id="post_info" data-business-id="{{ business.id }}"></div>
-<div id="chat_app">
-</div>
+  <div class="hidden" id="post_info" data-business-id="{{ business.id }}"></div>
+  <div id="chat_app">
+  </div>
 {% endblock %}
-{% block stylesheets %}
-<link rel="stylesheet" href="{% static 'assets/css/emoji-mart.css' %}">
-<link rel="stylesheet" href="{% static 'assets/css/loader.css' %}">
-{% endblock stylesheets %}
-{% block extra_javascript %}
-<script src="https://unpkg.com/regenerator-runtime@0.13.1/runtime.js"></script>
+{% block extra_styles %}
+  <link rel="stylesheet" href="{% static 'assets/css/emoji-mart.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/loader.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/daypicker.css' %}">
 
-<script>
+{% endblock extra_styles %}
+{% block extra_javascript %}
+  <script src="https://unpkg.com/regenerator-runtime@0.13.1/runtime.js"></script>
+
+  <script>
     // const BUSINESS = JSON.parse("{{ business_json |safe }}")
     const BUSINESS = {
-        slug: '{{ business.slug | safe}}',
-        id: '{{ business.id }}'
+      slug: '{{ business.slug | safe}}',
+      id: '{{ business.id }}'
     }
     console.log('user', '{{ object }}')
     const USER = {
-        pk: {% firstof user.pk 'null' %},
-        name: `{% firstof user.first_name 'null'%}`
+      pk: {% firstof user.pk 'null' %},
+      name: `{% firstof user.first_name 'null'%}`,
+      username: `{% firstof user.username 'null' %}`
     }
 
     console.log('Business', BUSINESS)
-</script>
-<script src="{% static 'dist/js/ChatPage.js' %}"></script>
+  </script>
+  <script src="{% static 'dist/js/ChatPage.js' %}"></script>
 {% endblock extra_javascript %}

@@ -10,7 +10,7 @@ const ChatRoomMessageOther = ({message, markAsSeen }) => {
             markAsSeen(message.id)
         }
     },[message])
-    return <ChatRoomMessage message={message}/>
-} 
+    return <ChatRoomMessage message={message} slug={slug}/>
+}
 
 export default ChatRoomMessageOther

@@ -54,19 +54,48 @@ const SubmenuDealMaker = ({
             return _.find(activeDeal.products, {id: item.id})
         })
 
+        const {status, ...data} = activeDeal
+
+        data.originalStatus = status
+        data.originalSendDate = new Date()
+        data.pending = 'pending'
+
+        /// DIAS PARA EXPIRARSE
+        const expires_at = new Date()
+        expires_at.setDate(expires_at.getDate() + 3)
+
 
         if (activeDeal.id) {
-            return console.log('wtf')
+
+            const oldHistory = [...dealData[selectedDealIndex].history]
+
+            if (oldHistory[oldHistory.length - 1].pending === 'pending') {
+                oldHistory[oldHistory.length - 1].pending = 'changed'
+            }
+
+            const newEntry = {
+                user,
+                business,
+                sent_by: isBusiness ? 2 : 1,
+                status: 1,
+                expires_at,
+                history: [...oldHistory, data],
+            }
+
+            fetch(`/api/deals/${activeDeal.id}/`, {
+                method: 'PUT',
+                body: JSON.stringify(newEntry),
+                headers: {
+                    'Content-Type': 'application/json',
+                    "X-CSRFToken": getCookie('csrftoken')
+                }
+            })
+                .then(response => response.json())
+                .then(data => onSubmit(data.id))
+
+
         } else {
-            const {status, ...data} = activeDeal
 
-            data.originalStatus = status
-            data.originalSendDate = new Date()
-            data.pending = 'pending'
-
-            /// DIAS PARA EXPIRARSE
-            const expires_at = new Date()
-            expires_at.setDate(expires_at.getDate() + 3)
 
             const newEntry = {
                 user,
@@ -84,8 +113,9 @@ const SubmenuDealMaker = ({
                     'Content-Type': 'application/json',
                     "X-CSRFToken": getCookie('csrftoken')
                 }
-            }).then(response => response.json())
-                .then(data => console.log(data))
+            })
+                .then(response => response.json())
+                .then(data => onSubmit(data.id))
 
         }
 
@@ -101,17 +131,31 @@ const SubmenuDealMaker = ({
 
             const data = dealData[index].history[dealData[index].history.length - 1]
 
+            console.log(data)
+            const today = new Date()
             setActiveDeal({
                 id: dealData[index].id,
                 ...data
             })
             const selectedProducts = []
-            for (let i of data.products) {
-                const index = _.findIndex(postData, {id: data.products[i].id})
+            for (let product of data.products) {
+                const index = _.findIndex(postData, {id: product.id})
                 if (index !== -1) {
-                    selectedProducts.push(index)
+                    selectedProducts.push(postData[index])
                 }
             }
+
+            setActiveDeal({
+                id: dealData[index].id,
+                status: 5,
+                currency: data.currency,
+                deliveryInstructions: data.deliveryInstructions,
+                deliveryMethod: data.deliveryMethod,
+                date: today > new Date(data.date) ? today : new Date(data.date),
+                products: data.products,
+                returnPolicy: data.returnPolicy,
+                promo: data.promo
+            })
             setSelectedPost(selectedProducts)
             setSelectedDealIndex(index)
         }
@@ -127,8 +171,8 @@ const SubmenuDealMaker = ({
             })
     }, [])
     return (<Box __css={{
-        maxHeight: ['75vh', '60vh'],
-        minHeight: ['75vh', '60vh'],
+        maxHeight: ['75vh'],
+        minHeight: ['75vh'],
         display: 'flex',
         flexDirection: 'column',
     }}>
@@ -141,7 +185,7 @@ const SubmenuDealMaker = ({
                 borderBottom: '2px solid rgba(66, 153, 225, 0.5)'
             }}>
                 <Box as="h3" __css={{fontSize: '30px'}}>Seleccione un acuerdo</Box>
-                <Box as="button" onClick={e => openMaker(e, -1)}>Nuevo acuerdo</Box>
+                <Box as="button" onClick={(e) => openMaker(e, -1)}>Nuevo acuerdo</Box>
             </Box>
             <Box __css={{
                 minHeight: '50px',
@@ -187,7 +231,7 @@ const SubmenuDealMaker = ({
                                      fontSize: '18px',
                                      display: 'flex',
                                      justifyContent: 'space-between'
-                                 }} onClick={() => openMaker(e, index)}>
+                                 }} onClick={(e) => openMaker(e, index)}>
                                 <Box __css={{fontWeight: 'bold'}}>Acuerdo #{`${_.padStart(item.id, 7, '0')}`}</Box>
                                 <Box>{choices[item.status]}</Box>
                             </Box>
