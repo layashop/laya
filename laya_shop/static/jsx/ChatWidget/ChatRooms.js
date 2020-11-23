@@ -49,7 +49,7 @@ const emojiTrans = {
     },
 }
 
-const ChatRoom = ({slug, isWidget}) => {
+const ChatRoom = ({slug, isWidget, businessId}) => {
     const {user} = useContext(ChatUserContext);
     const [chatSocket, setChatSocket] = useState();
     const [messageText, setMessageText] = useState("");
@@ -69,7 +69,7 @@ const ChatRoom = ({slug, isWidget}) => {
     const [postData, setPostData] = useState([])
     const [selectedPost, setSelectedPost] = useState([])
     useEffect(() => {
-        fetch(`${window.origin}/api/posts/preview?&business_id=${PRODUCT_INFO.dataset.businessId}`)
+        fetch(`${window.origin}/api/posts/preview?&business_id=${businessId || PRODUCT_INFO.dataset.businessId}`)
             .then(result => result.json())
             .then(data => {
                 setPostData(data)
@@ -368,7 +368,7 @@ const ChatRoom = ({slug, isWidget}) => {
                                   setSelected={setSelectedPost} onSubmit={submitList}/>}
                     {modalMode === 'sendDeal' &&
                     <SubmenuDealMaker isLoadedPostData={isLoadedPostData} postData={postData} user={slug.split('-')[1]}
-                                      business={PRODUCT_INFO.dataset.businessId} selectedPost={selectedPost}
+                                      business={businessId||PRODUCT_INFO.dataset.businessId} selectedPost={selectedPost}
                                       setSelectedPost={setSelectedPost} onSubmit={submitDeal}
                                       isBusiness={slug.split('-')[1] !== user}/>}
                 </Box>

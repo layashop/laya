@@ -3,6 +3,10 @@ from users.api.serializers import SimpleUserSerializer
 from business.models import Business
 from deals.models import Deal
 
+class BusinessSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Business
+        fields = "__all__"
 
 class DealSerializer(serializers.ModelSerializer):
     class Meta:

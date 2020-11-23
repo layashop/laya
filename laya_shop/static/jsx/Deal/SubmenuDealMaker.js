@@ -119,7 +119,7 @@ const SubmenuDealMaker = ({
 
 
     useEffect(() => {
-        fetch(`/api/deals/?business=${business}&user=${user}`)
+        fetch(`/api/deals/?business_id=${business}&user_id=${user}`)
             .then(res => res.json())
             .then(data => {
                 setDealData(data.filter(entry => !(entry.status === 2 || entry.status === 3 || entry.status === 8 || entry.status === 7)))

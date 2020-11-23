@@ -6,6 +6,7 @@ const ChatRoomItem = ({
     business,
     businessSlug,
     setChatRoomSlug,
+    setBusinessId
 }) => {
 
     console.log('User in ChatRoom Item',user)
@@ -15,6 +16,7 @@ const ChatRoomItem = ({
             slug: chatSlug,
             chatTitle : user?.name|| user?.username || business?.name
         })
+        setBusinessId(business.id)
     }
 
 

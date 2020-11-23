@@ -18,7 +18,8 @@
 <script>
     // const BUSINESS = JSON.parse("{{ business_json |safe }}")
     const BUSINESS = {
-        slug: '{{ business.slug | safe}}'
+        slug: '{{ business.slug | safe}}',
+        id: '{{ business.id }}'
     }
     console.log('user', '{{ object }}')
     const USER = {
