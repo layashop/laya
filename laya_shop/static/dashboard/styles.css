@@ -30,3 +30,13 @@ body {
 .post-images{
     /* height: 300px; */
 }
+
+@media print {
+    body > *  {
+        display: hidden;
+    }
+
+    body > .printable {
+        display: block!important;
+    }
+}

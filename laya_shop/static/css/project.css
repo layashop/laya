@@ -7,3 +7,13 @@
   background-color: #f2dede;
   border-color: #eed3d7;
   color: #b94a48; }
+
+  @media print {
+    body > *  {
+        display: hidden;
+    }
+
+    body > .printable {
+        display: block!important;
+    }
+}

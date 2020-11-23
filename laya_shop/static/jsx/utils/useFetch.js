@@ -15,7 +15,7 @@ const useFetch = ( ) => {
             setLoading(FINISHED)
             return json
         }catch(e){
-            setLoading(false)
+            setLoading(FINISHED)
             setError(e)
             return {
                 error: true,

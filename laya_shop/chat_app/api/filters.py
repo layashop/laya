@@ -7,7 +7,7 @@ class ChatRoomFilters(filters.FilterSet):
     business_slug = filters.CharFilter(
         lookup_expr="iexact", field_name="business__slug"
     )
-    user = filters.NumberFilter(lookup_expr="iexact", field_name="user__pk")
+    user = filters.NumberFilter(lookup_expr="exact", field_name="user__pk")
 
 
 class ChatRoomMessageFilters(filters.FilterSet):
