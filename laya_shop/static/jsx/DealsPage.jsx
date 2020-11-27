@@ -15,9 +15,9 @@ const choices = {
     6: "En Delivery",
     7: "Entregado",
     8: "Devuelto",
-    9: "Cerrado"
 }
 const DealPage = () => {
+
     const [loading, error, sendRequest] = useFetch()
     const [deals, setDeals] = useState([])
     const [groupData, setGroupedData] = useState({})
@@ -31,7 +31,7 @@ const DealPage = () => {
                 setDeals(result)
             }
         } catch (e) {
-            console.log('There was an Error')
+            alert('There was an Error')
         }
     }
     useEffect(() => {
@@ -40,11 +40,8 @@ const DealPage = () => {
     useEffect(() => {
         if (deals.length > 0) {
             const newGroupedData = Object.entries(choices).reduce((groupedData, [key, value]) => {
-                console.log('Grouping by', key)
                 const fixedKey = parseInt(key)
                 groupedData[value] = deals.filter(deal => {
-                    console.log('Deal Id', deal.status)
-                    console.log(`Is Equal ${deal.status} == ${key}`, deal.status === fixedKey)
                     return deal.status === fixedKey
                 })
                 return groupedData
@@ -53,6 +50,12 @@ const DealPage = () => {
         }
     }, [deals])
 
+
+    const handleUpdateData = (deal, index) => {
+        const newDeals = [...deals]
+        newDeals[index] = deal
+        setDeals(newDeals)
+    }
 
     let component
     if (loading === LOADING) {
@@ -66,7 +69,6 @@ const DealPage = () => {
         } else {
             component = 'No hay información'
         }
-
     }
 
     return (<div className="md:pt-20 lg:mx h-screen divide-y flex flex-col"
@@ -84,6 +86,5 @@ const DealPage = () => {
 // Id del Acuerdo , Mostrar el Usuario o el Business, Estado
 
 
-console.log('Deals Page')
 const page = document.getElementById('deals')
 render(<DealPage/>, page)

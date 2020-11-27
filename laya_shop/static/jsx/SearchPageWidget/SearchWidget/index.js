@@ -104,7 +104,7 @@ const SearchWidget = ({ ...props }) => {
     let currency = false
 
     if (form.get('search') !== '') {
-      query += `search=${form.get('search')}`
+      query += `search=${form.get('search')}&`
     }
 
     if (form.get('category') !== '-1') {

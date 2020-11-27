@@ -6,6 +6,7 @@ import getCookie from "../utils/getCookies";
 import statusChoices from "./statusChoices";
 import Tag from "./Tag";
 import Chevron from "./Chevron";
+import IconResolver from "../ChatWidget/IconResolver";
 
 const printDeal = () => {
     window.print()
@@ -21,6 +22,7 @@ const currencyOptions = {1: {symbol: "C$", name: 'Córdobas'}, 2: {symbol: "$", 
 const productPriceOptions = {true: 'Por precio unitario', false: 'Por precio total'}
 
 const dateOptions = {
+    3: 'Fecha original de entrega/reserva',
     4: 'Fecha máxima de reserva',
     5: 'Fecha máxima de entrega',
     6: 'Fecha máxima de entrega',
@@ -48,8 +50,11 @@ const choices = {
 
 const DealItem = ({deal}) => {
 
+    console.log(deal)
+
     const lastEntry = {...deal.history[deal.history.length - 1]}
     const sender = IS_USER ? 1 : 2
+    const [reason, setReason] = useState('')
 
     const [showEntry, setShowEntry] = useState({})
 
@@ -83,6 +88,10 @@ const DealItem = ({deal}) => {
                         <Chevron show={showEntry[index]}/>
                     </Box>
                     <Box __css={{display: showEntry[index] ? 'block' : 'none', pt: '10px'}}>
+                        <Box __css={{display: entry.originalStatus === 3 || entry.originalStatus === 8|| deal.status === 3 || deal.status===8 ? '' : 'none'}}>
+                            <Box as="span" __css={{fontWeight: 'bold', bg: "#f7f5be" }}>Razón de
+                                {showEntry[entry.originalStatus] === 3 ? " cancelación": " devolución"}:</Box> {entry.reason}
+                        </Box>
                         <Box>
                             <Box as="span" __css={{fontWeight: 'bold'}}>Forma de
                                 entrega:</Box> {deliveryOptions[entry.deliveryMethod]}
@@ -179,7 +188,7 @@ const DealItem = ({deal}) => {
                             </Tag>
                         </Box>
                     </Box>
-                    {deal.history.map((entry, index)=> buildEntry(entry, index))}
+                    {deal.history.map((entry, index) => buildEntry(entry, index))}
                     {lastEntry.pending === 'pending' && (<Box>
                         <Box __css={{fontWeight: 'bold', fontSize: '24px', mt: '20px'}}>Solicitud pendiente</Box>
                         {buildEntry(lastEntry, (deal.history.length - 1), true)}
@@ -224,9 +233,6 @@ const DealItem = ({deal}) => {
                                 const newDeal = {...deal}
                                 delete newDeal.id
 
-                                newDeal.status = lastEntry.originalStatus
-                                newDeal.expires_at = null
-
                                 if (typeof newDeal.user === 'object') {
                                     newDeal.user = newDeal.user.id
                                 }
@@ -238,6 +244,7 @@ const DealItem = ({deal}) => {
 
                                 lastEntry.responded_at = new Date()
                                 lastEntry.pending = 'no'
+                                newDeal.status = history[history.length-1].originalStatus
 
                                 if (history.length === 0) {
                                     newDeal.status = 2
@@ -279,7 +286,7 @@ const DealItem = ({deal}) => {
                                 newDeal.business = newDeal.business.id
                             }
 
-                            lastEntry.responded_at = new Date()
+                            lastEntry.originalSendDate = new Date()
                             lastEntry.pending = 'no'
                             lastEntry.originalStatus = 6
 
@@ -315,7 +322,7 @@ const DealItem = ({deal}) => {
                                 newDeal.business = newDeal.business.id
                             }
 
-                            lastEntry.responded_at = new Date()
+                            lastEntry.originalSendDate = new Date()
                             lastEntry.pending = 'no'
                             lastEntry.originalStatus = 7
 
@@ -373,6 +380,120 @@ const DealItem = ({deal}) => {
                                 .then(data => console.log(data))
 
                         }}>Marcar como entregado</Box>
+                    </Box>}
+                    {deal.status === 7 || deal.status === 8 && IS_USER &&<Box className="pt-2">
+                        <Box as="h3" __css={{fontWeight: 'bold'}}>Califica este acuerdo de intercambio:</Box>
+                        <IconResolver icon="star" />
+                    </Box>}
+                    {deal.status === 7 && IS_USER && <Box className="pt-2">
+                        <Box as="h3" __css={{fontWeight: 'bold'}}>¿Quieres solicitar una devolución?</Box>
+                        <Box as="input" value={reason} onChange={e => setReason(e.target.value)} type="text"
+                             className="p-2 w-1/2" placeholder="Escribe una razón" id="reclamo"/>
+                        <Box as="button" className={'p-2 bg-red-100 hover:shadow-xs rounded-xs'}
+                             __css={{cursor: reason === '' && 'not-allowed'}} onClick={e => {
+                            if (reason === '') {
+                                return
+                            }
+                            e.preventDefault()
+                            const newDeal = {...deal}
+                            delete newDeal.id
+                            const history = [...newDeal.history]
+
+                            const lastEntry = {...[...history.slice(-1)][0]}
+
+                            const expires_at = new Date()
+                            expires_at.setDate(expires_at.getDate() + 3)
+
+                            newDeal.sent_by = IS_USER ? 1 : 2
+                            newDeal.status = 1
+                            newDeal.expires_at = expires_at
+
+
+                            if (typeof newDeal.user === 'object') {
+                                newDeal.user = newDeal.user.id
+                            }
+                            if (typeof newDeal.business === 'object') {
+                                newDeal.business = newDeal.business.id
+                            }
+
+                            lastEntry.reason = reason
+                            lastEntry.originalSendDate = new Date()
+                            lastEntry.pending = 'pending'
+                            lastEntry.originalStatus = 8
+
+                            history.push(lastEntry)
+
+                            newDeal.history = history
+
+                            console.log(newDeal, deal)
+
+                            fetch(`/api/deals/${deal.id}/`, {
+                                method: 'PUT',
+                                body: JSON.stringify(newDeal),
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    "X-CSRFToken": getCookie('csrftoken')
+                                }
+                            })
+                                .then(response => response.json())
+                                .then(data => console.log(data))
+
+                        }}>Solicitar Devolución</Box>
+                    </Box>}
+                    {deal.status >= 4 && deal.status <= 6 && <Box className="pt-2">
+                        <Box as="h3" __css={{fontWeight: 'bold'}}>¿Quieres solicitar una cancelación?</Box>
+                        <Box as="input" value={reason} onChange={e => setReason(e.target.value)} type="text"
+                             className="p-2 w-1/2" placeholder="Escribe una razón" id="cancelar"/>
+                        <Box as="button" className={'p-2 bg-red-100 hover:shadow-xs rounded-xs'}
+                             __css={{cursor: reason === '' && 'not-allowed'}}
+                             onClick={e => {
+                                 if (reason === '') {
+                                     return
+                                 }
+                                 e.preventDefault()
+                                 const newDeal = {...deal}
+                                 delete newDeal.id
+                                 const history = [...newDeal.history]
+
+                                 const lastEntry = {...[...history.slice(-1)][0]}
+
+                                 const expires_at = new Date()
+                                 expires_at.setDate(expires_at.getDate() + 3)
+
+                                 newDeal.sent_by = IS_USER ? 1 : 2
+                                 newDeal.status = 1
+                                 newDeal.expires_at = expires_at
+
+                                 if (typeof newDeal.user === 'object') {
+                                     newDeal.user = newDeal.user.id
+                                 }
+                                 if (typeof newDeal.business === 'object') {
+                                     newDeal.business = newDeal.business.id
+                                 }
+
+                                 lastEntry.reason = reason
+                                 lastEntry.originalSendDate = new Date()
+                                 lastEntry.pending = 'pending'
+                                 lastEntry.originalStatus = 3
+
+                                 history.push(lastEntry)
+
+                                 newDeal.history = history
+
+                                 console.log(newDeal, deal)
+
+                                 fetch(`/api/deals/${deal.id}/`, {
+                                     method: 'PUT',
+                                     body: JSON.stringify(newDeal),
+                                     headers: {
+                                         'Content-Type': 'application/json',
+                                         "X-CSRFToken": getCookie('csrftoken')
+                                     }
+                                 })
+                                     .then(response => response.json())
+                                     .then(data => console.log(data))
+
+                             }}>Solicitar Cancelación</Box>
                     </Box>}
                 </Box>
 

@@ -58,7 +58,15 @@ const Modal = ({children, show, onOk, onCancel, root = true, title, onOkButton, 
     w-full h-full bg-black bg-opacity-50 z-20`}
              onClick={handleCancel}
         >
-            <Box __css={{borderRadius: '10px', width: '70%', height: '60vh', overflow: 'auto'}}
+            <Box __css={{
+                borderRadius: '10px',
+                width: '70%',
+                p: '15px',
+                height: '80vh',
+                overflow: 'auto',
+                display: 'flex',
+                flexDirection: 'column'
+            }}
                  className={`${printable ? 'printable' : ''} bg-white divide-y`}
                  onClick={stopBubbling}>
                 <Box as="section" __css={{
@@ -71,14 +79,14 @@ const Modal = ({children, show, onOk, onCancel, root = true, title, onOkButton, 
                     <Box as="h3" __css={{fontSize: '30px'}}>{title}</Box>
                     {subtitle && <Box as="h3" __css={{fontSize: '24px'}}>{subtitle}</Box>}
                 </Box>
-                <section className="px-4 py-2">
+                <section className="px-4 py-2 flex-1">
                     {children}
                 </section>
-                <section className='px-4 flex justify-space-around'>
+                <section className='px-4 flex justify-around'>
                     {onCancelButton ? onCancelButton
                         : <button
                             className="w-4/12 text-red-500 bg-white  hover:text-red-600 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none"
-                            onClick={handleCancel}>Cancel</button>}
+                            onClick={handleCancel}>Cancelar</button>}
                     {onOkButton ? onOkButton
                         : <button
                             className='w-4/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none'
