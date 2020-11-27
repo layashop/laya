@@ -20,7 +20,7 @@ const useModal = ({onOk, onCancel} = {}) => {
     return [show, openModal, handleOk, handleCancel]
 }
 
-const Modal = ({children, show, onOk, onCancel, root = true, title, onOkButton, onCancelButton, printable, subtitle}) => {
+const  Modal = ({children, show, onOk, onCancel, root = true, title, onOkButton, onCancelButton, printable, subtitle}) => {
 
     const [visibility, setVisibility] = useState(show)
     const ref = useRef()
@@ -44,7 +44,6 @@ const Modal = ({children, show, onOk, onCancel, root = true, title, onOkButton, 
         e.stopPropagation(0)
     }
 
-    console.log('Printable', printable)
     return (
         <Box ref={ref}
              __css={{

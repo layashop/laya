@@ -48,9 +48,7 @@ const choices = {
 }
 
 
-const DealItem = ({deal}) => {
-
-    console.log(deal)
+const DealItem = ({deal, show, handleUpdateData, handleOpenItem}) => {
 
     const lastEntry = {...deal.history[deal.history.length - 1]}
     const sender = IS_USER ? 1 : 2
@@ -58,7 +56,6 @@ const DealItem = ({deal}) => {
 
     const [showEntry, setShowEntry] = useState({})
 
-    console.log(showEntry)
 
     const buildEntry = (entry, index, isPending = false) => {
         let subtotal = 0
@@ -88,9 +85,10 @@ const DealItem = ({deal}) => {
                         <Chevron show={showEntry[index]}/>
                     </Box>
                     <Box __css={{display: showEntry[index] ? 'block' : 'none', pt: '10px'}}>
-                        <Box __css={{display: entry.originalStatus === 3 || entry.originalStatus === 8|| deal.status === 3 || deal.status===8 ? '' : 'none'}}>
-                            <Box as="span" __css={{fontWeight: 'bold', bg: "#f7f5be" }}>Razón de
-                                {showEntry[entry.originalStatus] === 3 ? " cancelación": " devolución"}:</Box> {entry.reason}
+                        <Box
+                            __css={{display: entry.originalStatus === 3 || entry.originalStatus === 8 || deal.status === 3 || deal.status === 8 ? '' : 'none'}}>
+                            <Box as="span" __css={{fontWeight: 'bold', bg: "#f7f5be"}}>Razón de
+                                {showEntry[entry.originalStatus] === 3 ? " cancelación" : " devolución"}:</Box> {entry.reason}
                         </Box>
                         <Box>
                             <Box as="span" __css={{fontWeight: 'bold'}}>Forma de
@@ -151,13 +149,15 @@ const DealItem = ({deal}) => {
         </>)
     }
 
-    const [show, openModal, handleOk, handleCancel] = useModal()
+    const [, openModal, handleOk, handleCancel] = useModal()
 
 
     // Id del Acuerdo , Mostrar el Usuario o el Business, Estado
     return (<>
             <Box __css={{pb: '5px', fontSize: '18px', display: 'flex', alignItems: 'center', cursor: 'pointer'}}
-                 id={`deal-${deal.id}`} onClick={openModal}>
+                 id={`deal-${deal.id}`} onClick={() => {
+                handleOpenItem(deal.id)
+            }}>
                 <Tag color={statusChoices[deal.status].mainColor}
                      sx={{mr: '20px'}}>{`#${_.padStart(deal.id, 7, '0')}`}</Tag>
                 <Box
@@ -168,9 +168,14 @@ const DealItem = ({deal}) => {
                 printable
                 show={show}
                 onOk={handleOk}
-                onCancel={handleCancel}
+                onCancel={() => handleOpenItem(-1)}
                 title={`Acuerdo #${_.padStart(deal.id, 7, '0')}`}
-                subtitle={IS_USER ? `Con negocio: ${deal.business.name}` : `Con usuario: ${USER.username}`}
+                subtitle={<Box as="a" __css={{':hover': {color: 'black',textDecoration: 'underline',}}}
+                               href={IS_USER ? `/profile/${USER.username}/chat/#${deal.business.slug}-${USER.id}` :
+                                   `/${BUSINESS.slug}/dashboard/chat#${BUSINESS.slug}-${deal.user.id}`
+                               }>
+                    {IS_USER ? `Con negocio: ${deal.business.name}` : `Con usuario: ${USER.username}`}
+                </Box>}
                 onOkButton={
                     <button
                         className='w-4/12 text-teal-600 bg-white  hover:text-teal-500 m-1 px-3 py-1 w-auto transistion-color duration-100 focus:outline-none'
@@ -225,7 +230,7 @@ const DealItem = ({deal}) => {
                                     }
                                 })
                                     .then(response => response.json())
-                                    .then(data => console.log(data))
+                                    .then(data => handleUpdateData())
 
                             }}>Aceptar</Box>
                             <Box as="button" className={'p-2 bg-red-100 hover:shadow-xs rounded-xs'} onClick={e => {
@@ -244,7 +249,7 @@ const DealItem = ({deal}) => {
 
                                 lastEntry.responded_at = new Date()
                                 lastEntry.pending = 'no'
-                                newDeal.status = history[history.length-1].originalStatus
+                                newDeal.status = history[history.length - 1].originalStatus
 
                                 if (history.length === 0) {
                                     newDeal.status = 2
@@ -262,7 +267,7 @@ const DealItem = ({deal}) => {
                                     }
                                 })
                                     .then(response => response.json())
-                                    .then(data => console.log(data))
+                                    .then(data => handleUpdateData())
 
                             }}>Rechazar</Box>
                         </Box>)}
@@ -303,7 +308,7 @@ const DealItem = ({deal}) => {
                                 }
                             })
                                 .then(response => response.json())
-                                .then(data => console.log(data))
+                                .then(data => handleUpdateData())
 
                         }}>Marcar como en delivery</Box>
                         <Box as="button" className={'p-2 bg-red-100 hover:shadow-xs rounded-xs'} onClick={e => {
@@ -339,7 +344,7 @@ const DealItem = ({deal}) => {
                                 }
                             })
                                 .then(response => response.json())
-                                .then(data => console.log(data))
+                                .then(data => handleUpdateData())
 
                         }}>Marcar como entregado</Box>
                     </Box>}
@@ -377,13 +382,13 @@ const DealItem = ({deal}) => {
                                 }
                             })
                                 .then(response => response.json())
-                                .then(data => console.log(data))
+                                .then(data => handleUpdateData())
 
                         }}>Marcar como entregado</Box>
                     </Box>}
-                    {deal.status === 7 || deal.status === 8 && IS_USER &&<Box className="pt-2">
+                    {deal.status === 7 || deal.status === 8 && IS_USER && <Box className="pt-2">
                         <Box as="h3" __css={{fontWeight: 'bold'}}>Califica este acuerdo de intercambio:</Box>
-                        <IconResolver icon="star" />
+                        <IconResolver icon="star"/>
                     </Box>}
                     {deal.status === 7 && IS_USER && <Box className="pt-2">
                         <Box as="h3" __css={{fontWeight: 'bold'}}>¿Quieres solicitar una devolución?</Box>
@@ -425,7 +430,6 @@ const DealItem = ({deal}) => {
 
                             newDeal.history = history
 
-                            console.log(newDeal, deal)
 
                             fetch(`/api/deals/${deal.id}/`, {
                                 method: 'PUT',
@@ -436,7 +440,7 @@ const DealItem = ({deal}) => {
                                 }
                             })
                                 .then(response => response.json())
-                                .then(data => console.log(data))
+                                .then(data => handleUpdateData())
 
                         }}>Solicitar Devolución</Box>
                     </Box>}
@@ -480,7 +484,6 @@ const DealItem = ({deal}) => {
 
                                  newDeal.history = history
 
-                                 console.log(newDeal, deal)
 
                                  fetch(`/api/deals/${deal.id}/`, {
                                      method: 'PUT',
@@ -491,7 +494,7 @@ const DealItem = ({deal}) => {
                                      }
                                  })
                                      .then(response => response.json())
-                                     .then(data => console.log(data))
+                                     .then(data => handleUpdateData())
 
                              }}>Solicitar Cancelación</Box>
                     </Box>}

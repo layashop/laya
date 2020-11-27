@@ -28,6 +28,8 @@ const ChatPage = () => {
         setBusinessId(0)
     }
 
+    console.log(selectedChatRoom)
+
     console.log('business', businessId)
 
     return (

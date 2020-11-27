@@ -3,23 +3,30 @@ import {useState} from 'react'
 const CALL_PENDING = 'CALL_PENDING'
 const LOADING = 'LOADING'
 const FINISHED = 'FINISHED'
-const useFetch = ( ) => {
+const useFetch = () => {
     const [loading, setLoading] = useState(CALL_PENDING)
     const [error, setError] = useState()
 
-    const sendRequest = async (url, options ={}) => {
-        setLoading(LOADING)
-        try{
+    const sendRequest = async (url, options = {}, showLoading = true) => {
+        if (showLoading) {
+            setLoading(LOADING)
+        }
+        try {
             const request = await fetch(url, options)
             const json = await request.json()
-            setLoading(FINISHED)
+            if (showLoading) {
+                setLoading(FINISHED)
+            }
+
             return json
-        }catch(e){
-            setLoading(FINISHED)
+        } catch (e) {
+            if (showLoading) {
+                setLoading(FINISHED)
+            }
             setError(e)
             return {
                 error: true,
-                error_message : e
+                error_message: e
             }
         }
 
@@ -30,7 +37,7 @@ const useFetch = ( ) => {
 }
 
 export default {
-     useFetch,
+    useFetch,
     LOADING,
     CALL_PENDING,
     FINISHED

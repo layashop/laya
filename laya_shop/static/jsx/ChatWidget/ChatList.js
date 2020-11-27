@@ -22,13 +22,17 @@ const ChatList = ({chatSelected, businessSlug, setChatRoomSlug, setBusinessId}) 
             }
             const data = await sendRequest(url)
             if(!data.error){
-                console.log()
                 setChatRooms(data)
+                if(window.location.hash) {
+                    setChatRoomSlug({slug: window.location.hash.slice(1)})
+                    window.location.hash = ''
+                }
             }
         }
         queryData()
     }, [])
     if(loading === FetchHook.LOADING) return <div>Loading...</div>
+
 
     console.log('ChatRoom', businessSlug)
     return (<div className={`${chatSelected ?'hidden md:block w-4/12' : 'w-full'} overflow-y-auto`  }>
