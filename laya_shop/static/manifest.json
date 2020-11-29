@@ -1,0 +1,8 @@
+{
+    "name": "Laya Shop",
+    "short_name": "Layashop",
+    "start_url": "/",
+    "background_color": "#0C3C26",
+    "theme_color": "#0C3C26",
+    "display": "standalone"
+}

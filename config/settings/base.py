@@ -2,7 +2,7 @@
 Base settings to build other settings files upon.
 """
 from pathlib import Path
-
+import os
 import environ
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
@@ -75,7 +75,8 @@ THIRD_PARTY_APPS = [
     # "sorl.thumbnail",
     "widget_tweaks",
     "django_filters",
-    "imagekit"
+    "imagekit",
+    "push_notifications",
 ]
 
 LOCAL_APPS = [
@@ -197,7 +198,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "laya_shop.utils.context_processors.settings_context",
                 "laya_shop.posts.context_processors.classification_context",
-                "laya_shop.posts.context_processors.search_context"
+                "laya_shop.posts.context_processors.search_context",
             ],
         },
     }
@@ -291,7 +292,7 @@ STATICFILES_FINDERS += ["compressor.finders.CompressorFinder"]
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
 
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
@@ -308,3 +309,11 @@ ASGI_APPLICATION = "chat_app.routing.websocket_application"
 
 
 APPEND_SLASH = True
+
+PUSH_NOTIFICATIONS_SETTINGS = {
+    "WP_PRIVATE_KEY": os.path.join(ROOT_DIR, "private_key.pem"),
+    "WP_CLAIMS": {
+        "sub": "mailto: rosanchez@uamv.edu.ni",
+        "aud": "https://android.googleapis.com",
+    },
+}

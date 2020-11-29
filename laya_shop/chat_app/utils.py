@@ -3,6 +3,7 @@ from chat_app.models import ChatMessage, ChatRoom
 from business.models import Business
 from utils.models import safe_get
 from datetime import datetime
+from push_notifications.models import WebPushDevice
 
 
 @database_sync_to_async
@@ -58,6 +59,12 @@ def update_messages(user_id, slug):
 def get_count(queryset):
     return queryset.count()
 
+
 @database_sync_to_async
 def get_message(send_verifier):
     return safe_get(ChatMessage, send_verifier=send_verifier)
+
+
+@database_sync_to_async
+def send_notification(message):
+   
