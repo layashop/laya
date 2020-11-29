@@ -1,6 +1,19 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags cache %}
 
+{% block title %}
+  Busqueda en laya shop
+{% endblock %}
+
+{% block description %}
+  Aqui podra utilizar nuestra herramienta de busqueda avanzada para encontrar lo que necesita
+{% endblock %}
+
+{% block meta_extra %}
+  {# normalmente se usaria el site id, pero por el momento lo voy a dejar con .get_host #}
+  <link rel="canonical" href="{{ request.get_host }}{% url 'posts:search' %}">
+
+{% endblock %}
 
 {% block content %}
   <div class="flex flex-col md:flex-row">
@@ -11,7 +24,7 @@
 
         {% for post in object_list %}
           {# AQUI EMPIEZAN LOS ELEMENTOS #}
-          <a href="{% url 'posts:detail' post.business.slug post.pk %}">
+          <a href="{% url 'posts:detail' post.business.slug post.pk post.title_slug %}">
             <div class="flex flex-col ">
               {% if post.images %}
                 {% with media=post.images.all.0 %}
@@ -63,7 +76,7 @@
 
 {% endblock %}
 
-{% block javascript %}
+{% block extra_javascript %}
   {{ categories|json_script:"categories" }}
   <script src="{% static 'dist/js/SearchPageWidget.js' %}"></script>
 {% endblock %}

@@ -1,4 +1,5 @@
 import datetime
+import os
 from django.db import models
 from random import randint
 from django.contrib.postgres.fields import JSONField, ArrayField
@@ -9,23 +10,24 @@ from users.models import User
 from django.utils.text import slugify
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
-from .utils import business_directory_files
-import os
-
-
 from django.dispatch import receiver
+from .utils import business_directory_files
+
 
 class Category(models.Model):
     name = models.CharField(max_length=50, null=False, blank=False, unique=True)
     banner = models.ImageField(verbose_name='Banner', upload_to='categories', null=True, blank=True)
     slug = models.SlugField(null=False, blank=True)
 
+    thumbnail_500x500 = ImageSpecField(
+        source='banner', processors=[ResizeToFill(500, 500)], format='JPEG', options={'quality': 80})
     thumbnail_640x100 = ImageSpecField(
         source='banner', processors=[ResizeToFill(640, 150)], format='JPEG', options={'quality': 80})
     thumbnail_768x200 = ImageSpecField(
         source='banner', processors=[ResizeToFill(768, 200)], format='JPEG', options={'quality': 80})
     thumbnail_1800x300 = ImageSpecField(
         source='banner', processors=[ResizeToFill(1800, 300)], format='JPEG', options={'quality': 80})
+
     def __str__(self):
         return self.name
 
@@ -86,6 +88,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(null=True)
     modified_at = models.DateTimeField(null=True)
     title = models.CharField(max_length=50, null=False)
+    title_slug = models.SlugField(max_length=100, blank=True, null=True)
     description = models.CharField(max_length=200, null=True)
     attributes = JSONField(null=True, blank=True)
     price = models.FloatField(null=False, blank=False)
@@ -163,6 +166,9 @@ class Post(models.Model):
     def is_new(self):
         return self.created_at >= timezone.now() - datetime.timedelta(days=7)
 
+    def get_seo_url(self):
+        return f'{self.pk}-{self.title_slug}'
+
     def save(self, *args, **kwargs):
 
         if not self.id:
@@ -173,8 +179,10 @@ class Post(models.Model):
             #Si cambió, recalcular
             if self.__original_price != self.price:
                 self.base_price = round((self.price / self.currency.rate), 3)
-
             self.modified_at = timezone.now()
+
+        #Esto se haria cada vez que se guarda el modelo, pero da igual, tampoco es como que sea una operacion costosa
+        self.title_slug = slugify(self.title)
 
         super(Post, self).save(*args, **kwargs)
 
