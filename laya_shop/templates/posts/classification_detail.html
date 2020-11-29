@@ -35,7 +35,7 @@
           <h3 class="text-2xl">Destacados</h3>
           <div class="flex overflow-x-auto py-4">
             {% for post in highlight %}
-                <a href="{% url "posts:detail" post.business.slug post.pk %}">
+                <a href="{% url "posts:detail" post.business.slug post.pk post.title_slug %}">
                   <div class="flex flex-col mx-2 flex-none">
                     <h6>{{ post.business.name }}</h6>
                     {% if post.images %}
@@ -55,7 +55,7 @@
 
             <div class="flex overflow-x-auto py-4">
               {% for post in subcategory.posts %}
-                <a href="{% url "posts:detail" post.business.slug post.pk %}">
+                <a href="{% url "posts:detail" post.business.slug post.pk post.title_slug %}">
                   <div class="flex flex-col mx-2 flex-none">
                   <h6>{{ post.business.name }}</h6>
                     {% if post.images %}

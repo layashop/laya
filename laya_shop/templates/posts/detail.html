@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
-{% load static %}
-{% load parameters %}
+{% load static parameters %}
+
+{% block title %}
+  {{ object.title }} - Laya Shop
+{% endblock %}
+
+{% block description %}
+  Descripcion del producto: {{ object.description }}
+{% endblock %}
 
 {% block content %}
   <main class="my-8">
