@@ -59,6 +59,14 @@ class PostDetail(DetailView):
         slug = slug[1:] if slug.startswith('@') else slug
         return get_object_or_404(queryset, pk=self.kwargs['pk'], business__slug=slug)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        post = self.object
+
+        # TODO: Mejorar esta wea
+        context['related_posts'] = Post.objects.select_related('business').filter(subcategories__in=post.subcategories.all()).distinct().exclude(pk=post.pk)[:4]
+        return context
+
 
 post_detail_view = PostDetail.as_view()
 
