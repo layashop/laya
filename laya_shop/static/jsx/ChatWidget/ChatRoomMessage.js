@@ -49,7 +49,7 @@ const ChatRoomMessage = ({message, slug = undefined}) => {
                     </div>) : (<div style={{width: 24, height: 24}}><IconResolver icon="clock"/></div>)}
                 </div>
                 <a className={'p-4'}
-                   href={slug ? `/${slug}/dashboard/deals/#${parsedObj.id}` : `/profile/${USER.username}/deals/#${parsedObj.id}`}><IconResolver
+                   href={slug ? `/${slug}/dashboard/deals#${parsedObj.id}` : `/profile/${USER.username}/deals/#${parsedObj.id}`}><IconResolver
                     icon="dealSent"/>{message.sender_name} envió una petición de acuerdo
                     (#{_.padStart(parsedObj.id, 7, '0')})</a>
             </div>)

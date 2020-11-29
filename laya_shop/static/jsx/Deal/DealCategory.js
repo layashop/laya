@@ -6,7 +6,7 @@ import _ from 'lodash'
 
 const DealCategory = ({category, handleUpdateData, handleOpenItem, openIndex, searchQuery, data = []}) => {
     console.log(category)
-    const [show, setShow] = useState(category === "Pendiente")
+    const [show, setShow] = useState(true)
     const toggleShow = () => setShow((prevState) => !prevState)
     return <Box __css={{px: '10px', py: '10px'}} id={`category-${category}`}>
         <Box __css={{fontSize: '24px', display: 'flex', lineHeight: 1.7}} onClick={toggleShow}>

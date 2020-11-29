@@ -2,7 +2,7 @@ import React, { memo , useEffect} from 'react'
 import ChatRoomMessage from './ChatRoomMessage'
 import compareMessageProps from './MessagePropsCompare'
 
-const ChatRoomMessageOther = ({message, markAsSeen }) => {
+const ChatRoomMessageOther = ({message, markAsSeen, slug }) => {
 
     useEffect(()=>{
         console.log('Marking for Seen', !message.seen)
