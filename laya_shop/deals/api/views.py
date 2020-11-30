@@ -9,16 +9,35 @@ from push_notifications.models import WebPushDevice
 from deals.models import Deal
 from .serializers import DealSerializer, DealBusinessSerializer, DealUserSerializer
 from .filters import DealsFilters
+from users.models import User
 
 
 @receiver(signal=post_save, sender=Deal)
 def handler_signal(sender, **kwargs):
-    print(kwargs)
-    print("calledd")
+    created = kwargs.get("created")
+    deal = kwargs.get("instance")
     device = WebPushDevice.objects.all()
-    device.send_message(
-        message={"title": "You Got a new message", "body": "Message from"}
-    )
+    message = {}
+
+    if deal.sent_by == Deal.SentBy.BUSINESS:
+        device.filter(user__pk=deal.user__pk)
+        if created:
+            message["message"] = "Tienes un nuevo Deal con" + deal.business.get("name")
+        else:
+            message["message"] = "Se actualizo el Deal con" + deal.business.get("name")
+    else:
+        users = deal.get("business").users
+        device.filter(user__pk__in=[user.id for user in users])
+        if created:
+            message["message"] = "Tienes un nuevo Deal con" + deal.user.get("name")
+        else:
+            message["message"] = "Se actualizo el Deal con" + deal.user.get("name")
+    if created:
+        message["title"] = "Nuevo Deal"
+    else:
+        message["title"] = "Se actualizo un acuerdo"
+    response = device.send_message(json.dumps(message))
+    print(response)
 
 
 class DealViewSet(ModelViewSet):
