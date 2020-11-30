@@ -39,10 +39,12 @@ class WSConsumer(AsyncWebsocketConsumer):
         print("Message Received", message)
         new_message = await save_message(message)
         if new_message is not None:
+            print("After Error")
             await self.send(
                 text_data=json_dumps(ChatMessageSerializer(new_message).data)
             )
         else:
+            print("After Error")
             message = await get_message(message.get("send_verifier"))
             await self.send(text_data=json_dumps(ChatMessageSerializer(message).data))
 

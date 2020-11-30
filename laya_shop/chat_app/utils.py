@@ -63,8 +63,3 @@ def get_count(queryset):
 @database_sync_to_async
 def get_message(send_verifier):
     return safe_get(ChatMessage, send_verifier=send_verifier)
-
-
-@database_sync_to_async
-def send_notification(message):
-   
