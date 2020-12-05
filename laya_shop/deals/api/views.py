@@ -5,7 +5,7 @@ from django_filters import rest_framework as filters
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from push_notifications.models import WebPushDevice
-
+import json
 from deals.models import Deal
 from .serializers import DealSerializer, DealBusinessSerializer, DealUserSerializer
 from .filters import DealsFilters
@@ -18,20 +18,25 @@ def handler_signal(sender, **kwargs):
     deal = kwargs.get("instance")
     device = WebPushDevice.objects.all()
     message = {}
-
     if deal.sent_by == Deal.SentBy.BUSINESS:
-        device.filter(user__pk=deal.user__pk)
+        device.filter(user=deal.user)
         if created:
-            message["message"] = "Tienes un nuevo Deal con" + deal.business.get("name")
+            message["message"] = "Tienes un nuevo Deal con " + deal.business.name
         else:
-            message["message"] = "Se actualizo el Deal con" + deal.business.get("name")
+            message["message"] = "Se actualizo el Deal con " + deal.business.name
+
+        if deal.status > Deal.State.SETTLED:
+            deal_status = {6: "Delivery", 7: "Entregado"}.get(deal.status)
+            message["message"] += " paso a " + deal_status
     else:
-        users = deal.get("business").users
+        users = deal.business.user.all()
         device.filter(user__pk__in=[user.id for user in users])
+
         if created:
-            message["message"] = "Tienes un nuevo Deal con" + deal.user.get("name")
+            message["message"] = "Tienes un nuevo Deal con " + deal.user.name
         else:
-            message["message"] = "Se actualizo el Deal con" + deal.user.get("name")
+            message["message"] = "Se actualizo el Deal con " + deal.user.nameStatus
+
     if created:
         message["title"] = "Nuevo Deal"
     else:
