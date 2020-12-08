@@ -43,7 +43,7 @@ class Business(models.Model):
 
 class UserBusiness(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    business = models.ForeignKey(Business, on_delete=models.CASCADE)
+    business = models.ForeignKey(Business, on_delete=models.CASCADE, related_name="staff")
     ADMIN_ROLE = "AD"
     ROLE_CHOICES = [(ADMIN_ROLE, "Administrador")]
     role = models.CharField(max_length=2, choices=ROLE_CHOICES)

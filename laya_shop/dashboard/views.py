@@ -34,16 +34,16 @@ class Index(DashboardBaseMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        base_deals = Deal.objects.filter(created_at__gte=timezone.now() - timezone.timedelta(days=30))
 
-        STATUS_CODES = Deal.State
-
-        ACTIVE_CODES = [STATUS_CODES.DELIVERY, STATUS_CODES.PENDING, STATUS_CODES.RESERVED]
-
-        context['active_deals'] = Deal.objects.filter(
-            business__slug=self.kwargs['business_slug'],
-            status__in=ACTIVE_CODES
-        ).count()
+        all_codes = Deal.State
+        codes_active = [all_codes.DELIVERY, all_codes.PENDING, all_codes.RESERVED]
+        codes_completed = [all_codes.DELIVERED, all_codes.SETTLED]
+        base_deals = Deal.objects.filter(
+            created_at__gte=timezone.now() - timezone.timedelta(days=30),
+            business=self.business)
+        context['deals_delivery'] = base_deals.filter(status=all_codes.DELIVERY).count()
+        context['deals_completed'] = base_deals.filter(status__in=codes_completed).count()
+        context['deals_actived'] = base_deals.filter(status__in=codes_active).count()
         return context
 
 
@@ -59,7 +59,6 @@ class PostList(DashboardBaseMixin, ListView):
 
     # get_queryset se ejecuta antes de get_context_data
     def get_queryset(self):
-        self.business = get_object_or_404(Business, slug=self.kwargs["business_slug"])
         q = {"business": self.business}
         if self.request.GET.get("search"):
             q["title__icontains"] = self.request.GET.get("search")
@@ -70,7 +69,6 @@ class PostList(DashboardBaseMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(PostList, self).get_context_data(**kwargs)
-        context["business"] = self.business
         if self.request.GET.get("search"):
             context["search"] = self.request.GET.get("search")
 
@@ -99,9 +97,6 @@ class PostCreate(PostClassificationMixin, DashboardBaseMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(PostCreate, self).get_context_data(**kwargs)
-        context["business"] = get_object_or_404(
-            Business, slug=self.kwargs["business_slug"]
-        )
         return context
 
     def get_success_url(self):
@@ -147,9 +142,6 @@ class PostDetail(PostClassificationMixin, DashboardBaseMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(PostDetail, self).get_context_data(**kwargs)
-        context["business"] = get_object_or_404(
-            Business, slug=self.kwargs["business_slug"]
-        )
         context["post"] = self.object
         post_images = []
         for image in self.object.images.filter(is_valid=True):  # is_valid=True
@@ -212,7 +204,7 @@ class PostDelete(DashboardBaseMixin, DeleteView):
     def get_success_url(self):
         return reverse(
             "dashboard:post_list",
-            kwargs={"business_slug": self.kwargs["business_slug"]},
+            kwargs={"business_slug": self.business.slug},
         )
 
 
