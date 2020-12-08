@@ -66,6 +66,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "channels",
     "crispy_forms",
+    "crispy_tailwind",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -317,3 +318,8 @@ PUSH_NOTIFICATIONS_SETTINGS = {
         "aud": "https://android.googleapis.com",
     },
 }
+
+
+# CRISPY FORMS
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+CRISPY_TEMPLATE_PACK = "tailwind"

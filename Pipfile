@@ -57,6 +57,7 @@ django-filter = "*"
 django-push-notifications = "*"
 pywebpush = "*"
 py-vapid = "*"
+crispy-tailwind = "*"
 
 [requires]
 python_version = "3.8"

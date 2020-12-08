@@ -13,5 +13,13 @@ module.exports = {
             'xl': '1280px',
             // => @media (min-width: 1280px) { ... }
         },
+        extend: {
+            height: {
+                '96': '24rem',
+                '128': '32rem',
+                '192': '48rem',
+                '300px': '300px'
+            }
+        }
     }
 }

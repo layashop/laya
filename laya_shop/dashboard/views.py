@@ -1,10 +1,11 @@
-from django.shortcuts import render, reverse, get_object_or_404
+from django.shortcuts import render, reverse, get_object_or_404, HttpResponseRedirect
 from django.views.generic import (
     TemplateView,
     ListView,
     DetailView,
     CreateView,
     DeleteView,
+    UpdateView
 )
 from django.views.generic.edit import UpdateView
 from business.models import Business
@@ -40,11 +41,6 @@ class PostList(DashboardPermissionsMixin, ListView):
     ordering = ["modified_at"]
     paginate_by = 10
 
-    def get_template_names(self):
-        return {"gallery": "dashboard/post_list_gallery.html"}.get(
-            self.request.GET.get("view"), "dashboard/post_list.html"
-        )
-
     # get_queryset se ejecuta antes de get_context_data
     def get_queryset(self):
         self.business = get_object_or_404(Business, slug=self.kwargs["business_slug"])
@@ -61,15 +57,19 @@ class PostList(DashboardPermissionsMixin, ListView):
         context["business"] = self.business
         if self.request.GET.get("search"):
             context["search"] = self.request.GET.get("search")
+
         context["total_posts_count"] = self.model.objects.filter(
             business=self.business
         ).count()
+
         context["active_posts_count"] = self.model.objects.filter(
             business=self.business, status=Post.ACTIVE
         ).count()
+
         context["inactive_posts_count"] = self.model.objects.filter(
             business=self.business, status=Post.INACTIVE
         ).count()
+
         return context
 
 
@@ -203,7 +203,7 @@ class PostDelete(DashboardPermissionsMixin, DeleteView):
 post_delete_view = PostDelete.as_view()
 
 
-class ChatApp(DashboardContextMixin, TemplateView):
+class ChatApp(DashboardContextMixin, DashboardPermissionsMixin, TemplateView):
     template_name = "dashboard/chat_dashboard.html"
 
     def get_context_data(self, **kwargs):
@@ -224,3 +224,18 @@ class DealsView(DashboardContextMixin, TemplateView):
 
 
 deals_view = DealsView.as_view()
+
+
+class ProfileUpdateView(DashboardContextMixin, DashboardPermissionsMixin, UpdateView):
+    template_name = 'dashboard/profile_update.html'
+    model = Business
+    fields = ['address', 'description', 'profile_image']
+
+    slug_url_kwarg = 'business_slug'
+    slug_field = 'slug'
+
+    def get_success_url(self):
+        return self.request.path_info
+
+
+profile_update_view = ProfileUpdateView.as_view()
