@@ -1,4 +1,4 @@
-from django.shortcuts import render, reverse, get_object_or_404, HttpResponseRedirect
+from django.shortcuts import reverse, get_object_or_404
 from django.views.generic import (
     TemplateView,
     ListView,
@@ -7,9 +7,9 @@ from django.views.generic import (
     DeleteView,
     UpdateView
 )
-from django.views.generic.edit import UpdateView
 from business.models import Business
 from posts.models import Post, Category, SubCategory
+from deals.models import Deal
 from posts.models import BusinessImage
 from .mixins import DashboardPermissionsMixin
 from laya_shop.posts.serializers import SubcategorySerializer
@@ -27,7 +27,9 @@ class Index(DashboardPermissionsMixin, DashboardContextMixin, TemplateView):
     template_name = "dashboard/index.html"
 
     def get_context_data(self, **kwargs):
-        context = super(Index, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
+
+        context['active_deals'] = Deal.objects.filter(business__slug=self.kwargs['business_slug'], status=Deal.State.PENDING).count()
         return context
 
 
