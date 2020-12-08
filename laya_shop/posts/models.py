@@ -3,10 +3,10 @@ import os
 from django.db import models
 from random import randint
 from django.contrib.postgres.fields import JSONField, ArrayField
-from business.models import Business
+from laya_shop.business.models import Business
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
-from users.models import User
+from laya_shop.users.models import User
 from django.utils.text import slugify
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator

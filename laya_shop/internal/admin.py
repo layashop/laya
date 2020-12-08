@@ -1,5 +1,5 @@
 from django.contrib import admin
-from internal.models import HomeSlide
+from laya_shop.internal.models import HomeSlide
 
 # Register your models here.
 

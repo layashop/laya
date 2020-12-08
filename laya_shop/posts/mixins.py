@@ -1,7 +1,5 @@
-from posts.models import Category, SubCategory
-from django.db.models import Prefetch
-from json import dumps
-from django.core.serializers.json import DjangoJSONEncoder
+from laya_shop.posts.models import Category, SubCategory
+
 from .serializers import CategorySerializer, SubcategorySerializer
 class PostClassificationMixin:
     def get_context_data(self, **kwargs):

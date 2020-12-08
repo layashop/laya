@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from chat_app.models import ChatRoom
+from laya_shop.chat_app.models import ChatRoom
 
 
 class ChatRoomFilters(filters.FilterSet):

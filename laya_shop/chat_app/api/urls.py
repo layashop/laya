@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
-from chat_app.api.views import ChatRoomViewSet, ChatRoomMessagesViewSet
+from laya_shop.chat_app.api.views import ChatRoomViewSet, ChatRoomMessagesViewSet
 from push_notifications.api.rest_framework import WebPushDeviceViewSet
 
 

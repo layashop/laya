@@ -1,14 +1,14 @@
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.mixins import ListModelMixin
 from django_filters import rest_framework as filters
-from chat_app.models import ChatRoom, ChatMessage
-from chat_app.api.serializers import (
+from laya_shop.chat_app.models import ChatRoom, ChatMessage
+from laya_shop.chat_app.api.serializers import (
     ChatRoomSerializer,
     ChatRoomUserSerializer,
     ChatRoomBusinessSerializer,
     ChatMessageSerializer,
 )
-from chat_app.api.filters import ChatRoomFilters, ChatRoomMessageFilters
+from laya_shop.chat_app.api.filters import ChatRoomFilters, ChatRoomMessageFilters
 
 
 class ChatRoomViewSet(ModelViewSet):

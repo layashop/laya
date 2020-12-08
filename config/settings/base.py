@@ -81,13 +81,13 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    "users",
-    "internal",
-    "posts",
-    "business",
-    "dashboard",
-    "chat_app",
-    "deals"
+    "laya_shop.users",
+    "laya_shop.internal",
+    "laya_shop.posts",
+    "laya_shop.business",
+    "laya_shop.dashboard",
+    "laya_shop.chat_app",
+    "laya_shop.deals"
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -306,7 +306,7 @@ REST_FRAMEWORK = {
 CORS_URLS_REGEX = r"^/api/.*$"
 # Your stuff...
 # ------------------------------------------------------------------------------
-ASGI_APPLICATION = "chat_app.routing.websocket_application"
+ASGI_APPLICATION = "laya_shop.chat_app.routing.websocket_application"
 
 
 APPEND_SLASH = True

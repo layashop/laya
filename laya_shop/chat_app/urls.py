@@ -1,5 +1,5 @@
 from django.urls import re_path
-from chat_app.ws_consumer import WSConsumer
+from laya_shop.chat_app.ws_consumer import WSConsumer
 
 app_name = "chat_app"
 

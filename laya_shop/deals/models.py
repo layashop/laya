@@ -1,8 +1,8 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.utils import timezone
-from business.models import Business
-from users.models import User
+from laya_shop.business.models import Business
+from laya_shop.users.models import User
 
 # Create your models here.
 

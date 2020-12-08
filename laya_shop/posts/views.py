@@ -5,9 +5,9 @@ from django.views.generic import ListView, DetailView, TemplateView
 from django.core.cache import caches
 from .decorators import cache_on_auth
 
-from posts.filters import PostFilter
-from posts.mixins import PostClassificationMixin
-from posts.models import Post, Category, SubCategory
+from laya_shop.posts.filters import PostFilter
+from laya_shop.posts.mixins import PostClassificationMixin
+from laya_shop.posts.models import Post, Category, SubCategory
 
 cache = caches['default']
 

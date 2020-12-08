@@ -2,8 +2,8 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.views.generic import TemplateView
-from posts.models import Category
-from internal.models import HomeSlide
+from laya_shop.posts.models import Category
+from laya_shop.internal.models import HomeSlide
 
 
 class HomeView(TemplateView):

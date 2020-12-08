@@ -1,4 +1,6 @@
 from django.shortcuts import reverse, get_object_or_404
+from django.db.models import Q
+from django.utils import timezone
 from django.views.generic import (
     TemplateView,
     ListView,
@@ -7,15 +9,15 @@ from django.views.generic import (
     DeleteView,
     UpdateView
 )
-from business.models import Business
-from posts.models import Post, Category, SubCategory
-from deals.models import Deal
-from posts.models import BusinessImage
-from .mixins import DashboardPermissionsMixin
+from laya_shop.business.models import Business
+from laya_shop.posts.models import Post, SubCategory
+from laya_shop.deals.models import Deal
+from laya_shop.posts.models import BusinessImage
+from .mixins import DashboardBaseMixin
 from laya_shop.posts.serializers import SubcategorySerializer
 from json import dumps, loads
 from laya_shop.posts.mixins import PostClassificationMixin
-from laya_shop.dashboard.mixins import DashboardContextMixin
+
 
 # FORMS
 from .forms import PostForm
@@ -23,13 +25,25 @@ from .forms import PostForm
 
 # LogicRequiredMixin verifica que el usuario este logeado, UserPassesTestMixin es una verificacion
 # UserPasessTestMixin no verifica que el usuario este logeado, asi que primero va el LoginRequiredMixin
-class Index(DashboardPermissionsMixin, DashboardContextMixin, TemplateView):
+
+
+
+
+class Index(DashboardBaseMixin, TemplateView):
     template_name = "dashboard/index.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        base_deals = Deal.objects.filter(created_at__gte=timezone.now() - timezone.timedelta(days=30))
 
-        context['active_deals'] = Deal.objects.filter(business__slug=self.kwargs['business_slug'], status=Deal.State.PENDING).count()
+        STATUS_CODES = Deal.State
+
+        ACTIVE_CODES = [STATUS_CODES.DELIVERY, STATUS_CODES.PENDING, STATUS_CODES.RESERVED]
+
+        context['active_deals'] = Deal.objects.filter(
+            business__slug=self.kwargs['business_slug'],
+            status__in=ACTIVE_CODES
+        ).count()
         return context
 
 
@@ -37,7 +51,7 @@ index_view = Index.as_view()
 
 
 # El listing de los posts ademas de la busqueda
-class PostList(DashboardPermissionsMixin, ListView):
+class PostList(DashboardBaseMixin, ListView):
     model = Post
     template_name = "dashboard/post_list.html"
     ordering = ["modified_at"]
@@ -78,7 +92,7 @@ class PostList(DashboardPermissionsMixin, ListView):
 post_list_view = PostList.as_view()
 
 
-class PostCreate(PostClassificationMixin, DashboardPermissionsMixin, CreateView):
+class PostCreate(PostClassificationMixin, DashboardBaseMixin, CreateView):
     model = Post
     template_name = "dashboard/post_detail.html"
     form_class = PostForm
@@ -126,7 +140,7 @@ post_create_view = PostCreate.as_view()
 
 
 # UpdateView maneja el post, verifica que sea valido el form y le hace update
-class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView):
+class PostDetail(PostClassificationMixin, DashboardBaseMixin, UpdateView):
     model = Post
     template_name = "dashboard/post_detail.html"
     form_class = PostForm
@@ -192,7 +206,7 @@ class PostDetail(PostClassificationMixin, DashboardPermissionsMixin, UpdateView)
 post_detail_view = PostDetail.as_view()
 
 
-class PostDelete(DashboardPermissionsMixin, DeleteView):
+class PostDelete(DashboardBaseMixin, DeleteView):
     model = Post
 
     def get_success_url(self):
@@ -205,7 +219,7 @@ class PostDelete(DashboardPermissionsMixin, DeleteView):
 post_delete_view = PostDelete.as_view()
 
 
-class ChatApp(DashboardContextMixin, DashboardPermissionsMixin, TemplateView):
+class ChatApp(DashboardBaseMixin, TemplateView):
     template_name = "dashboard/chat_dashboard.html"
 
     def get_context_data(self, **kwargs):
@@ -217,7 +231,7 @@ class ChatApp(DashboardContextMixin, DashboardPermissionsMixin, TemplateView):
 chat_app_view = ChatApp.as_view()
 
 
-class DealsView(DashboardContextMixin, TemplateView):
+class DealsView(DashboardBaseMixin, TemplateView):
     template_name = "dashboard/deals.html"
 
     def get_context_data(self, **kwargs):
@@ -228,7 +242,7 @@ class DealsView(DashboardContextMixin, TemplateView):
 deals_view = DealsView.as_view()
 
 
-class ProfileUpdateView(DashboardContextMixin, DashboardPermissionsMixin, UpdateView):
+class ProfileUpdateView(DashboardBaseMixin, UpdateView):
     template_name = 'dashboard/profile_update.html'
     model = Business
     fields = ['address', 'description', 'profile_image']

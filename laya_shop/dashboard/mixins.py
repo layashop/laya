@@ -4,11 +4,11 @@ from django.contrib.auth.mixins import (
     LoginRequiredMixin,
 )
 from django.shortcuts import get_object_or_404
-from business.models import Business
+from laya_shop.business.models import Business
 from django.core.serializers import serialize
 
 
-class DashboardPermissionsMixin(LoginRequiredMixin, UserPassesTestMixin):
+class DashboardPermissionsMixin(UserPassesTestMixin):
     login_url = "account_login"
 
     def test_func(self):
@@ -28,3 +28,7 @@ class DashboardContextMixin:
         #     "json", [context["business"]], fields=("id", "slug")
         # )
         return context
+
+
+class DashboardBaseMixin(LoginRequiredMixin, DashboardPermissionsMixin, DashboardContextMixin):
+    pass

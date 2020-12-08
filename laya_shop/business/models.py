@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext as _
-from users.models import User
+from laya_shop.users.models import User
 from django.utils import timezone
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
