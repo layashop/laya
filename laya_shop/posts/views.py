@@ -40,65 +40,85 @@ class PostList(PostClassificationMixin, ListView):
             #     self.request.GET, queryset=queryset, request=self.request
             # ).qs
             q_object = Q()
-            for key, value in self.request.GET.lists():
+            query_keys = self.request.GET
 
-                if key == "category":
-                    if not self.request.GET.get("subcategory", [None])[0]:
-                        q_object.add(
-                            Q(subcategories__category__pk=int(value[0])), "AND"
-                        )
+            if query_keys.get("category"):
+                if not self.request.GET.get("subcategory", [None])[0]:
+                    q_object.add(
+                        Q(
+                            subcategories__category__pk=int(
+                                query_keys.get("category")[0]
+                            )
+                        ),
+                        "AND",
+                    )
 
-                if key == "subcategory":
-                    q_object.add(Q(subcategories__pk=int(value[0])), "AND")
-                if key == "state":
-                    q_object.add(Q(state=int(value[0])), "AND")
-                if key == "delivery":
-                    q_object.add(Q(delivery=int(value[0])), "AND")
-                if key == "location":
-                    q_object.add(Q(locations__pk=int(value[0])), "AND")
-                if key == "lowPrice":
-                    try:
-                        print("Currency", self.request.GET.get("currency"))
-                        currency = Currency.objects.get(
-                            iso_code=self.request.GET.get("currency")
-                            if self.request.GET.get("currency")
-                            else "NIO"
-                        )
-                    except Currency.DoesNotExist:
-                        currency = None
-                    if currency is not None:
-                        print("Adding Currency")
-                        q_object.add(
-                            Q(base_price__gte=round(float(value[0]) / currency.rate)),
-                            "AND",
-                        )
-                    else:
-                        q_object.add(
-                            Q(base_price__gte=float(value[0]) / currency.rate),
-                            "AND",
-                        )
-                if key == "highPrice":
-                    try:
-                        currency = Currency.objects.get(
-                            iso_code=self.request.GET.get("currency")
-                            if self.request.GET.get("currency")
-                            else "NIO"
-                        )
-                    except Currency.DoesNotExist:
-                        currency = None
-                    if currency is not None:
-                        q_object.add(
-                            Q(base_price__lte=round(float(value[0]) / currency.rate)),
-                            "AND",
-                        )
-                    else:
-                        q_object.add(Q(base_price__lte=float(value[0])), "AND")
-                if key == "tags":
-                    q_object.add(Q(tags__contains=value), "AND")
-                if key == "search":
-                    q_object.add(Q(title__icontains=value[0]), "AND")
+            if query_keys.get("subcategory"):
+                q_object.add(
+                    Q(subcategories__pk=int(query_keys.get("subcategory")[0])), "AND"
+                )
+            if query_keys.get("state"):
+                q_object.add(Q(state=int(query_keys.get("state")[0])), "AND")
+            if query_keys.get("delivery"):
+                q_object.add(Q(delivery=int(query_keys.get("delivery")[0])), "AND")
+            if query_keys.get("location"):
+                q_object.add(Q(locations__pk=int(query_keys.get("location")[0])), "AND")
+            if query_keys.get("lowPrice"):
+                try:
+                    print("Currency", self.request.GET.get("currency"))
+                    currency = Currency.objects.get(
+                        iso_code=self.request.GET.get("currency")
+                        if self.request.GET.get("currency")
+                        else "NIO"
+                    )
+                except Currency.DoesNotExist:
+                    currency = None
+                if currency is not None:
+                    print("Adding Currency")
+                    q_object.add(
+                        Q(
+                            base_price__gte=round(
+                                float(query_keys.get("lowPrice")[0]) / currency.rate
+                            )
+                        ),
+                        "AND",
+                    )
+                else:
+                    q_object.add(
+                        Q(
+                            base_price__gte=float(query_keys.get("lowPrice")[0])
+                            / currency.rate
+                        ),
+                        "AND",
+                    )
+            if query_keys.get("highPrice"):
+                try:
+                    currency = Currency.objects.get(
+                        iso_code=self.request.GET.get("currency")
+                        if self.request.GET.get("currency")
+                        else "NIO"
+                    )
+                except Currency.DoesNotExist:
+                    currency = None
+                if currency is not None:
+                    q_object.add(
+                        Q(
+                            base_price__lte=round(
+                                float(query_keys.get("highPrice")[0]) / currency.rate
+                            )
+                        ),
+                        "AND",
+                    )
+                else:
+                    q_object.add(
+                        Q(base_price__lte=float(query_keys.get("highPrice")[0])), "AND"
+                    )
+            if query_keys.get("tags"):
+                q_object.add(Q(tags__contains=query_keys.get("tags")), "AND")
+            if query_keys.get("search"):
+                q_object.add(Q(title__icontains=query_keys.get("search")[0]), "AND")
             queryset_optimizado = queryset.filter(q_object)
-            if self.request.GET.get("sort"):
+            if query_keys.get("sort"):
                 sort_key = self.request.GET.get("sort")
                 if sort_key[0] == "1":
                     queryset_optimizado = queryset_optimizado.order_by("-created_at")
@@ -112,10 +132,9 @@ class PostList(PostClassificationMixin, ListView):
 
             # sort
 
+            cache.set(cache_key, queryset_optimizado, 60 * 60)
             print("QS", queryset_optimizado.explain())
             return queryset_optimizado
-            cache.set(cache_key, queryset, 60 * 60)
-            return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
