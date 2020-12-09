@@ -94,7 +94,7 @@ class PostList(PostClassificationMixin, ListView):
                     else:
                         q_object.add(Q(base_price__lte=float(value[0])), "AND")
                 if key == "tags":
-                    q_object.add(Q(tags__in=value), "AND")
+                    q_object.add(Q(tags__contains=value), "AND")
                 if key == "search":
                     q_object.add(Q(title__icontains=value[0]), "AND")
             queryset_optimizado = queryset.filter(q_object)
