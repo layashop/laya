@@ -41,7 +41,13 @@ class PostList(PostClassificationMixin, ListView):
             # ).qs
             q_object = Q()
             for key, value in self.request.GET.lists():
-                print(key, value)
+
+                if key == "category":
+                    if not self.request.GET.get("subcategory", [None])[0]:
+                        q_object.add(
+                            Q(subcategories__category__pk=int(value[0])), "AND"
+                        )
+
                 if key == "subcategory":
                     q_object.add(Q(subcategories__pk=int(value[0])), "AND")
                 if key == "state":
