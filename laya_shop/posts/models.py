@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.dispatch import receiver
 from .utils import business_directory_files
-from laya_shop.users.models import Users
+from laya_shop.users.models import User
 
 
 class Category(models.Model):
@@ -315,16 +315,14 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
 
 
 class Report(models.Model):
-    user = models.ForeignKey(
-        User,
-    )
-    post = models.ForeignKey(Post, related_names="reports")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name="reports", on_delete=models.CASCADE)
     CATEGORIAS_REPORTES = [
-        (PRODUCTO_ILEGAL, "Productos Ilegales"),
-        (ESTAFA, "Estafa"),
-        (PUBLICIDAD_ENGANOSA, "Publicidad Enganosa"),
-        (ROBO_INTELECTUAL, "Roba mi propiedad intelectual"),
-        (CONTRA_TOS, "Esta en Contra de los TOS"),
+        ("PRODUCTO_ILEGAL", "Productos Ilegales"),
+        ("ESTAFA", "Estafa"),
+        ("PUBLICIDAD_ENGANOSA", "Publicidad Enganosa"),
+        ("ROBO_INTELECTUAL", "Roba mi propiedad intelectual"),
+        ("CONTRA_TOS", "Esta en Contra de los TOS"),
     ]
     categorias = models.CharField(max_length=255, choices=CATEGORIAS_REPORTES)
     descripcion = models.TextField()
