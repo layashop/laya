@@ -58,23 +58,30 @@ class PostList(PostClassificationMixin, ListView):
                     q_object.add(Q(locations__pk=int(value[0])), "AND")
                 if key == "lowPrice":
                     try:
+                        print("Currency", self.request.GET.get("currency"))
                         currency = Currency.objects.get(
-                            iso_code=self.request.GET.get("currency")[0]
-                            if self.request.GET.get("currency")[0]
+                            iso_code=self.request.GET.get("currency")
+                            if self.request.GET.get("currency")
                             else "NIO"
                         )
                     except Currency.DoesNotExist:
                         currency = None
                     if currency is not None:
+                        print("Adding Currency")
                         q_object.add(
                             Q(base_price__gte=round(float(value[0]) / currency.rate)),
+                            "AND",
+                        )
+                    else:
+                        q_object.add(
+                            Q(base_price__gte=float(value[0]) / currency.rate),
                             "AND",
                         )
                 if key == "highPrice":
                     try:
                         currency = Currency.objects.get(
-                            iso_code=self.request.GET.get("currency")[0]
-                            if self.request.GET.get("currency")[0]
+                            iso_code=self.request.GET.get("currency")
+                            if self.request.GET.get("currency")
                             else "NIO"
                         )
                     except Currency.DoesNotExist:
@@ -84,8 +91,10 @@ class PostList(PostClassificationMixin, ListView):
                             Q(base_price__lte=round(float(value[0]) / currency.rate)),
                             "AND",
                         )
+                    else:
+                        q_object.add(Q(base_price__lte=float(value[0])), "AND")
                 if key == "tags":
-                    q_object.add(Q(tags__in=value), "AND")
+                    q_object.add(Q(tags__contains=value), "AND")
                 if key == "search":
                     q_object.add(Q(title__icontains=value[0]), "AND")
             queryset_optimizado = queryset.filter(q_object)
