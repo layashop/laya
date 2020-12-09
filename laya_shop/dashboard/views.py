@@ -12,9 +12,9 @@ from django.views.generic import (
 from laya_shop.business.models import Business
 from laya_shop.posts.models import Post, SubCategory
 from laya_shop.deals.models import Deal
-from laya_shop.posts.models import BusinessImage
+from laya_shop.posts.models import BusinessImage, Currency
 from .mixins import DashboardBaseMixin
-from laya_shop.posts.serializers import SubcategorySerializer
+from laya_shop.posts.serializers import SubcategorySerializer, CurrencySerializer
 from json import dumps, loads
 from laya_shop.posts.mixins import PostClassificationMixin
 
@@ -68,7 +68,7 @@ class PostList(DashboardBaseMixin, ListView):
         )
 
     def get_context_data(self, **kwargs):
-        context = super(PostList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         if self.request.GET.get("search"):
             context["search"] = self.request.GET.get("search")
 
@@ -93,6 +93,8 @@ post_list_view = PostList.as_view()
 class PostGenericView(PostClassificationMixin, DashboardBaseMixin):
     model = Post
     template_name = "dashboard/post_detail.html"
+    context_object_name = "post"
+    form_class = PostForm
 
     def get_success_url(self):
         # una vez termina de editar, redirigimos a index del dashboard
@@ -119,6 +121,9 @@ class PostGenericView(PostClassificationMixin, DashboardBaseMixin):
             BusinessImage.objects.filter(
                 business=self.business, pk__in=image_ids
             ).update(post=post, is_valid=True)
+            BusinessImage.objects.filter(
+                business=self.business, post=post
+            ).exclude(pk__in=image_ids).delete()
         except ValueError as e:
             # Si hay un error no hacemos nada, se ignoran las imagenes xd
             print(e)
@@ -127,10 +132,7 @@ class PostGenericView(PostClassificationMixin, DashboardBaseMixin):
 
 
 class PostCreate(PostGenericView, CreateView):
-    model = Post
-    template_name = "dashboard/post_detail.html"
-    form_class = PostForm
-
+    pass
 
 
 post_create_view = PostCreate.as_view()
@@ -138,13 +140,9 @@ post_create_view = PostCreate.as_view()
 
 # UpdateView maneja el post, verifica que sea valido el form y le hace update
 class PostDetail(PostGenericView, UpdateView):
-    model = Post
-    template_name = "dashboard/post_detail.html"
-    form_class = PostForm
-    context_object_name = "post"
 
     def get_context_data(self, **kwargs):
-        context = super(PostDetail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         post_images = []
         for image in self.object.images.filter(is_valid=True):  # is_valid=True
             post_images.append(
@@ -161,44 +159,6 @@ class PostDetail(PostGenericView, UpdateView):
         context["post_images"] = dumps(post_images)
         context["is_updating"] = True
         return context
-
-    def form_valid(self, form):
-        business_slug = self.kwargs["business_slug"]
-        form.instance.business = self.business
-        form.instance.attributes = loads(self.request.POST.get("additionalParameters", "null"))
-        form.instance.tags = self.request.POST.getlist("tags", [])
-
-        post = form.save()
-
-        subcategories = self.request.POST.getlist("subcategories")
-        if subcategories:
-            try:
-                post.subcategories.set(
-                    SubCategory.objects.filter(pk__in=[int(i) for i in subcategories])
-                )
-                post.subcategories.remove(
-                    *post.subcategories.exclude(pk__in=[int(i) for i in subcategories])
-                )
-            except ValueError as e:
-                pass
-
-        try:
-            print('Pasandoooooo hey ', self.request.POST.get('images'))
-            image_ids = [int(i) for i in self.request.POST.getlist("images")]
-
-            if not self.request.POST.get('images'):
-                print('Hey bro, no hay na')
-            BusinessImage.objects.filter(
-                business__slug=business_slug, pk__in=image_ids
-            ).update(post=post, is_valid=True)
-            BusinessImage.objects.filter(
-                business__slug=business_slug, post=post
-            ).exclude(pk__in=image_ids).delete()
-        except ValueError as e:
-            # Si hay un error no hacemos nada, se ignoran las imagenes xd
-            print(e)
-        return super().form_valid(form)
-
 
     def get_success_url(self):
         return self.request.path_info
@@ -224,8 +184,8 @@ class ChatApp(DashboardBaseMixin, TemplateView):
     template_name = "dashboard/chat_dashboard.html"
 
     def get_context_data(self, **kwargs):
-        context = super(ChatApp, self).get_context_data(**kwargs)
-        print(context.get("business").__dict__)
+        context = super().get_context_data(**kwargs)
+        context['currencies'] = Currency.objects.all()
         return context
 
 
@@ -236,7 +196,7 @@ class DealsView(DashboardBaseMixin, TemplateView):
     template_name = "dashboard/deals.html"
 
     def get_context_data(self, **kwargs):
-        context = super(DealsView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         return context
 
 
