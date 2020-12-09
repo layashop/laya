@@ -90,27 +90,22 @@ class PostList(DashboardBaseMixin, ListView):
 post_list_view = PostList.as_view()
 
 
-class PostCreate(PostClassificationMixin, DashboardBaseMixin, CreateView):
+class PostGenericView(PostClassificationMixin, DashboardBaseMixin):
     model = Post
     template_name = "dashboard/post_detail.html"
-    form_class = PostForm
-
-    def get_context_data(self, **kwargs):
-        context = super(PostCreate, self).get_context_data(**kwargs)
-        return context
 
     def get_success_url(self):
         # una vez termina de editar, redirigimos a index del dashboard
         return reverse("dashboard:post_list", args=(self.kwargs["business_slug"],))
 
     def form_valid(self, form):
-
-        business_slug = self.kwargs["business_slug"]
-        form.instance.business = get_object_or_404(Business, slug=business_slug)
         post = form.save(commit=False)
+        post.business = self.business
+
         subcategories = self.request.POST.getlist("subcategories")
         post.attributes = loads(self.request.POST.get("additionalParameters", "null"))
         post.save()
+
         # Ahora vamos con las queries que no actualizan a la instancia como tal
         if subcategories:
             try:
@@ -120,29 +115,36 @@ class PostCreate(PostClassificationMixin, DashboardBaseMixin, CreateView):
             except ValueError as e:
                 pass
         try:
-            image_ids = [int(i) for i in self.request.POST.getlist("images")]
-            images_qs = BusinessImage.objects.filter(
-                business__slug=business_slug, pk__in=image_ids
+            image_ids = [int(i) for i in self.request.POST.get('images').split(',')]
+            BusinessImage.objects.filter(
+                business=self.business, pk__in=image_ids
             ).update(post=post, is_valid=True)
         except ValueError as e:
             # Si hay un error no hacemos nada, se ignoran las imagenes xd
             print(e)
         post.save()
-        return super(PostCreate, self).form_valid(form)
+        return super().form_valid(form)
+
+
+class PostCreate(PostGenericView, CreateView):
+    model = Post
+    template_name = "dashboard/post_detail.html"
+    form_class = PostForm
+
 
 
 post_create_view = PostCreate.as_view()
 
 
 # UpdateView maneja el post, verifica que sea valido el form y le hace update
-class PostDetail(PostClassificationMixin, DashboardBaseMixin, UpdateView):
+class PostDetail(PostGenericView, UpdateView):
     model = Post
     template_name = "dashboard/post_detail.html"
     form_class = PostForm
+    context_object_name = "post"
 
     def get_context_data(self, **kwargs):
         context = super(PostDetail, self).get_context_data(**kwargs)
-        context["post"] = self.object
         post_images = []
         for image in self.object.images.filter(is_valid=True):  # is_valid=True
             post_images.append(
@@ -162,12 +164,13 @@ class PostDetail(PostClassificationMixin, DashboardBaseMixin, UpdateView):
 
     def form_valid(self, form):
         business_slug = self.kwargs["business_slug"]
-        post = form.save(commit=False)
-        post.business = get_object_or_404(Business, slug=business_slug)
+        form.instance.business = self.business
+        form.instance.attributes = loads(self.request.POST.get("additionalParameters", "null"))
+        form.instance.tags = self.request.POST.getlist("tags", [])
+
+        post = form.save()
+
         subcategories = self.request.POST.getlist("subcategories")
-        post.attributes = loads(self.request.POST.get("additionalParameters", "null"))
-        post.tags = self.request.POST.getlist("tags", [])
-        # import pdb; pdb.set_trace()
         if subcategories:
             try:
                 post.subcategories.set(
@@ -178,8 +181,13 @@ class PostDetail(PostClassificationMixin, DashboardBaseMixin, UpdateView):
                 )
             except ValueError as e:
                 pass
+
         try:
+            print('Pasandoooooo hey ', self.request.POST.get('images'))
             image_ids = [int(i) for i in self.request.POST.getlist("images")]
+
+            if not self.request.POST.get('images'):
+                print('Hey bro, no hay na')
             BusinessImage.objects.filter(
                 business__slug=business_slug, pk__in=image_ids
             ).update(post=post, is_valid=True)
@@ -189,7 +197,8 @@ class PostDetail(PostClassificationMixin, DashboardBaseMixin, UpdateView):
         except ValueError as e:
             # Si hay un error no hacemos nada, se ignoran las imagenes xd
             print(e)
-        return super(PostDetail, self).form_valid(form)
+        return super().form_valid(form)
+
 
     def get_success_url(self):
         return self.request.path_info
