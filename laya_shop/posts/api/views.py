@@ -79,3 +79,4 @@ class BusinessTemporalDetailView(views.APIView):
 class ReportsViewSet(viewsets.ModelViewSet):
     queryset = Report.objects.all()
     serializer_class = ReportsSerializer
+    permission_classes = (IsAuthenticated,)
