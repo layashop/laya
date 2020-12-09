@@ -92,22 +92,19 @@ class PostList(PostClassificationMixin, ListView):
             if self.request.GET.get("sort"):
                 sort_key = self.request.GET.get("sort")
                 if sort_key[0] == "1":
-                    queryset_sorted = queryset_optimizado.order_by("-created_at")
+                    queryset_optimizado = queryset_optimizado.order_by("-created_at")
                 if sort_key == "2":
-                    queryset_sorted = queryset_optimizado.order_by("created_at")
+                    queryset_optimizado = queryset_optimizado.order_by("created_at")
                 if sort_key == "3":
-                    queryset_sorted = queryset_optimizado.order_by("-base_price")
+                    queryset_optimizado = queryset_optimizado.order_by("-base_price")
                 if sort_key == "4":
-                    queryset_sorted = queryset_optimizado.order_by("base_price")
+                    queryset_optimizado = queryset_optimizado.order_by("base_price")
                 # subcategories -> state -> delivery -> location -> lowPrice-> highPrice ->  tag -> title
 
             # sort
-            if queryset_sorted is not None:
-                print("QS", queryset_sorted.explain())
-                return queryset_sorted
-            else:
-                print("QS", queryset_optimizado.explain())
-                return queryset_optimizado
+
+            print("QS", queryset_optimizado.explain())
+            return queryset_optimizado
             cache.set(cache_key, queryset, 60 * 60)
             return queryset
 
