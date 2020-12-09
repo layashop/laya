@@ -1,6 +1,6 @@
 from django.forms import ModelForm, CharField, Textarea, ModelChoiceField, CheckboxSelectMultiple
 
-from posts.models import Post
+from laya_shop.posts.models import Post
 
 
 class PostForm(ModelForm):

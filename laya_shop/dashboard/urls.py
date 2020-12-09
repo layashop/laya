@@ -7,6 +7,7 @@ from .views import (
     post_delete_view,
     chat_app_view,
     deals_view,
+    profile_update_view
 )
 
 
@@ -20,4 +21,5 @@ urlpatterns = [
     path("posts/<int:pk>/delete", post_delete_view, name="post_delete"),
     path("chat", chat_app_view, name="chat_app"),
     path("deals", deals_view, name="deals_list"),
+    path("profile/", profile_update_view, name="profile_update")
 ]

@@ -10,10 +10,10 @@ from rest_framework import views, viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
 from .permissions import IsBusinessMember
 from .filters import MultipleIdsFilterBackend
-from posts.models import BusinessImage
-from business.models import Business
+from laya_shop.posts.models import BusinessImage
+from laya_shop.business.models import Business
 from django_filters.rest_framework import DjangoFilterBackend
-from posts.models import Post
+from laya_shop.posts.models import Post
 from .serializers import PostChatThumbnail
 # Create your views here.
 

@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from users.api.serializers import SimpleUserSerializer
-from business.models import Business
-from deals.models import Deal
+from laya_shop.users.api.serializers import SimpleUserSerializer
+from laya_shop.business.models import Business
+from laya_shop.deals.models import Deal
 
 
 class BusinessSerializer(serializers.ModelSerializer):

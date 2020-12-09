@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
-import posts.utils
+import laya_shop.posts.utils
 
 
 class Migration(migrations.Migration):
@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             name='BusinessImage',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to=posts.utils.business_directory_files)),
+                ('image', models.ImageField(upload_to=laya_shop.posts.utils.business_directory_files)),
                 ('is_valid', models.BooleanField(default=False)),
                 ('alternative', models.CharField(blank=True, max_length=200, null=True)),
                 ('business', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='business.Business')),

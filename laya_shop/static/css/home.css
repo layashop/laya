@@ -52,12 +52,6 @@
     font-weight: 500;
 }
 
-.portada{
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-}
-
 .portada-texto{
     width: 60%;
     margin-left: 60px;

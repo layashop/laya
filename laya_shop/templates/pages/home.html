@@ -1,25 +1,38 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
-
 {% block content %}
-
-  <div class="portada relative mt-4">
-    <picture>
-      <img src="{% static 'images/portada.jpg' %}" alt="">
-    </picture>
-
-
-    <div class="portada-texto absolute">
-      <h2 class=""><span>¡Black Friday ya llegó a Laya shop!</span></h2>
+  <div id="image-slider" class="splide my-6">
+    <div class="splide__track">
+      <ul class="splide__list">
+        {% for slide in slides %}
+          <li class="splide__slide">
+            <picture class="flex w-full h-auto">
+              <source media="(min-width: 1900px)" srcset="{{ slide.thumbnail_1900x500.url }}">
+              <source media="(min-width: 1200px)" srcset="{{ slide.thumbnail_1200x315.url }}">
+              <source media="(min-width: 900px)" srcset="{{ slide.thumbnail_900x236.url }}">
+              <source media="(min-width: 600px)" srcset="{{ slide.thumbnail_600x157.url }}">
+              <img src="{{ slide.thumbnail_600x157.url }}" class="w-full h-auto object-contain">
+            </picture>
+          </li>
+        {% endfor %}
+      </ul>
     </div>
   </div>
+{#  <div class="flex items-center justify-start relative mt-4">#}
+{#    <picture>#}
+{#      <img src="" alt="">#}
+{#    </picture>#}
+{#    <div class="portada-texto absolute">#}
+{#      <h2 class=""><span>¡Black Friday ya llegó a Laya shop!</span></h2>#}
+{#    </div>#}
+{#  </div>#}
+
   <div class="categories-container">
     <h3 class="title font-medium">Categorías principales</h3>
     <div class="categories">
       {% for category in categories %}
-        <div class="box relative">
+        <div class="box relative shadow">
           {% if category.banner %}
             <img src="{{ category.thumbnail_500x500.url }}">
           {% endif %}
@@ -62,10 +75,33 @@
   </div>
 
 {% endblock %}
+
+
 {% block extra_javascript %}
   <script>
     const USER = {% firstof user.pk 'null'%}
-            console.log('User', USER)
+    console.log('User', USER)
   </script>
+
   <script src="{% static 'dist/js/ChatWidget.js' %}"></script>
+
+  <script src="https://unpkg.com/regenerator-runtime@0.13.1/runtime.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@latest/dist/js/splide.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const primarySlider = new Splide('#image-slider', {
+        'cover': true,
+        'type': 'fade',
+        'arrowPath': 'm15.5 0.932-4.3 4.38 14.5 14.6-14.5 14.5 4.3 4.4 14.6-14.6 4.4-4.3-4.4-4.4-14.6-14.6z',
+      })
+      primarySlider.mount();
+    })
+  </script>
+{% endblock %}
+
+
+
+{% block extra_styles %}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@latest/dist/css/splide.min.css">
 {% endblock %}

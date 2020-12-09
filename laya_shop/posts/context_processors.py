@@ -1,5 +1,5 @@
 from django.core.cache import caches
-from posts.models import Category, SubCategory
+from laya_shop.posts.models import Category, SubCategory
 
 cache = caches['default']
 

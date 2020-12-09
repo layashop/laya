@@ -1,7 +1,7 @@
 from json import dumps as json_dumps, loads as json_loads
 from channels.generic.websocket import AsyncWebsocketConsumer
 from datetime import datetime
-from chat_app.utils import (
+from laya_shop.chat_app.utils import (
     create_chat_room,
     save_message,
     update_message,
@@ -9,7 +9,7 @@ from chat_app.utils import (
     get_count,
     get_message,
 )
-from chat_app.api.serializers import ChatMessageSerializer
+from laya_shop.chat_app.api.serializers import ChatMessageSerializer
 
 
 class WSConsumer(AsyncWebsocketConsumer):

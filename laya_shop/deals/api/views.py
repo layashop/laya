@@ -6,10 +6,10 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from push_notifications.models import WebPushDevice
 import json
-from deals.models import Deal
+from laya_shop.deals.models import Deal
 from .serializers import DealSerializer, DealBusinessSerializer, DealUserSerializer
 from .filters import DealsFilters
-from users.models import User
+from laya_shop.users.models import User
 
 
 @receiver(signal=post_save, sender=Deal)

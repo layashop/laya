@@ -1,8 +1,8 @@
 from rest_framework.serializers import ModelSerializer
 
-from users.api.serializers import SimpleUserSerializer
-from business.models import Business
-from chat_app.models import ChatRoom, ChatMessage
+from laya_shop.users.api.serializers import SimpleUserSerializer
+from laya_shop.business.models import Business
+from laya_shop.chat_app.models import ChatRoom, ChatMessage
 
 
 class BusinessSerializer(ModelSerializer):

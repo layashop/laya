@@ -1,5 +1,5 @@
 from rest_framework.serializers import  ModelSerializer
-from posts.models import Category, SubCategory
+from laya_shop.posts.models import Category, SubCategory
 
 
 class SubcategorySerializer(ModelSerializer):

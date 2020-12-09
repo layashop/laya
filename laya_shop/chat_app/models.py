@@ -1,7 +1,7 @@
 from django.db import models
-from business.models import Business
-from users.models import User
-from posts.models import Post
+from laya_shop.business.models import Business
+from laya_shop.users.models import User
+from laya_shop.posts.models import Post
 
 # Create your models here.
 class ChatRoom(models.Model):

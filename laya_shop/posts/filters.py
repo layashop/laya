@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from posts.models import Post, Currency
+from laya_shop.posts.models import Post, Currency
 
 DEFAULT_CURRENCY_ISO_CODE = "NIO"
 

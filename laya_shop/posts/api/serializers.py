@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from posts.models import Post, BusinessImage, Business
+from laya_shop.posts.models import Post, BusinessImage, Business
 
 class BusinessSerializer(serializers.ModelSerializer):
     class Meta:

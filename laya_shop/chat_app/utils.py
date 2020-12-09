@@ -1,7 +1,7 @@
 from channels.db import database_sync_to_async
-from chat_app.models import ChatMessage, ChatRoom
-from business.models import Business
-from utils.models import safe_get
+from laya_shop.chat_app.models import ChatMessage, ChatRoom
+from laya_shop.business.models import Business
+from laya_shop.utils.models import safe_get
 from datetime import datetime
 from push_notifications.models import WebPushDevice
 
