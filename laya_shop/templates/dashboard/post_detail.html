@@ -203,13 +203,9 @@
 
   </script>
 
-
-
   <script>
     $('#post-detail').submit(function () {
-      for (let id of validPostImagesIds) {
-        $('<input type="text">').attr({name: "images", value: id}).appendTo($(this))
-      }
+      $(`<input type="text" name="images" value="${validPostImagesIds.join(',')}">`).appendTo($(this))
     });
   </script>
 

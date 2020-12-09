@@ -250,6 +250,7 @@ class BusinessImage(models.Model):
             '250x250': self.thumbnail_250x250.url,
             '512x512': self.thumbnail_512x512.url
         }
+
     def __str__(self):
         if self.post:
             return "%s %s" % (self.post, self.pk)
