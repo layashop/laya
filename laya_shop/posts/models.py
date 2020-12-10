@@ -8,6 +8,7 @@ from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 from laya_shop.users.models import User
 from django.utils.text import slugify
+from django.shortcuts import reverse
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.dispatch import receiver
@@ -212,6 +213,9 @@ class Post(models.Model):
     def get_seo_url(self):
         return f"{self.pk}-{self.title_slug}"
 
+    def get_absolute_url(self):
+        return reverse('posts:detail', args=(self.business.slug, self.pk, self.title_slug))
+
     def save(self, *args, **kwargs):
 
         if not self.id:
@@ -338,12 +342,16 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
 class Report(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, related_name="reports", on_delete=models.CASCADE)
-    CATEGORIAS_REPORTES = [
-        ("PRODUCTO_ILEGAL", "Productos Ilegales"),
-        ("ESTAFA", "Estafa"),
-        ("PUBLICIDAD_ENGANOSA", "Publicidad Enganosa"),
-        ("ROBO_INTELECTUAL", "Roba mi propiedad intelectual"),
-        ("CONTRA_TOS", "Esta en Contra de los TOS"),
-    ]
-    categorias = models.CharField(max_length=255, choices=CATEGORIAS_REPORTES)
+
+    class ReportChoices(models.IntegerChoices):
+        PRODUCTOS_ILEGALES = 1, "Productos Ilegales"
+        ESTAFA = 2, "Estafa"
+        PUBLICIDAD_ENGANOSA = 3, "Publicidad Enganosa"
+        ROBO_PI = 4, "Roba mi propiedad Intelectual"
+        CONTRA_TOS = 5, "Esta en contra de los TOS"
+
+    categorias = models.IntegerField(
+        choices=ReportChoices.choices,
+        default=ReportChoices.PRODUCTOS_ILEGALES,
+    )
     descripcion = models.TextField()
