@@ -62,6 +62,7 @@ DJANGO_APPS = [
     # "django.contrib.humanize", # Handy template tags
     "django.contrib.admin",
     "django.forms",
+    "django.contrib.sitemaps"
 ]
 THIRD_PARTY_APPS = [
     "channels",
