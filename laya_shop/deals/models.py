@@ -45,6 +45,8 @@ class Deal(models.Model):
         indexes = [
             HashIndex(fields=["sent_by"]),
             HashIndex(fields=["status"]),
-            HashIndex(fields=["status", "sent_by"]),
+            HashIndex(fields=["status"]),
+            HashIndex(fields=["created_at"]),
             BTreeIndex(fields=["created_at"]),
+            BTreeIndex(fields=["status", "created_by"]),
         ]
