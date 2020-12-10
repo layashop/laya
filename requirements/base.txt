@@ -34,7 +34,6 @@ pyyaml >= 5.3.1
 django-filter>=2.4.0
 # Web Sockets
 channels >= 2.4.0
-
 django-push-notifications == 2.0.0
 pywebpush == 1.11.0
 py-vapid == 1.7.1
