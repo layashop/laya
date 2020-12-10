@@ -185,8 +185,8 @@ class Post(models.Model):
     class Meta:
         indexes = [
             HashIndex(fields=["title"]),
-            HashIndex(fields=["title", "state"]),
-            HashIndex(fields=["title", "state", "delivery"]),
+            BTreeIndex(fields=["title", "state"]),
+            BTreeIndex(fields=["title", "state", "delivery"]),
             HashIndex(fields=["state"]),
             HashIndex(fields=["delivery"]),
             HashIndex(fields=["title_slug"]),
