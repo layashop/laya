@@ -13,7 +13,7 @@ const ReportWidget = () => {
     const [isOpenModal, setIsOpenModal] = useState(false)
     const [showError, setShowError] = useState(false)
     const user = useState(USER)
-    
+
     const hideError = () => setShowError(false)
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -46,14 +46,14 @@ const ReportWidget = () => {
         }else{
             setShowError(true)
         }
-      
+
     }
 
     const openModal = () => setIsOpenModal(true)
 
 
     return   <>
-      <button id="trigger-reports" className="px-8 py-2 bg-red-600 text-white text-sm font-medium rounded transition duration-300 hover:bg-red-500
+      <button id="trigger-reports" className="px-8 py-2 max-w-md mx-2 my-1 flex-1 bg-red-600 text-white text-sm font-medium rounded transition duration-300 hover:bg-red-500
                                     focus:outline-none focus:bg-indigo-500"
         onClick={openModal}>Reportar
           </button>
@@ -101,8 +101,8 @@ const ReportWidget = () => {
                 </Box>
             </Box>)}
     </>
-  
-          
+
+
 }
 
 const button = document.getElementById('trigger-reports')

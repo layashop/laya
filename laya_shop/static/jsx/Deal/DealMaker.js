@@ -226,7 +226,16 @@ const DealMaker = ({activeDeal, isNew, setActiveDeal, isLoadedPost, postData, se
                             </Box>
                             <Box as="label">
                                 <Box as="h3">Cantidad</Box>
-                                <Box as="input" value={product.quantity} onChange={(e) => {
+                                <Box as="input" value={product.quantity}
+                                     onBlur={(e) => {
+                                         if(e.target.value == "0") {
+                                             product.quantity = 1
+                                             products[productIndex] = product
+                                    setActiveDeal({...activeDeal, products: products})
+                                         }
+                                     }}
+
+                                     onChange={(e) => {
                                     if (!/^\d*$/.test(e.target.value)) {
                                         return
                                     }

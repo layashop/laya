@@ -7,7 +7,7 @@ import ChatUserContext from './UserContext'
 const API = 'api/chat-app/chat-room/'
 
 const ChatList = ({chatSelected, businessSlug, setChatRoomSlug, setBusinessId}) => {
-    const {userPk} = useContext(ChatUserContext)
+    const {user} = useContext(ChatUserContext)
     const [chatRooms, setChatRooms] = useState([])
     const [loading, error, sendRequest] = FetchHook.useFetch()
 
@@ -18,7 +18,7 @@ const ChatList = ({chatSelected, businessSlug, setChatRoomSlug, setBusinessId}) 
             if(businessSlug){
                 url += `&business_slug=${businessSlug}`
             }else{
-                url += `&user_id=${userPk}`
+                url += `&user=${user.pk}`
             }
             const data = await sendRequest(url)
             if(!data.error){
