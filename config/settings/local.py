@@ -19,7 +19,6 @@ ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
 TEST_CACHE = False
 if not DEBUG or TEST_CACHE:
     CACHES = {
-
         "default": {
             "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
             "LOCATION": "",
@@ -33,14 +32,10 @@ if not DEBUG or TEST_CACHE:
                 # https://github.com/jazzband/django-redis#memcached-exceptions-behavior
                 "IGNORE_EXCEPTIONS": True,
             },
-        }
+        },
     }
 else:
-    CACHES = {
-        "default": {
-            "BACKEND": "django.core.cache.backends.dummy.DummyCache"
-        }
-    }
+    CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
 # EMAIL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
@@ -62,7 +57,7 @@ INSTALLED_APPS += ["debug_toolbar"]  # noqa F405
 MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]  # noqa F405
 # https://django-debug-toolbar.readthedocs.io/en/latest/configuration.html#debug-toolbar-config
 DEBUG_TOOLBAR_CONFIG = {
-    'SHOW_TOOLBAR_CALLBACK': lambda r: False,
+    "SHOW_TOOLBAR_CALLBACK": lambda r: True,
     "DISABLE_PANELS": ["debug_toolbar.panels.redirects.RedirectsPanel"],
     "SHOW_TEMPLATE_CONTEXT": True,
 }
@@ -81,9 +76,4 @@ INSTALLED_APPS += ["django_extensions"]  # noqa F405
 
 # Your stuff...
 # ------------------------------------------------------------------------------
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer'
-
-    }
-}
+CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}

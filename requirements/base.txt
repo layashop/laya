@@ -35,6 +35,6 @@ django-filter>=2.4.0
 # Web Sockets
 channels >= 2.4.0
 
-django-push-notifications = "*"
-pywebpush = "*"
-py-vapid = "*"
+django-push-notifications == "*"
+pywebpush == "*"
+py-vapid == "*"
