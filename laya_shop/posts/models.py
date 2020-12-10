@@ -13,6 +13,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.dispatch import receiver
 from .utils import business_directory_files
 from laya_shop.users.models import User
+from django.contrib.postgres.indexes import BTreeIndex, HashIndex, GinIndex
 
 
 class Category(models.Model):
@@ -82,12 +83,18 @@ class Currency(models.Model):
     rate = models.FloatField(blank=False, null=False)
     iso_code = models.CharField(max_length=5, blank=False, null=False)
 
+    class Meta:
+        indexes = [HashIndex(fields=["iso_code"])]
+
     def __str__(self):
         return self.name
 
 
 class Locations(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
+
+    class Meta:
+        indexes = [HashIndex(fields=["name"])]
 
     def __str__(self):
         return self.name
@@ -174,6 +181,20 @@ class Post(models.Model):
     last_confirmation = models.DateTimeField(
         null=True, blank=True
     )  # Boton de actualizado
+
+    class Meta:
+        indexes = [
+            HashIndex(fields=["title"]),
+            HashIndex(fields=["title", "state"]),
+            HashIndex(fields=["title", "state", "delivery"]),
+            HashIndex(fields=["state"]),
+            HashIndex(fields=["delivery"]),
+            HashIndex(fields=["title_slug"]),
+            HashIndex(fields=["highlighted"]),
+            GinIndex(fields=["tags"]),
+            BTreeIndex(fields=["base_price"]),
+            BTreeIndex(fields=["created_at"]),
+        ]
 
     @property
     def final_price(self):
