@@ -117,7 +117,7 @@ class PostList(PostClassificationMixin, ListView):
             if query_keys.get("tags"):
                 q_object.add(Q(tags__contains=query_keys.get("tags")), "AND")
             if query_keys.get("search"):
-                q_object.add(Q(title__icontains=query_keys.get("search")[0]), "AND")
+                q_object.add(Q(title__icontains=query_keys.get("search")), "AND")
             queryset_optimizado = queryset.filter(q_object)
             if query_keys.get("sort"):
                 sort_key = self.request.GET.get("sort")
