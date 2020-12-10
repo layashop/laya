@@ -12,21 +12,41 @@ from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.dispatch import receiver
 from .utils import business_directory_files
+from laya_shop.users.models import User
+from django.contrib.postgres.indexes import BTreeIndex, HashIndex, GinIndex
 
 
 class Category(models.Model):
     name = models.CharField(max_length=50, null=False, blank=False, unique=True)
-    banner = models.ImageField(verbose_name='Banner', upload_to='categories', null=True, blank=True)
+    banner = models.ImageField(
+        verbose_name="Banner", upload_to="categories", null=True, blank=True
+    )
     slug = models.SlugField(null=False, blank=True)
 
     thumbnail_500x500 = ImageSpecField(
-        source='banner', processors=[ResizeToFill(500, 500)], format='JPEG', options={'quality': 80})
+        source="banner",
+        processors=[ResizeToFill(500, 500)],
+        format="JPEG",
+        options={"quality": 80},
+    )
     thumbnail_640x100 = ImageSpecField(
-        source='banner', processors=[ResizeToFill(640, 150)], format='JPEG', options={'quality': 80})
+        source="banner",
+        processors=[ResizeToFill(640, 150)],
+        format="JPEG",
+        options={"quality": 80},
+    )
     thumbnail_768x200 = ImageSpecField(
-        source='banner', processors=[ResizeToFill(768, 200)], format='JPEG', options={'quality': 80})
+        source="banner",
+        processors=[ResizeToFill(768, 200)],
+        format="JPEG",
+        options={"quality": 80},
+    )
     thumbnail_1800x300 = ImageSpecField(
-        source='banner', processors=[ResizeToFill(1800, 300)], format='JPEG', options={'quality': 80})
+        source="banner",
+        processors=[ResizeToFill(1800, 300)],
+        format="JPEG",
+        options={"quality": 80},
+    )
 
     def __str__(self):
         return self.name
@@ -41,9 +61,13 @@ class Category(models.Model):
 
 
 class SubCategory(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="subcategories")
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name="subcategories"
+    )
     name = models.CharField(max_length=50)
-    banner = models.ImageField(verbose_name="Banner", upload_to="subcategories", null=True, blank=True)
+    banner = models.ImageField(
+        verbose_name="Banner", upload_to="subcategories", null=True, blank=True
+    )
 
     def __str__(self):
         return self.name
@@ -59,12 +83,18 @@ class Currency(models.Model):
     rate = models.FloatField(blank=False, null=False)
     iso_code = models.CharField(max_length=5, blank=False, null=False)
 
+    class Meta:
+        indexes = [HashIndex(fields=["iso_code"])]
+
     def __str__(self):
         return self.name
 
 
 class Locations(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
+
+    class Meta:
+        indexes = [HashIndex(fields=["name"])]
 
     def __str__(self):
         return self.name
@@ -75,11 +105,10 @@ def random_score():
 
 
 class Post(models.Model):
-
     def __init__(self, *args, **kwargs):
         super(Post, self).__init__(*args, **kwargs)
 
-        #Para verificar si cambió el precio, si es asi, se realiza la actualizacion del campo base_price
+        # Para verificar si cambió el precio, si es asi, se realiza la actualizacion del campo base_price
         self.__original_price = self.price
 
     # BASICS
@@ -93,8 +122,9 @@ class Post(models.Model):
     attributes = JSONField(null=True, blank=True)
     price = models.FloatField(null=False, blank=False)
     base_price = models.FloatField(null=False, blank=True)
-    discount = models.PositiveIntegerField(null=True, blank=True,
-                                           validators=[MinValueValidator(0), MaxValueValidator(99)])
+    discount = models.PositiveIntegerField(
+        null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(99)]
+    )
     # <<<<<<<<<<<<<<<<
     highlighted = models.BooleanField(default=False)
     # KARMA
@@ -102,47 +132,44 @@ class Post(models.Model):
     # <<<<<<<<<<<<<<<<
 
     # POST STATUS
-    ACTIVE = 'AC'
-    INACTIVE = 'IN'
-    STATUS_CHOICES = [
-        (ACTIVE, 'Active'),
-        (INACTIVE, 'Inactive')
-    ]
+    ACTIVE = "AC"
+    INACTIVE = "IN"
+    STATUS_CHOICES = [(ACTIVE, "Active"), (INACTIVE, "Inactive")]
     status = models.CharField(
-        max_length=2, choices=STATUS_CHOICES, default=ACTIVE)  # PARA MIENTRAS
+        max_length=2, choices=STATUS_CHOICES, default=ACTIVE
+    )  # PARA MIENTRAS
     # <<<<<<<<<<<<<<<<
 
     # POST CLASSIFICATION
-    ARTICLE = 'AR'
-    SERVICE = 'SR'
-    CLASSIFICATION_CHOICES = [
-        (ARTICLE, 'Article'),
-        (SERVICE, 'Service')
-    ]
-    currency = models.ForeignKey(Currency, on_delete=models.SET_NULL, null=True, blank=False)
+    ARTICLE = "AR"
+    SERVICE = "SR"
+    CLASSIFICATION_CHOICES = [(ARTICLE, "Article"), (SERVICE, "Service")]
+    currency = models.ForeignKey(
+        Currency, on_delete=models.SET_NULL, null=True, blank=False
+    )
 
     score = models.IntegerField(default=random_score)
 
     class State(models.IntegerChoices):
-        NEW = 1, 'Nuevo'
-        USED = 2, 'Usado'
-        BY_REQUEST = 3, 'Por pedido'
+        NEW = 1, "Nuevo"
+        USED = 2, "Usado"
+        BY_REQUEST = 3, "Por pedido"
 
     state = models.IntegerField(choices=State.choices, default=State.NEW)
 
     class Delivery(models.IntegerChoices):
-        Delivery = 1, 'Entrega a domicilio'
-        PICK_UP = 2, 'Pick-up'
-        MEETING = 3, 'Punto de encuentro'
+        Delivery = 1, "Entrega a domicilio"
+        PICK_UP = 2, "Pick-up"
+        MEETING = 3, "Punto de encuentro"
 
     delivery = models.IntegerField(choices=Delivery.choices, default=Delivery.Delivery)
     locations = models.ManyToManyField(Locations, related_name="posts")
     classification = models.CharField(
-        max_length=2, choices=CLASSIFICATION_CHOICES, default=ARTICLE)
+        max_length=2, choices=CLASSIFICATION_CHOICES, default=ARTICLE
+    )
 
     subcategories = models.ManyToManyField(SubCategory, related_name="posts")
-    tags = ArrayField(
-        models.CharField(max_length=50), blank=True, null=True)
+    tags = ArrayField(models.CharField(max_length=50), blank=True, null=True)
     # <<<<<<<<<<<<<<<<
     promo = models.CharField(max_length=150, null=True, blank=True)
 
@@ -151,7 +178,23 @@ class Post(models.Model):
     # reports = models.ManyToManyField(
     #     User, through='Report', related_name='reports')  # Esta raro esto
     # departaments = models.ManyToManyField(Department, through='PostDepartment')
-    last_confirmation = models.DateTimeField(null=True, blank=True)  # Boton de actualizado
+    last_confirmation = models.DateTimeField(
+        null=True, blank=True
+    )  # Boton de actualizado
+
+    class Meta:
+        indexes = [
+            HashIndex(fields=["title"]),
+            HashIndex(fields=["title", "state"]),
+            HashIndex(fields=["title", "state", "delivery"]),
+            HashIndex(fields=["state"]),
+            HashIndex(fields=["delivery"]),
+            HashIndex(fields=["title_slug"]),
+            HashIndex(fields=["highlighted"]),
+            GinIndex(fields=["tags"]),
+            BTreeIndex(fields=["base_price"]),
+            BTreeIndex(fields=["created_at"]),
+        ]
 
     @property
     def final_price(self):
@@ -167,7 +210,7 @@ class Post(models.Model):
         return self.created_at >= timezone.now() - datetime.timedelta(days=7)
 
     def get_seo_url(self):
-        return f'{self.pk}-{self.title_slug}'
+        return f"{self.pk}-{self.title_slug}"
 
     def save(self, *args, **kwargs):
 
@@ -176,37 +219,34 @@ class Post(models.Model):
             self.modified_at = timezone.now()
             self.base_price = round((self.price / self.currency.rate), 3)
         else:
-            #Si cambió, recalcular
+            # Si cambió, recalcular
             if self.__original_price != self.price:
                 self.base_price = round((self.price / self.currency.rate), 3)
             self.modified_at = timezone.now()
 
-        #Esto se haria cada vez que se guarda el modelo, pero da igual, tampoco es como que sea una operacion costosa
+        # Esto se haria cada vez que se guarda el modelo, pero da igual, tampoco es como que sea una operacion costosa
         self.title_slug = slugify(self.title)
 
         super(Post, self).save(*args, **kwargs)
 
 
-
 class Unit(models.Model):
-    values = ArrayField(
-        models.CharField(max_length=10)
-    )
+    values = ArrayField(models.CharField(max_length=10))
 
 
 class AdditionalAttribute(models.Model):
-    STRING = 'STRING'
-    MEASURE = 'MEASURE'
-    DIMENSION = 'DIMENSION'
-    LIST = 'LIST'
-    COLOR = 'COLOR'
+    STRING = "STRING"
+    MEASURE = "MEASURE"
+    DIMENSION = "DIMENSION"
+    LIST = "LIST"
+    COLOR = "COLOR"
 
     TYPE_CHOICES = [
-        (STRING, 'String'),
-        (MEASURE, 'Measure'),
-        (DIMENSION, 'Dimension'),
-        (LIST, 'List'),
-        (COLOR, 'Color')
+        (STRING, "String"),
+        (MEASURE, "Measure"),
+        (DIMENSION, "Dimension"),
+        (LIST, "List"),
+        (COLOR, "Color"),
     ]
 
     label = models.CharField(max_length=40)
@@ -216,28 +256,46 @@ class AdditionalAttribute(models.Model):
 
 class AdditionalAttributeCategory(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    additional_attribute = models.ForeignKey(AdditionalAttribute, on_delete=models.CASCADE)
+    additional_attribute = models.ForeignKey(
+        AdditionalAttribute, on_delete=models.CASCADE
+    )
 
 
 class AdditionalAttributesValue(models.Model):
-    post = models.OneToOneField(Post, on_delete=models.CASCADE, related_name="additional_attributes")
+    post = models.OneToOneField(
+        Post, on_delete=models.CASCADE, related_name="additional_attributes"
+    )
     value = JSONField()
 
 
 class BusinessImage(models.Model):
 
     thumbnail_200x200 = ImageSpecField(
-        source='image', processors=[ResizeToFill(200, 200)], format='JPEG', options={'quality': 80})
+        source="image",
+        processors=[ResizeToFill(200, 200)],
+        format="JPEG",
+        options={"quality": 80},
+    )
     thumbnail_250x250 = ImageSpecField(
-        source='image', processors=[ResizeToFill(250, 250)], format='JPEG', options={'quality': 80})
+        source="image",
+        processors=[ResizeToFill(250, 250)],
+        format="JPEG",
+        options={"quality": 80},
+    )
     thumbnail_512x512 = ImageSpecField(
-        source='image', processors=[ResizeToFill(512, 512)], format='JPEG', options={'quality': 80})
+        source="image",
+        processors=[ResizeToFill(512, 512)],
+        format="JPEG",
+        options={"quality": 80},
+    )
     # thumbnail_1000 = ImageSpecField(
     #     source='image', processors=[ResizeToFill(width=1000, upscale=False)], format='JPEG', options={'quality': 80})
 
     business = models.ForeignKey("business.Business", on_delete=models.CASCADE)
     image = models.ImageField(upload_to=business_directory_files)
-    post = models.ForeignKey(Post, null=True, blank=True, on_delete=models.SET_NULL, related_name="images")
+    post = models.ForeignKey(
+        Post, null=True, blank=True, on_delete=models.SET_NULL, related_name="images"
+    )
     is_valid = models.BooleanField(default=False)
     alternative = models.CharField(max_length=200, null=True, blank=True)
 
@@ -246,10 +304,11 @@ class BusinessImage(models.Model):
 
     def images_url(self):
         return {
-            '200x200': self.thumbnail_200x200.url,
-            '250x250': self.thumbnail_250x250.url,
-            '512x512': self.thumbnail_512x512.url
+            "200x200": self.thumbnail_200x200.url,
+            "250x250": self.thumbnail_250x250.url,
+            "512x512": self.thumbnail_512x512.url,
         }
+
     def __str__(self):
         if self.post:
             return "%s %s" % (self.post, self.pk)
@@ -258,7 +317,9 @@ class BusinessImage(models.Model):
 
 
 class BusinessImageThumbnails(models.Model):
-    business_image = models.OneToOneField(BusinessImage, related_name="thumbs", on_delete=models.CASCADE)
+    business_image = models.OneToOneField(
+        BusinessImage, related_name="thumbs", on_delete=models.CASCADE
+    )
     thumb_200x200 = models.ImageField()
 
 
@@ -270,5 +331,19 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
     if instance.image:
         if os.path.isfile(instance.image.path):
-            print('removing image from filesystem')
+            print("removing image from filesystem")
             os.remove(instance.image.path)
+
+
+class Report(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name="reports", on_delete=models.CASCADE)
+    CATEGORIAS_REPORTES = [
+        ("PRODUCTO_ILEGAL", "Productos Ilegales"),
+        ("ESTAFA", "Estafa"),
+        ("PUBLICIDAD_ENGANOSA", "Publicidad Enganosa"),
+        ("ROBO_INTELECTUAL", "Roba mi propiedad intelectual"),
+        ("CONTRA_TOS", "Esta en Contra de los TOS"),
+    ]
+    categorias = models.CharField(max_length=255, choices=CATEGORIAS_REPORTES)
+    descripcion = models.TextField()

@@ -7,14 +7,19 @@ from django.views.generic import CreateView
 from django.http import Http404, HttpResponse
 from rest_framework import views, viewsets
 
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import (
+    IsAuthenticated,
+    AllowAny,
+    IsAuthenticatedOrReadOnly,
+)
 from .permissions import IsBusinessMember
 from .filters import MultipleIdsFilterBackend
 from laya_shop.posts.models import BusinessImage
 from laya_shop.business.models import Business
 from django_filters.rest_framework import DjangoFilterBackend
-from laya_shop.posts.models import Post
-from .serializers import PostChatThumbnail
+from laya_shop.posts.models import Post, Report
+from .serializers import PostChatThumbnail, ReportsSerializer
+
 # Create your views here.
 
 
@@ -23,12 +28,16 @@ class PostChatThumbnailViewSet(viewsets.ModelViewSet):
     serializer_class = PostChatThumbnail
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [MultipleIdsFilterBackend, DjangoFilterBackend]
-    filterset_fields = ['business_id']
+    filterset_fields = ["business_id"]
 
 
 class BusinessGetObject:
     def get_object(self):
-        business_slug = self.request.POST.get('business') or self.request.GET.get('business') or None
+        business_slug = (
+            self.request.POST.get("business")
+            or self.request.GET.get("business")
+            or None
+        )
         # import pdb; pdb.set_trace()
         if business_slug is None:
             return None
@@ -46,21 +55,28 @@ class BusinessTemporalImageView(BusinessGetObject, views.APIView):
         business = self.get_object()
         if not business:
             return HttpResponseBadRequest()
-        image = request.FILES.get('image')
+        image = request.FILES.get("image")
         if not image:
             return HttpResponseBadRequest()
         instance = BusinessImage.objects.create(business=business, image=image)
         return JsonResponse(instance.pk, safe=False)
 
 
-#Aqui es para que se borren las imagenes que no se quieren usar :v
+# Aqui es para que se borren las imagenes que no se quieren usar :v
 class BusinessTemporalDetailView(views.APIView):
     permission_classes = (IsAuthenticated, IsBusinessMember)
+
     def delete(self, request, pk=None, format=None):
         delete_when_request = True
         # Creo que la mejor manera seria borrar el registro y LUEGO
         # buscar las imagenes huerfanas, pero por el momento lo dejo asi jeje
         temporal_image = get_object_or_404(BusinessImage, pk=pk)
         temporal_image.delete()
-        print('Image deleted')
+        print("Image deleted")
         return HttpResponse("Delete")
+
+
+class ReportsViewSet(viewsets.ModelViewSet):
+    queryset = Report.objects.all()
+    serializer_class = ReportsSerializer
+    permission_classes = (IsAuthenticated,)

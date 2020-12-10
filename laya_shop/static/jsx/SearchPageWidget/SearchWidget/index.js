@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useRef, useState , useEffect} from "react"
 import { Box } from "theme-ui"
 import Searchbar from '../Searchbar'
 import ReactSelector from "react-select"
@@ -13,7 +13,7 @@ const SearchWidget = ({ ...props }) => {
   const [hideFilters, setHideFilters] = useState(true)
 
   const [search, setSearch] = useState('')
-
+  const formRef = useRef()
   const params = new URLSearchParams(window.location.search)
 
   // AQUI WEON BUSCA
@@ -47,7 +47,7 @@ const SearchWidget = ({ ...props }) => {
 
   const defaultSubCat = subcat.filter(val => val.value == params.get('subcategories'))[0]
   const [selectedSubCat, setSelectedSubCat] = useState(defaultSubCat || baseSubCat)
-  const [isDisabledSubCat, setIsDisabledSubCat] = useState(defaultSubCat ? false : true)
+  const [isDisabledSubCat, setIsDisabledSubCat] = useState(defaultSubCat || defaultCategory ? false : true)
   const [subCatOptions, setSubCatOptions] = useState(defaultSubCat ? subcat : [baseSubCat])
 
   const defaultSort = sortOptions.filter(val => val.value == params.get('sort'))[0] || sortOptions[0]
@@ -98,57 +98,57 @@ const SearchWidget = ({ ...props }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    const form = new FormData(event.target)
-
+    const reactForm = new FormData(formRef.current)
+    const baseSearchForm = new FormData(event.target)
     let query = '?'
     let currency = false
 
-    if (form.get('search') !== '') {
-      query += `search=${form.get('search')}&`
+    if (baseSearchForm.get('search') !== '' &&  !!baseSearchForm.get('search')) {
+      query += `search=${baseSearchForm.get('search')}&`
     }
 
-    if (form.get('category') !== '-1') {
-      query += `category=${form.get('category')}&`
+    if (reactForm.get('category') !== '-1') {
+      query += `category=${reactForm.get('category')}&`
     }
 
-    if (form.get('subcategory') !== '-1' && form.get('subcategory') !== null) {
-      query += `subcategory=${form.get('subcategory')}&`
+    if (reactForm.get('subcategory') !== '-1' && reactForm.get('subcategory') !== null) {
+      query += `subcategory=${reactForm.get('subcategory')}&`
     }
 
-    form.getAll('tags').forEach((value) => {
+    reactForm.getAll('tags').forEach((value) => {
       if (value !== '') {
         query += `tags=${value}&`
       }
     })
 
-    if (form.get('sort') !== '-1') {
-      query += `sort=${form.get('sort')}&`
+    if (reactForm.get('sort') !== '-1') {
+      query += `sort=${reactForm.get('sort')}&`
     }
 
-    if (form.get('state') !== '-1') {
-      query += `state=${form.get('state')}&`
+    if (reactForm.get('state') !== '-1') {
+      query += `state=${reactForm.get('state')}&`
     }
 
-    if (form.get('delivery') !== '-1') {
-      query += `delivery=${form.get('delivery')}&`
+    if (reactForm.get('delivery') !== '-1') {
+      query += `delivery=${reactForm.get('delivery')}&`
     }
 
-    if (form.get('location') !== '-1') {
-      query += `location=${form.get('location')}&`
+    if (reactForm.get('location') !== '-1') {
+      query += `location=${reactForm.get('location')}&`
     }
 
-    if (form.get('lowPrice') !== '') {
-      query += `lowPrice=${form.get('lowPrice')}&`
+    if (reactForm.get('lowPrice') !== '') {
+      query += `lowPrice=${reactForm.get('lowPrice')}&`
       currency = true
     }
 
-    if (form.get('highPrice') !== '') {
-      query += `highPrice=${form.get('highPrice')}&`
+    if (reactForm.get('highPrice') !== '') {
+      query += `highPrice=${reactForm.get('highPrice')}&`
       currency = true
     }
 
     if (currency) {
-      query += `currency=${form.get('currency')}&`
+      query += `currency=${reactForm.get('currency')}&`
     }
 
     if (query.slice(-1) === "&") {
@@ -160,10 +160,19 @@ const SearchWidget = ({ ...props }) => {
 
   catOptions.unshift(baseCat)
 
+  useEffect(()=>{
+    const baseSearchForm = document.getElementById('base-search-bar')
+    baseSearchForm.addEventListener('submit',handleSubmit)
+
+    return () => {
+      baseSearchForm.removeEventListener('submit',handleSubmit)
+    }
+  })
+
   return (
     <Box __css={{ '& label': { my: 'xsmall', display: 'block' } }}{...props}>
-      <form onSubmit={handleSubmit}>
-        <Searchbar onChange={setSearch} value={search} />
+      <form ref={formRef} onSubmit={handleSubmit}>
+        {/* <Searchbar onChange={setSearch} value={search} /> */}
         <Box as="div" __css={{ display: ['flex', null, null, 'none'], justifyContent: 'center', mt: 'xsmall' }}><Box as="span" __css={{
           border: '0', color: '#0051b5',
           bg: '#eef', borderRadius: '4px',
