@@ -282,7 +282,9 @@ footer h5:hover{
     body > *  {
         display: hidden;
     }
-
+    body > .no-print{
+        display:hidden!important;
+    }
     body > .printable {
         display: block!important;
     }

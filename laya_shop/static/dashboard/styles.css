@@ -35,7 +35,9 @@ body {
     body > *  {
         display: hidden;
     }
-
+    body > .no-print{
+        display:hidden!important;
+    }
     body > .printable {
         display: block!important;
     }
