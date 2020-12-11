@@ -45,6 +45,8 @@
       <span class="ml-2 font-semibold text-sm"><a href="{% url 'users:detail' user.username %}">
           Cuenta
         </a></span>
+      <span class="ml-2 font-semibold text-sm"><a class="nav-link" href="{% url 'account_logout' %}">Cerrar sesion</a>
+      </span>
       {% else %}
       <a href="{% url "account_login" %}" class="ml-auto font-semibold text-sm">Iniciar sesión</a>
       {% endif %}
