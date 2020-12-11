@@ -79,6 +79,7 @@ THIRD_PARTY_APPS = [
     "django_filters",
     "imagekit",
     "push_notifications",
+    "pywebpush"
 ]
 
 LOCAL_APPS = [

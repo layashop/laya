@@ -25,6 +25,7 @@ class DealSerializer(serializers.ModelSerializer):
             "created_at",
             "id",
             "sent_by",
+            "rating",
         ]
 
 

@@ -8,6 +8,7 @@ from .decorators import cache_on_auth
 from laya_shop.posts.filters import PostFilter
 from laya_shop.posts.mixins import PostClassificationMixin
 from laya_shop.posts.models import Post, Category, SubCategory, Currency
+from laya_shop.posts.serializers import CurrencySerializer
 
 cache = caches["default"]
 
@@ -116,7 +117,7 @@ class PostList(PostClassificationMixin, ListView):
             if query_keys.get("tags"):
                 q_object.add(Q(tags__contains=query_keys.get("tags")), "AND")
             if query_keys.get("search"):
-                q_object.add(Q(title__icontains=query_keys.get("search")[0]), "AND")
+                q_object.add(Q(title__icontains=query_keys.get("search")), "AND")
             queryset_optimizado = queryset.filter(q_object)
             if query_keys.get("sort"):
                 sort_key = self.request.GET.get("sort")
@@ -161,7 +162,7 @@ class PostDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         post = self.object
-
+        context['currencies'] = CurrencySerializer(Currency.objects.all(), many=True).data
         # TODO: Mejorar esta wea
         context["related_posts"] = (
             Post.objects.select_related("business")

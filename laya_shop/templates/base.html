@@ -1,58 +1,78 @@
 {% load static i18n compress%}
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>{% block title %}Laya Shop{% endblock title %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{% block description %} Laya shop, plataforma para emprendedores {% endblock %}">
-    <meta name="author" content="Laya Software">
-    {% block meta %}
 
-    {% endblock %}
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>{% block title %}Laya Shop{% endblock title %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{% block description %} Laya shop, plataforma para emprendedores {% endblock %}">
+  <meta name="author" content="Laya Software">
+  {% block meta %}
 
-    {% block meta_extra %}
+  {% endblock %}
+
+  {% block meta_extra %}
 
 
-    {% endblock %}
-    <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    {% block css %}
+  {% endblock %}
+  <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}">
+  <link rel="apple-touch-icon" sizes="57x57" href="{% static 'images/favicons/apple-icon-57x57.png' %}">
+  <link rel="apple-touch-icon" sizes="60x60" href="{% static 'images/favicons/apple-icon-60x60.png' %} ">
+  <link rel="apple-touch-icon" sizes="72x72" href="{% static 'images/favicons/apple-icon-72x72.png' %}">
+  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'images/favicons/apple-icon-76x76.png' %}">
+  <link rel="apple-touch-icon" sizes="114x114" href="{% static 'images/favicons/apple-icon-114x114.png' %}">
+  <link rel="apple-touch-icon" sizes="120x120" href="{% static 'images/favicons/apple-icon-120x120.png' %}">
+  <link rel="apple-touch-icon" sizes="144x144" href="{% static 'images/favicons/apple-icon-144x144.png' %}">
+  <link rel="apple-touch-icon" sizes="152x152" href="{% static 'images/favicons/apple-icon-152x152.png' %}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/favicons/apple-icon-180x180.png' %}">
+  <link rel="icon" type="image/png" sizes="192x192" href="{% static 'images/favicons/android-icon-192x192.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicons/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="96x96" href="{% static 'images/favicons/favicon-96x96.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicons/favicon-16x16.png' %}">
+  <link rel="manifest" href="{% static 'images/favicons/manifest.json' %}">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="{% static 'images/favicons/ms-icon-144x144.png' %}">
+  <meta name="theme-color" content="#ffffff">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  {% block css %}
 
-    <!-- Your stuff: Third-party CSS libraries go here -->
-      {% compress css %}
-        <!-- This file stores project-specific CSS -->
-        <link rel="stylesheet" href="{% static 'dist/css/tailwind.css' %}">
-        <link href="{% static 'css/home.css' %}" rel="stylesheet">
-      {% endcompress %}
-      {% block extra_styles %}
-      {% endblock %}
-    {% endblock %}
+  <!-- Your stuff: Third-party CSS libraries go here -->
+  {% compress css %}
+  <!-- This file stores project-specific CSS -->
+  <link rel="stylesheet" href="{% static 'dist/css/tailwind.css' %}">
+  <link href="{% static 'css/home.css' %}" rel="stylesheet">
+  {% endcompress %}
+  {% block extra_styles %}
+  {% endblock %}
+  {% endblock %}
 
-  </head>
+</head>
 
 <body>
-    {% include 'layout/header.html' %}
-    <div class="">
+  {% include 'layout/header.html' %}
+  <div class="">
 
     {% if messages %}
-        {% for message in messages %}
-            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
-        {% endfor %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}<button type="button"
+        class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+    {% endfor %}
     {% endif %}
 
     {% block content %}
-        <p>Use this document as a way to quick start any new project.</p>
+    <p>Use this document as a way to quick start any new project.</p>
     {% endblock content %}
 
-    </div> <!-- /container -->
-    {% include 'layout/footer.html' %}
+  </div> <!-- /container -->
+  {% include 'layout/footer.html' %}
 
-    {% block modal %}{% endblock modal %}
+  {% block modal %}{% endblock modal %}
 
 
-    <!-- Le javascript
+  <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
@@ -64,8 +84,8 @@
       {% endcompress %}
     {% endblock javascript %}
 
-    {% block extra_javascript %}
-    {% endblock %}
-  </body>
-</html>
+  {% block extra_javascript %}
+  {% endblock %}
+</body>
 
+</html>

@@ -10,7 +10,7 @@
 {% endblock stylesheets %}
 {% block extra_javascript %}
 <script src="https://unpkg.com/regenerator-runtime@0.13.1/runtime.js"></script>
-
+{{ currencies|json_script:"currencies" }}
 <script>
   // const BUSINESS = JSON.parse("{{ business_json |safe }}")
 

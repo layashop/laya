@@ -5,7 +5,6 @@ import {Box} from 'theme-ui'
 import _ from 'lodash'
 
 const DealCategory = ({category, handleUpdateData, handleOpenItem, openIndex, searchQuery, data = []}) => {
-    console.log(category)
     const [show, setShow] = useState(true)
     const toggleShow = () => setShow((prevState) => !prevState)
     return <Box __css={{px: '10px', py: '10px'}} id={`category-${category}`}>
@@ -21,7 +20,7 @@ const DealCategory = ({category, handleUpdateData, handleOpenItem, openIndex, se
                     }
                 }
 
-                return <DealItem deal={deal} show={deal.id === openIndex} handleUpdateData={handleUpdateData}
+                return <DealItem key={deal.id} deal={deal} show={deal.id === openIndex} handleUpdateData={handleUpdateData}
                                  handleOpenItem={handleOpenItem}/>
             })}
         </Box>}

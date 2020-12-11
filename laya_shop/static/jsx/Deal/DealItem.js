@@ -7,6 +7,7 @@ import statusChoices from "./statusChoices";
 import Tag from "./Tag";
 import Chevron from "./Chevron";
 import IconResolver from "../ChatWidget/IconResolver";
+import StarHandler from "./StarHandler";
 
 const printDeal = () => {
     window.print()
@@ -47,6 +48,12 @@ const choices = {
     8: "Devuelto",
 }
 
+JSON.parse(document.getElementById("currencies").innerHTML).forEach(({symbol, name, id})=> {
+    currencyOptions[id] = {
+        symbol,
+        name
+    }
+})
 
 const DealItem = ({deal, show, handleUpdateData, handleOpenItem}) => {
 
@@ -386,9 +393,8 @@ const DealItem = ({deal, show, handleUpdateData, handleOpenItem}) => {
 
                         }}>Marcar como entregado</Box>
                     </Box>}
-                    {deal.status === 7 || deal.status === 8 && IS_USER && <Box className="pt-2">
-                        <Box as="h3" __css={{fontWeight: 'bold'}}>Califica este acuerdo de intercambio:</Box>
-                        <IconResolver icon="star"/>
+                    {(deal.status === 7 || deal.status === 8) && IS_USER && <Box className="pt-2">
+                            <StarHandler deal={deal} handleUpdateData={handleUpdateData} />
                     </Box>}
                     {deal.status === 7 && IS_USER && <Box className="pt-2">
                         <Box as="h3" __css={{fontWeight: 'bold'}}>¿Quieres solicitar una devolución?</Box>

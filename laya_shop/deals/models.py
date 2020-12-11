@@ -14,6 +14,7 @@ class Deal(models.Model):
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="deals")
     history = JSONField(blank=False, null=False)
+    rating = models.IntegerField(null=True)
 
     class State(models.IntegerChoices):
         PENDING = 1, "Pendiente"

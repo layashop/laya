@@ -214,7 +214,14 @@ class Post(models.Model):
         return f"{self.pk}-{self.title_slug}"
 
     def get_absolute_url(self):
-        return reverse('posts:detail', args=(self.business.slug, self.pk, self.title_slug))
+        return reverse(
+            "posts:detail", args=(self.business.slug, self.pk, self.title_slug)
+        )
+
+    def get_canonical_url(self):
+        return reverse(
+            "posts:detail", args=(self.business.slug, self.pk, self.title_slug)
+        )
 
     def save(self, *args, **kwargs):
 

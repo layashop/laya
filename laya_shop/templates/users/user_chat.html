@@ -8,6 +8,9 @@
   <div id="chat_app">
   </div>
 {% endblock %}
+{% block javascript %}
+  {{ currencies|json_script:"currencies" }}
+{% endblock %}
 {% block extra_styles %}
   <link rel="stylesheet" href="{% static 'assets/css/emoji-mart.css' %}">
   <link rel="stylesheet" href="{% static 'assets/css/loader.css' %}">

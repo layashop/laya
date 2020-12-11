@@ -5,6 +5,9 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, RedirectView, UpdateView, TemplateView
 
+from laya_shop.posts.models import Currency
+from laya_shop.posts.serializers import CurrencySerializer
+
 User = get_user_model()
 
 
@@ -66,6 +69,7 @@ class UserChatPage(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['currencies'] = CurrencySerializer(Currency.objects.all(), many=True).data
         context["business"] = dict()
         return context
 
@@ -78,6 +82,7 @@ class UserDealsPage(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['currencies'] = CurrencySerializer(Currency.objects.all(), many=True).data
         return context
 
 

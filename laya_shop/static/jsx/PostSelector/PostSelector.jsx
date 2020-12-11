@@ -106,7 +106,7 @@ const PostSelector = ({isLoaded, data, selected, setSelected, onSubmit, isEmbedd
                 }) :
                 <Box>
                     NO SE ENCONTRO NADA
-                </Box>}</>) : <div className="loader-dark mt-4">Loading...</div>}
+                </Box>}</>) : <div className="loader-dark mt-4">Cargando...</div>}
         </Box>
 
         {!isEmbedded && (<Box className="bg-gray-100" __css={{

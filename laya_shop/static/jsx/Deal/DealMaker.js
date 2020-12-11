@@ -6,7 +6,11 @@ import PostSelector from "../PostSelector/PostSelector";
 import DayPicker from "react-day-picker";
 import 'react-day-picker/lib/style.css';
 
-const currencyOptions = [{value: 1, label: "Córdobas"}, {value: 2, label: "Dólares"}]
+const CURRENCIES =  JSON.parse(document.getElementById("currencies").innerHTML)
+
+const currencyOptions = CURRENCIES.map(el=> {
+    return {value: el.id, label: el.name, symbol: el.symbol}
+})
 
 const productPriceOptions = [{value: true, label: 'Por Precio Unitario'}, {value: false, label: 'Por Precio Total'}]
 
@@ -46,18 +50,27 @@ const DealMaker = ({activeDeal, isNew, setActiveDeal, isLoadedPost, postData, se
 
                     if (foundIndex === -1) {
 
-                        let convertedPrice
+                        let convertedPrice = post.final_price
 
-                        if (post.currency.id === activeDeal.currency) {
-                            convertedPrice = post.final_price
-                        } else {
-                            ////// HARDCODEDDDDDDD
-                            if (post.currency.id === 1) {
-                                convertedPrice = (post.final_price / 34.65).toFixed(2)
-                            } else {
-                                convertedPrice = (post.final_price * 34.65).toFixed(2)
-                            }
+                        if (post.currency.id !== 1 ) {
+                            convertedPrice = convertedPrice * _.find(CURRENCIES, {id: post.currency.id}).rate
                         }
+                        if (activeDeal.currency !== 1) {
+                            convertedPrice = convertedPrice / _.find(CURRENCIES, {id: activeDeal.currency}).rate
+                        }
+
+                        convertedPrice.toFixed(2)
+
+                        // if (post.currency.id === activeDeal.currency) {
+                        //     convertedPrice = post.final_price
+                        // } else {
+                        //     ////// HARDCODEDDDDDDD
+                        //     if (post.currency.id === 1) {
+                        //         convertedPrice = (post.final_price / 34.65).toFixed(2)
+                        //     } else {
+                        //         convertedPrice = (post.final_price * 34.65).toFixed(2)
+                        //     }
+                        // }
                         setActiveDeal({
                             ...activeDeal,
                             products: [...products, {
@@ -106,11 +119,24 @@ const DealMaker = ({activeDeal, isNew, setActiveDeal, isLoadedPost, postData, se
 
                                  products.forEach((currentVal, i) => {
                                      // HARDCODED
-                                     if (e.value === 2) {
-                                         products[i].price = (currentVal.price / 34.65).toFixed(2)
-                                     } else {
-                                         products[i].price = (currentVal.price * 34.65).toFixed(2)
-                                     }
+
+                                       let convertedPrice = products[i].price
+
+                        if (e.value !== 1 ) {
+                            convertedPrice = convertedPrice * _.find(CURRENCIES, {id: e.value}).rate
+                        }
+                        if (activeDeal.currency !== 1) {
+                            convertedPrice = convertedPrice / _.find(CURRENCIES, {id: activeDeal.currency}).rate
+                        }
+
+                        products[i].price = convertedPrice.toFixed(2)
+
+                                     //
+                                     // if (e.value === 2) {
+                                     //     products[i].price = (currentVal.price / 34.65).toFixed(2)
+                                     // } else {
+                                     //     products[i].price = (currentVal.price * 34.65).toFixed(2)
+                                     // }
 
                                  })
                                  setActiveDeal({...activeDeal, currency: e.value, products: products})
@@ -172,7 +198,7 @@ const DealMaker = ({activeDeal, isNew, setActiveDeal, isLoadedPost, postData, se
                             </Box>
                             <Box as="label">
                                 <Box
-                                    as="h3">{product.isUnitPrice ? 'Precio Unitario' : 'Precio Total'} en {activeDeal.currency === 1 ? 'C$' : '$'}</Box>
+                                    as="h3">{product.isUnitPrice ? 'Precio Unitario' : 'Precio Total'} en {_.find(currencyOptions, {value: activeDeal.currency}).symbol}</Box>
                                 <Box as="input" value={product.price}
                                      onBlur={(e) => {
                                          product.price = Number.parseFloat(e.target.value).toFixed(2)
@@ -200,7 +226,16 @@ const DealMaker = ({activeDeal, isNew, setActiveDeal, isLoadedPost, postData, se
                             </Box>
                             <Box as="label">
                                 <Box as="h3">Cantidad</Box>
-                                <Box as="input" value={product.quantity} onChange={(e) => {
+                                <Box as="input" value={product.quantity}
+                                     onBlur={(e) => {
+                                         if(e.target.value == "0") {
+                                             product.quantity = 1
+                                             products[productIndex] = product
+                                    setActiveDeal({...activeDeal, products: products})
+                                         }
+                                     }}
+
+                                     onChange={(e) => {
                                     if (!/^\d*$/.test(e.target.value)) {
                                         return
                                     }
@@ -219,7 +254,7 @@ const DealMaker = ({activeDeal, isNew, setActiveDeal, isLoadedPost, postData, se
                             </Box>
                             {product.isUnitPrice &&
                             (<Box as="label">
-                                <Box as="h3">Precio Total en {activeDeal.currency === 1 ? 'C$' : '$'}</Box>
+                                <Box as="h3">Precio Total en {_.find(currencyOptions, {value: activeDeal.currency}).symbol}</Box>
                                 <Box as="input" readOnly value={(product.price * product.quantity).toFixed(2)}/>
                             </Box>)}
                         </Box>
@@ -248,7 +283,7 @@ const DealMaker = ({activeDeal, isNew, setActiveDeal, isLoadedPost, postData, se
                     </Box> <Box as="span" __css={{
                     width: '150px',
                     textAlign: 'right'
-                }}>{activeDeal.currency === 1 ? 'C$' : '$'} {subTotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Box>
+                }}>{_.find(currencyOptions, {value: activeDeal.currency}).symbol} {subTotal.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Box>
                 </Box>
             </> : <Box __css={{textDecoration: 'underline', px: '30px'}}>Seleccione un producto de la lista de
                 arriba</Box>}

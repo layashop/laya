@@ -45,6 +45,8 @@
       <span class="ml-2 font-semibold text-sm"><a href="{% url 'users:detail' user.username %}">
           Cuenta
         </a></span>
+      <span class="ml-2 font-semibold text-sm"><a class="nav-link" href="{% url 'account_logout' %}">Cerrar sesion</a>
+      </span>
       {% else %}
       <a href="{% url "account_login" %}" class="ml-auto font-semibold text-sm">Iniciar sesión</a>
       {% endif %}
@@ -62,7 +64,7 @@
         <form id="base-search-bar" action="{% url 'posts:search' %}" method="GET">
           <input
             class="w-full border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-full text-sm focus:outline-none"
-            name="search" id="search-input" value="{{ SEARCH }}" placeholder="Search" autocomplete="off">
+            name="search" id="search-input" value="{{ SEARCH }}" placeholder="Buscar" autocomplete="off">
           <button type="submit" class="absolute right-0 top-0 mt-3 mr-4">
             <svg class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
               xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"
