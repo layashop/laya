@@ -5,6 +5,7 @@ from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import RedirectView
 from rest_framework.authtoken.views import obtain_auth_token
+from django.views.generic.base import TemplateView
 
 urlpatterns = [
     # path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
@@ -23,6 +24,10 @@ urlpatterns = [
         include("laya_shop.dashboard.urls", namespace="dashboard"),
     ),
     path("", include("laya_shop.internal.urls")),
+    path(
+        "robots.txt",
+        TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS
