@@ -276,7 +276,7 @@ const ChatRoom = ({slug, isWidget, businessId}) => {
     return (
         <Box as="div" id="chat-room">
             <Box as="div" className="chat-messages flex flex-col bg-gray-200 px-2 chat-services overflow-y-auto pb-3"
-                 style={{minHeight: isWidget ? '' : '70vh'}}>
+                 style={{minHeight: isWidget ? '' : '70vh', }}>
                 <ChatRoomHistoric websocket={chatSocket} markAsSeen={bulkMarkAsSeen}>
                     {orderedChatHistory.map(message => {
                         return <ChatRoomMessage message={message} slug={isInBusiness ? slug.split('-')[0] : undefined}/>
