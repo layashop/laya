@@ -1,19 +1,25 @@
 .alert-debug {
   background-color: #fff;
   border-color: #d6e9c6;
-  color: #000; }
+  color: #000;
+}
 
 .alert-error {
   background-color: #f2dede;
   border-color: #eed3d7;
-  color: #b94a48; }
+  color: #b94a48;
+}
 
-  @media print {
-    body > *  {
-        display: hidden;
-    }
+@media print {
+  body > * {
+    visibility: hidden;
+  }
 
-    body > .printable {
-        display: block!important;
-    }
+  body > .no-print, body > .no-print * {
+    visibility: hidden !important;
+  }
+
+  body > .printable, body > .printable * {
+    visibility: visible;
+  }
 }

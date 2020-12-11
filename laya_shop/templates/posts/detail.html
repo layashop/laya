@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static parameters %}
-
+{% block meta %}
+<link rel="canonical" href="{{request.get_host}}/{{object.get_canonical_url}}">
+{% endblock %}
 {% block title %}
 {{ object.title }} - Laya Shop
 {% endblock %}
@@ -218,7 +220,7 @@ Descripcion del producto: {{ object.description }}
 {% endblock %}
 
 {% block javascript %}
-  {{ currencies|json_script:"currencies" }}
+{{ currencies|json_script:"currencies" }}
 {% endblock %}
 
 {% block extra_javascript %}

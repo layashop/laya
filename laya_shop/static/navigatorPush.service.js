@@ -18,19 +18,19 @@ self.addEventListener('install', function (event) {
 });
 
 self.addEventListener('push', function(event) {
-        try {
-                console.log('PUSH NOTIFICATION')
-                // Push is a JSON
-                var response_json = event.data.json();
-                var title = response_json.title;
-                var message = response_json.message;
-                var message_tag = response_json.tag;
-        } catch (err) {
-                // Push is a simple text
-                console.log(err)
-        }
+        // try {
+        //         console.log('PUSH NOTIFICATION')
+        //         // Push is a JSON
+        //         var response_json = event.data.json();
+        //         var title = response_json.title;
+        //         var message = response_json.message;
+        //         var message_tag = response_json.tag;
+        // } catch (err) {
+        //         // Push is a simple text
+        //         console.log(err)
+        // }
          const message = JSON.parse(event.data.text())
-        self.registration.showNotification(getTitle(title), getNotificationOptions(message.message, ''));
+        self.registration.showNotification(getTitle(message.title), getNotificationOptions(message.message, ''));
         // Optional: Comunicating with our js application. Send a signal
         self.clients.matchAll({includeUncontrolled: true, type: 'window'})
         .then(function (clients) {

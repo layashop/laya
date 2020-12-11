@@ -18,31 +18,36 @@ def handler_signal(sender, **kwargs):
     deal = kwargs.get("instance")
     device = WebPushDevice.objects.all()
     message = {}
-    if deal.sent_by == Deal.SentBy.BUSINESS:
-        device.filter(user=deal.user)
-        if created:
-            message["message"] = "Tienes un nuevo Deal con " + deal.business.name
+    try:
+        if deal.sent_by == Deal.SentBy.BUSINESS:
+            device.filter(user=deal.user)
+            if created:
+                message["message"] = "Tienes un nuevo Deal con " + deal.business.name
+            else:
+                message["message"] = "Se actualizo el Deal con " + deal.business.name
+
+            if deal.status > Deal.State.SETTLED:
+                deal_status = {6: "Delivery", 7: "Entregado"}.get(deal.status)
+                message["message"] += " paso a " + deal_status
         else:
-            message["message"] = "Se actualizo el Deal con " + deal.business.name
+            users = deal.business.user.all()
+            device.filter(user__pk__in=[user.id for user in users])
 
-        if deal.status > Deal.State.SETTLED:
-            deal_status = {6: "Delivery", 7: "Entregado"}.get(deal.status)
-            message["message"] += " paso a " + deal_status
-    else:
-        users = deal.business.user.all()
-        device.filter(user__pk__in=[user.id for user in users])
+            if created:
+                message["message"] = "Tienes un nuevo Deal con " + deal.user.name
+            else:
+                message["message"] = "Se actualizo el Deal con " + deal.user.name
 
         if created:
-            message["message"] = "Tienes un nuevo Deal con " + deal.user.name
+            message["title"] = "Nuevo Deal"
         else:
-            message["message"] = "Se actualizo el Deal con " + deal.user.name
+            message["title"] = "Se actualizo un acuerdo"
 
-    if created:
-        message["title"] = "Nuevo Deal"
-    else:
-        message["title"] = "Se actualizo un acuerdo"
-    response = device.send_message(json.dumps(message))
-    print(response)
+        response = device.send_message(json.dumps(message))
+        print(response)
+    except:
+        pass
+
 
 
 class DealViewSet(ModelViewSet):
