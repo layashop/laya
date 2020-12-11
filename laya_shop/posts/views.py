@@ -8,6 +8,7 @@ from .decorators import cache_on_auth
 from laya_shop.posts.filters import PostFilter
 from laya_shop.posts.mixins import PostClassificationMixin
 from laya_shop.posts.models import Post, Category, SubCategory, Currency
+from laya_shop.posts.serializers import CurrencySerializer
 
 cache = caches["default"]
 
@@ -161,7 +162,7 @@ class PostDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         post = self.object
-
+        context['currencies'] = CurrencySerializer(Currency.objects.all(), many=True).data
         # TODO: Mejorar esta wea
         context["related_posts"] = (
             Post.objects.select_related("business")

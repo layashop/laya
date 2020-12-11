@@ -48,27 +48,18 @@
   <div class="featured-container flex flex-col items-center">
     <h3 class="title">Destacados</h3>
     <div class="featured">
-      <div class="box">
-        <div class="flex items-center pb-2">
-          <img src="{% static 'images/featured/vintage-logo.jpg' %}" class="logo rounded-full" alt="">
-          <h6 class="ml-4">Vintage Shop 80s</h6>
-        </div>
-        <img src="{% static 'images/featured/vintage-shop.jpg' %}" alt="">
-      </div>
-      <div class="box">
-        <div class="flex items-center pb-2">
-          <img src="{% static 'images/featured/neat-logo.jpg' %}" class="logo rounded-full" alt="">
-          <h6 class="ml-4">N.E.A.T</h6>
-        </div>
-        <img src="{% static 'images/featured/neat-shop.jpg' %}" alt="">
-      </div>
-      <div class="box">
-        <div class="flex items-center pb-2">
-          <img src="{% static 'images/featured/nini-logo.jpg' %}" class="logo rounded-full" alt="">
-          <h6 class="ml-4">Nini shop</h6>
-        </div>
-        <img src="{% static 'images/featured/nini-shop.jpg' %}" alt="">
-      </div>
+      {% for post in featured %}
+        <a href="{{ post.get_absolute_url }}">
+          <div class="box">
+            <div class="flex items-center pb-2">
+              <img src="{{ post.business.thumbnail_64x64.url }}" class="logo rounded-full" alt="">
+              <h6 class="ml-4">{{ post.business.name }}</h6>
+            </div>
+            <img src="{{ post.images.first.thumbnail_250x250.url }}" class="h-full w-full" alt="">
+          </div>
+        </a>
+      {% endfor %}
+
     </div>
   </div>
   <div id='chat-widget'>

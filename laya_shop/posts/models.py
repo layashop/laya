@@ -8,6 +8,7 @@ from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 from laya_shop.users.models import User
 from django.utils.text import slugify
+from django.shortcuts import reverse
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.dispatch import receiver
@@ -211,6 +212,9 @@ class Post(models.Model):
 
     def get_seo_url(self):
         return f"{self.pk}-{self.title_slug}"
+
+    def get_absolute_url(self):
+        return reverse('posts:detail', args=(self.business.slug, self.pk, self.title_slug))
 
     def save(self, *args, **kwargs):
 
