@@ -129,7 +129,7 @@
 
 {% endblock %}
 
-{% block javascripts %}
+{% block extra_javascript %}
 
 
   {{ post.attributes|json_script:"selected-attributes" }}
@@ -207,4 +207,4 @@
     });
   </script>
 
-{% endblock javascripts %}
+{% endblock extra_javascript %}

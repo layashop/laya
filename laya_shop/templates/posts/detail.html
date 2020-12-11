@@ -12,6 +12,35 @@ Descripcion del producto: {{ object.description }}
 {% endblock %}
 
 {% block content %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+   "@type": "Product",
+    "name": "{{object.title}}",
+    "description" : "{{object.description}}",
+    "image": [
+     {% for image in object.images.all %}
+      "{{request.get_host}}/{{ image.thumbnail_512x512.url }}",
+      "{{request.get_host}}/{{ image.thumbnail_250x250.url }}"{% if not forloop.last%},{% endif %}
+      {% endfor %}
+     ],
+    "brand": {
+      "@type": "Thing",
+      "name": "{{object.business.name}}"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "{{object.score}}"
+    },
+    "offers": {
+      "@type": "AggregateOffer",
+      "price": "{{object.price}}",
+      "priceCurrency": "{{object.currency.iso_code}}"
+    }
+}
+</script>
+<!--Micro Data-->
+
 <main class="my-8 px-2">
   <div class="container mx-auto">
     <div class="md:flex md:items-center">
