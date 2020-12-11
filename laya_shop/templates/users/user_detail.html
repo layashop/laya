@@ -5,49 +5,47 @@
 
 {% block content %}
 
-<div class="max-w-5xl mx-auto px-10 mt-10 text-center">
-  <h1 class="text-4xl mb-2">Información de usuario</h1>
-  <div class="mb-2 mx-auto max-w-m">
-    <h2 class="font-bold">Usuario:</h2>
-    {{ object.username }}
+  <div class="max-w-5xl mx-auto px-10 mt-10 text-center">
+    <h1 class="text-4xl mb-2">Información de usuario</h1>
+    <div class="mb-2 mx-auto max-w-m">
+      <h2 class="font-bold">Usuario:</h2>
+      {{ object.username }}
+    </div>
+    {% if object.name %}
+      <div class="mb-2 mx-auto max-w-xs">
+        <h2 class="font-bold">Nombre:</h2>
+        {{ object.name }}
+      </div>
+    {% endif %}
+
   </div>
-  {% if object.name %}
-  <div class="mb-2 mx-auto max-w-xs">
-    <h2 class="font-bold">Nombre:</h2>
-    {{ object.name }}
-  </div>
+
+  {% if object == request.user %}
+    <!-- Action buttons -->
+    <div class="mt-4 mx-auto max-w-xs text-center">
+      <a class="p-2 bg-red-100 hover:shadow-xs rounded-xs" href="{% url 'account_logout' %}" role="button">Cerrar
+        sesión</a>
+      <a class="p-2 bg-red-100 hover:shadow-xs rounded-xs" href="{% url 'users:chats' object.username %}"
+         role="button">Chat</a>
+      <a class="p-2 bg-red-100 hover:shadow-xs rounded-xs" href="{% url 'users:deals' object.username %}"
+         role="button">Deals</a>
+      <div class="mt-4">
+        <h1 class="py-2">Administrar Tiendas</h1>
+        <ul>
+          {% for user_business in object.business.all %}
+            <li class="my-1">
+              <a class="p-2 hover:shadow-xs rounded-xs" href="{% url 'dashboard:index' user_business.slug %}"
+                 role="button">Dashboard {{ user_business.name }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <script>
+      const something = "{{object.business.all}}"
+    </script>
+    </div>
+    <!-- End Action buttons -->
   {% endif %}
 
-</div>
-
-{% if object == request.user %}
-<!-- Action buttons -->
-<div class="mt-4 mx-auto max-w-xs text-center">
-  <a class="p-2 bg-red-100 hover:shadow-xs rounded-xs" href="{% url 'users:update' %}" role="button">My Info</a>
-  <a class="p-2 bg-red-100 hover:shadow-xs rounded-xs" href="{% url 'account_email' %}" role="button">E-Mail</a>
-  <a class="p-2 bg-red-100 hover:shadow-xs rounded-xs" href="{% url 'users:chats' object.username %}"
-    role="button">Chat</a>
-  <a class="p-2 bg-red-100 hover:shadow-xs rounded-xs" href="{% url 'users:deals' object.username %}"
-    role="button">Deals</a>
-  <div class="mt-4">
-    <h1 class="py-2">Administrar Tiendas</h1>
-    <ul>
-      {% for user_business in object.business.all %}
-      <li class="my-1">
-        <a class="p-2 hover:shadow-xs rounded-xs" href="{% url 'dashboard:index' user_business.slug %}"
-          role="button">Dashboard {{user_business.name}}</a>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
-</div>
-<script>
-  const something = "{{object.business.all}}"
-</script>
-</div>
-<!-- End Action buttons -->
-{% endif %}
-
-
-</div>
 {% endblock content %}
