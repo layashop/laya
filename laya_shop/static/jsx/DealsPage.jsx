@@ -67,7 +67,7 @@ const DealPage = () => {
 
     let component
     if (loading === LOADING) {
-        component = <div className={'loader-dark'}>Loading...</div>
+        component = <div className={'loader-dark'}>Cargando...</div>
     }
 
     if (loading === FINISHED) {

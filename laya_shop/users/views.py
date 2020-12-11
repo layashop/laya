@@ -82,6 +82,7 @@ class UserDealsPage(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['currencies'] = CurrencySerializer(Currency.objects.all(), many=True).data
         return context
 
 

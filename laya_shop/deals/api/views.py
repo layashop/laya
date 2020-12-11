@@ -35,7 +35,7 @@ def handler_signal(sender, **kwargs):
         if created:
             message["message"] = "Tienes un nuevo Deal con " + deal.user.name
         else:
-            message["message"] = "Se actualizo el Deal con " + deal.user.nameStatus
+            message["message"] = "Se actualizo el Deal con " + deal.user.name
 
     if created:
         message["title"] = "Nuevo Deal"

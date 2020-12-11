@@ -223,7 +223,7 @@ const SubmenuDealMaker = ({
                     })}
                 </Box>}
                 {isLoadedDealData && dealData.length === 0 && <Box __css={{p: '30px', textAlign:'center', fontSize: '20px'}}>No existen registros previos editables</Box>}
-                {!isLoadedDealData && <div className="loader-dark mt-4">Loading...</div>}
+                {!isLoadedDealData && <div className="loader-dark mt-4">Cargando...</div>}
             </Box>
         </>}
         {selectedDealIndex !== -1 &&
