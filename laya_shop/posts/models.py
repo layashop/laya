@@ -356,6 +356,7 @@ class Report(models.Model):
         PUBLICIDAD_ENGANOSA = 3, "Publicidad Enganosa"
         ROBO_PI = 4, "Roba mi propiedad Intelectual"
         CONTRA_TOS = 5, "Esta en contra de los TOS"
+        OTRO = 6, "Otro"
 
     categorias = models.IntegerField(
         choices=ReportChoices.choices,

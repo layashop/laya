@@ -146,7 +146,7 @@ class PostList(PostClassificationMixin, ListView):
 post_list_view = PostList.as_view()
 
 
-# @method_decorator(cache_page(600), name="dispatch")
+@method_decorator(cache_on_auth(600), name="dispatch")
 class PostDetail(DetailView):
     model = Post
     template_name = "posts/detail.html"
@@ -165,7 +165,7 @@ class PostDetail(DetailView):
         context['currencies'] = CurrencySerializer(Currency.objects.all(), many=True).data
         # TODO: Mejorar esta wea
         context["related_posts"] = (
-            Post.objects.select_related("business")
+            Post.objects.select_related("business", "currency")
             .filter(subcategories__in=post.subcategories.all())
             .distinct()
             .exclude(pk=post.pk)[:4]

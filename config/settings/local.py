@@ -16,8 +16,8 @@ ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
 # CACHES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#caches
-TEST_CACHE = False
-if not DEBUG or TEST_CACHE:
+DISABLE_CACHE = False
+if not DEBUG or not DISABLE_CACHE:
     CACHES = {
         "default": {
             "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
